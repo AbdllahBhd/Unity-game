@@ -1,0 +1,18 @@
+{
+  "$comment": "Project-scoped MCP servers. Everyone who opens this project with Claude Code gets these servers (after approving them once). Uncomment / edit the examples you need, delete the ones you don't.",
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+      "$comment": "Gives structured filesystem access to the project directory."
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "$comment": "GitHub issues/PRs/repos. Set GITHUB_TOKEN in your environment, never hardcode it here."
+    }
+  }
+}

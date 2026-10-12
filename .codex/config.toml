@@ -1,0 +1,26 @@
+# Project-level Codex configuration (committed — applies to anyone using Codex here).
+# Wires the SAME hook scripts Claude Code uses (.claude/hooks/) into Codex's
+# lifecycle events, so both tools enforce the same guarantees.
+#
+# NOTE: Codex requires a one-time trust review of non-managed hooks — run /hooks
+# inside Codex in this repo and approve them. Event payload fields can differ
+# slightly from Claude's; both scripts degrade gracefully when a field is absent.
+# Verify syntax against the official reference if Codex evolves:
+# https://developers.openai.com/codex/hooks
+
+# After every file-modifying tool: block hardcoded secrets, flag debug leftovers.
+[[hooks.PostToolUse]]
+matcher = "Edit|Write|apply_patch"
+
+  [[hooks.PostToolUse.hooks]]
+  type = "command"
+  command = "bash .claude/hooks/validate-code.sh"
+  timeout = 60
+
+# When Codex tries to finish: lint + typecheck + tests must pass (definition of done).
+[[hooks.Stop]]
+
+  [[hooks.Stop.hooks]]
+  type = "command"
+  command = "bash .claude/hooks/done-gate.sh"
+  timeout = 300

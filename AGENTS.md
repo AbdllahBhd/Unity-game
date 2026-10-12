@@ -1,5 +1,11 @@
 # Hollow Night — AI project guide
 
+> **For Codex, Cursor and other AGENTS.md readers:** project rules, commands and constraints
+> live in [CLAUDE.md](CLAUDE.md) and `.claude/rules/*.md` (code-style, pr, workflow). Read those
+> too and follow them as if written here. Skills are in `.agents/skills/` (generated from
+> `.claude/` by `scripts/sync-codex.sh`; never edit them directly). Save lessons into those
+> repo files, never into tool-private memory.
+
 This file is the single source of truth for any AI assistant working on this project.
 Read it **instead of** re-reading all the code. `CLAUDE.md` imports this file.
 
