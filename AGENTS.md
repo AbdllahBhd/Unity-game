@@ -18,14 +18,14 @@ The project contains two generations of code:
 
 | Item | Value |
 |---|---|
-| Unity version | **2019.3.12f1** — C# 7.3 only (no switch expressions, no `using var`, no target-typed `new`) |
-| Render pipeline | URP 7.3.1 with the 2D renderer. New sprites use the unlit `Sprites/Default` material |
+| Unity version | **6000.6.5f1** (Unity 6, upgraded 2026-10-12). Code stays in plain C# 7.3 style |
+| Render pipeline | **Built-in** (URP assets removed at upgrade). All sprites use the unlit `Sprites/Default` material |
 | Input | Legacy `Input` class (mouse = first touch) |
 | Physics | Physics2D, gravity (0, -9.81), hero gravity scale 1.5 |
 | UI | `UnityEngine.UI` built from code. TextMeshPro is **not** used |
 | Target | Android/iOS portrait. Product name `Hollow Night` |
-| Version control | `.gitignore` exists; the folder is not yet a git repository |
-| Verification | No Unity or tests on the dev machine. See §9 |
+| Version control | git repository in `game1/`; generated folders are ignored |
+| Verification | Unity 6 is installed; the user play-tests. See §9 |
 
 ## 2. Key design decision: everything is built from code
 
@@ -185,11 +185,11 @@ To play it, enable the three legacy scenes in Build Settings.
 
 ## 9. Verification
 
-Unity is not installed on the development machine, so:
+Claude cannot drive the Unity editor, so:
 
 | Check | How | Covers |
 |---|---|---|
-| Compile | `dotnet build` against Unity reference assemblies (C# 7.3) | Syntax, types, API names |
+| Compile | Open in Unity; check `Logs/Editor.log` for `error CS` | Syntax, types, API names |
 | Stages | `python3 Tools/check_levels.py` | A route to the goal, every candy, par |
 | Play test | **Open in Unity and play** | Everything else: scenes, sprite import, feel |
 
@@ -218,5 +218,5 @@ The graph covers C# only. `.graphifyignore` excludes generated folders, art pack
 - Never edit `Library/`, `Temp/`, `obj/`, `*.csproj`, `*.sln`, or existing `.meta` files.
 - Do not put non-asset files in `Assets/` (tools and docs live in `Tools/` and the root).
 - New art goes through `Tools/generate_art.py` or as a PNG in `Assets/Resources/HN/`.
-- Keep Unity 2019.3 / C# 7.3 compatibility.
+- Use Unity 6 physics names: `linearVelocity`, `linearDamping`, `angularDamping`.
 - After changing code: run the compile and stage checks, run `graphify update .`, update this file.

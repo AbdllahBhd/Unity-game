@@ -174,8 +174,8 @@ namespace HollowNight
             Rigidbody2D body = go.AddComponent<Rigidbody2D>();
             body.mass = 0.6f;
             body.gravityScale = 1.5f;
-            body.drag = 0.2f;
-            body.angularDrag = 2f;
+            body.linearDamping = 0.2f;
+            body.angularDamping = 2f;
             go.AddComponent<Minion>();
             minionIndex++;
             Minions++;

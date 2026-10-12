@@ -143,7 +143,7 @@ namespace HollowNight
             if (State != HeroState.Resting) return;
             aim = 0f;
             Release();
-            Body.velocity = velocity;
+            Body.linearVelocity = velocity;
             lastVelocity = velocity;
             stickCooldown = 0.15f;
             squash = -0.25f;
@@ -173,7 +173,7 @@ namespace HollowNight
         void Rest(Collider2D ground, bool stable)
         {
             State = HeroState.Resting;
-            Body.velocity = Vector2.zero;
+            Body.linearVelocity = Vector2.zero;
             Body.angularVelocity = 0f;
             Body.bodyType = RigidbodyType2D.Kinematic;
             restCollider = ground;
@@ -218,9 +218,9 @@ namespace HollowNight
         {
             if (abilityUsed) return;
             abilityUsed = true;
-            Vector2 v = Body.velocity;
+            Vector2 v = Body.linearVelocity;
             Vector2 direction = v.sqrMagnitude > 1f ? v.normalized : Vector2.up;
-            Body.velocity = direction * Mathf.Max(v.magnitude + 5f, 13f);
+            Body.linearVelocity = direction * Mathf.Max(v.magnitude + 5f, 13f);
             dashTimer = 0.45f;
             squash = -0.3f;
             Fx.Flash(Position, Def.color, 3f);
@@ -233,10 +233,10 @@ namespace HollowNight
             gliding = true;
             if (flapsLeft <= 0) return;
             flapsLeft--;
-            Vector2 v = Body.velocity;
+            Vector2 v = Body.linearVelocity;
             v.y = Mathf.Max(v.y, 0f) + 6.5f;
             v.x += Mathf.Sign(Mathf.Abs(v.x) > 0.2f ? v.x : 1f) * 1.2f;
-            Body.velocity = v;
+            Body.linearVelocity = v;
             squash = -0.2f;
             Fx.Burst(Position + Vector2.down * 0.3f, "dot", 6, new Color(1f, 1f, 1f, 0.7f), 3f, 0.35f, 0.3f, 2f);
             Sfx.Play(Sound.Flap, 1f, Random.Range(0.9f, 1.2f));
@@ -264,7 +264,7 @@ namespace HollowNight
             }
             abilityUsed = true;
             float gravity = Mathf.Abs(Physics2D.gravity.y) * Body.gravityScale;
-            Body.velocity = new Vector2(0f, Mathf.Sqrt(2f * gravity * best) + 3f);
+            Body.linearVelocity = new Vector2(0f, Mathf.Sqrt(2f * gravity * best) + 3f);
             stickCooldown = 0f;
             webLine.enabled = true;
             webLine.SetPosition(1, anchor);
@@ -277,7 +277,7 @@ namespace HollowNight
             if (abilityUsed) return;
             abilityUsed = true;
             smashing = true;
-            Body.velocity = new Vector2(0f, -20f);
+            Body.linearVelocity = new Vector2(0f, -20f);
             squash = -0.35f;
             Fx.Flash(Position, Def.color, 2.5f);
             Sfx.Play(Sound.Dash, 0.8f, 0.6f);
@@ -315,7 +315,7 @@ namespace HollowNight
                 {
                     // The ground vanished (ghost platform, broken block).
                     Release();
-                    Body.velocity = Vector2.zero;
+                    Body.linearVelocity = Vector2.zero;
                 }
                 else if (restParent != null)
                 {
@@ -329,14 +329,14 @@ namespace HollowNight
             if (dashTimer > 0f) dashTimer -= dt;
             if (stickCooldown > 0f) stickCooldown -= dt;
 
-            Vector2 v = Body.velocity;
+            Vector2 v = Body.linearVelocity;
             if (gliding && glideLeft > 0f && Def.type == HeroType.Hoot)
             {
                 glideLeft -= dt;
                 if (v.y < GlideFallSpeed)
                 {
                     v.y = Mathf.Lerp(v.y, GlideFallSpeed, 0.25f);
-                    Body.velocity = v;
+                    Body.linearVelocity = v;
                 }
             }
 
@@ -360,7 +360,7 @@ namespace HollowNight
                 restTimer = 0f;
             }
 
-            lastVelocity = Body.velocity;
+            lastVelocity = Body.linearVelocity;
             if (Body.position.y < KillDepth) Die();
         }
 
@@ -378,7 +378,7 @@ namespace HollowNight
                 {
                     crate.Break();
                     // Keep ploughing through instead of stopping on the debris.
-                    Body.velocity = smashing ? new Vector2(0f, -16f) : lastVelocity * 0.7f;
+                    Body.linearVelocity = smashing ? new Vector2(0f, -16f) : lastVelocity * 0.7f;
                     if (StageController.I != null) StageController.I.Shake(0.2f, 0.15f);
                     return;
                 }
@@ -441,7 +441,7 @@ namespace HollowNight
         public void Bounce(Vector2 velocity)
         {
             if (State != HeroState.Flying) return;
-            Body.velocity = velocity;
+            Body.linearVelocity = velocity;
             lastVelocity = velocity;
             restTimer = 0f;
             groundedTime = -10f;
@@ -468,7 +468,7 @@ namespace HollowNight
             if (State != HeroState.Flying && State != HeroState.Resting) return;
             State = HeroState.Cannon;
             Body.bodyType = RigidbodyType2D.Kinematic;
-            Body.velocity = Vector2.zero;
+            Body.linearVelocity = Vector2.zero;
             Body.position = position;
             transform.position = position;
             restParent = null;
@@ -485,7 +485,7 @@ namespace HollowNight
             visual.gameObject.SetActive(true);
             aura.enabled = true;
             Release();
-            Body.velocity = velocity;
+            Body.linearVelocity = velocity;
             lastVelocity = velocity;
             squash = -0.3f;
         }
@@ -494,7 +494,7 @@ namespace HollowNight
         {
             if (State == HeroState.Dead || State == HeroState.Won || Invulnerable) return;
             State = HeroState.Dead;
-            Body.velocity = Vector2.zero;
+            Body.linearVelocity = Vector2.zero;
             Body.bodyType = RigidbodyType2D.Kinematic;
             trail.emitting = false;
             restParent = null;
@@ -528,7 +528,7 @@ namespace HollowNight
             invulnerableUntil = Time.time + 1.2f;
             Release();
             trail.emitting = false;
-            Body.velocity = Vector2.zero;
+            Body.linearVelocity = Vector2.zero;
             Fx.Flash(safePosition, Def.color, 3f);
         }
 
@@ -536,7 +536,7 @@ namespace HollowNight
         {
             if (State == HeroState.Won || State == HeroState.Dead) return;
             State = HeroState.Won;
-            Body.velocity = Vector2.zero;
+            Body.linearVelocity = Vector2.zero;
             Body.bodyType = RigidbodyType2D.Kinematic;
             trail.emitting = false;
             restParent = null;
@@ -605,7 +605,7 @@ namespace HollowNight
             }
             else
             {
-                Vector2 v = Body.velocity;
+                Vector2 v = Body.linearVelocity;
                 float stretch = Mathf.Clamp01(v.magnitude / 16f) * 0.16f;
                 sx -= stretch;
                 sy += stretch;

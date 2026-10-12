@@ -63,7 +63,7 @@ public class PLayer_drag_drop : MonoBehaviour
 
     public void desactivaterb()
     {
-        rbz.velocity = Vector2.zero;
+        rbz.linearVelocity = Vector2.zero;
         rbz.angularVelocity = 0f;
         rbz.isKinematic = true;
     }

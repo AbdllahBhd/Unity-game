@@ -93,7 +93,7 @@ namespace HollowNight
             // Lob it towards the hero.
             Hero hero = StageController.I != null ? StageController.I.Hero : null;
             float dx = hero != null ? hero.Position.x - from.x : 0f;
-            body.velocity = new Vector2(Mathf.Clamp(dx * 0.6f, -4f, 4f), 1.5f);
+            body.linearVelocity = new Vector2(Mathf.Clamp(dx * 0.6f, -4f, 4f), 1.5f);
         }
 
         void OnTriggerEnter2D(Collider2D other)
