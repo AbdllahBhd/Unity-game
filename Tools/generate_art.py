@@ -335,28 +335,63 @@ EXPRS = ["idle", "blink", "fly", "happy", "hurt"]
 
 
 # ----------------------------------------------------------------------------- heroes
+def glow_eye(img, cx, cy, r, expr, look=(0, 0)):
+    """Izan's eyes: solid glowing white, no iris, like the original rabbit."""
+    white = "#ffffff"
+    if expr == "blink":
+        img2 = glow_layer(img, lambda d: line(d, curve((cx - r, cy), (cx, cy + r * 0.6), (cx + r, cy)), 4.0), white, 3, 0.7)
+        img.paste(img2)
+        flat(img, lambda d: line(d, curve((cx - r, cy), (cx, cy + r * 0.6), (cx + r, cy)), 4.0), white)
+        return
+    if expr == "happy":
+        pts = curve((cx - r, cy + r * 0.3), (cx, cy - r * 0.9), (cx + r, cy + r * 0.3))
+        img.paste(glow_layer(img, lambda d: line(d, pts, 4.4), white, 3, 0.7))
+        flat(img, lambda d: line(d, pts, 4.4), white)
+        return
+    if expr == "hurt":
+        a = [(cx - r * 0.8, cy - r * 0.8), (cx + r * 0.8, cy + r * 0.8)]
+        b = [(cx - r * 0.8, cy + r * 0.8), (cx + r * 0.8, cy - r * 0.8)]
+        img.paste(glow_layer(img, lambda d: (line(d, a, 4.0), line(d, b, 4.0)), white, 3, 0.7))
+        flat(img, lambda d: line(d, a, 4.0), white)
+        flat(img, lambda d: line(d, b, 4.0), white)
+        return
+    ry = r * (1.3 if expr == "fly" else 1.2)
+    ex, ey = cx + look[0] * r * 0.25, cy + look[1] * r * 0.25
+    img.paste(glow_layer(img, lambda d: ell(d, ex, ey, r * 1.1, ry * 1.1), "#dff4ff", 5, 0.8))
+    shape(img, lambda d: ell(d, ex, ey, r, ry), "#f4fbff", "#ffffff", "#d6e9ff", None, 0, (0.4, 0.3))
+    flat(img, lambda d: ell(d, ex - r * 0.3, ey - ry * 0.35, r * 0.22, r * 0.22), "#ffffff")
+
+
 def izan(expr):
+    """The black rabbit from the first prototype: egg body, tall ears, glowing eyes, pale belly."""
     img = canvas(256, 256)
-    out = "#0d2a66"
-    ear_rot = {"fly": 38, "hurt": 30, "happy": 8}.get(expr, 14)
+    base, hi, lo, out = "#17141f", "#3b3648", "#06050a", "#000000"
+    ear_rot = {"fly": 34, "hurt": 24, "happy": 6}.get(expr, 10)
     ear_len = 62 if expr != "fly" else 66
     for s in (-1, 1):
-        ex, ey = 128 + s * 42, 78 - (6 if expr == "happy" else 0)
-        shape(img, lambda d: rot_ell(d, ex + s * ear_rot * 0.5, ey - ear_len * 0.45, 21, ear_len, s * ear_rot),
-              "#3a9bff", "#a5dcff", "#1c5fc0", out, 3.2)
-        flat(img, lambda d: rot_ell(d, ex + s * ear_rot * 0.5, ey - ear_len * 0.45, 10, ear_len * 0.72, s * ear_rot),
-             "#ffb3d1")
+        ex, ey = 128 + s * 40, 92 - (4 if expr == "happy" else 0)
+        cx_e, cy_e = ex + s * ear_rot * 0.5, ey - ear_len * 0.5
+        shape(img, lambda d: rot_ell(d, cx_e, cy_e, 19, ear_len, s * ear_rot), base, hi, lo, out, 3.2)
+        flat(img, lambda d: rot_ell(d, cx_e, cy_e + 6, 8, ear_len * 0.62, s * ear_rot), "#2c2838")
     for s in (-1, 1):
-        shape(img, lambda d: ell(d, 128 + s * 44, 226, 28, 15), "#2f86ea", "#7cc2ff", "#1c5fc0", out, 3.0)
-    ry = 78 if expr != "fly" else 72
-    shape(img, lambda d: ell(d, 128, 156, 90, ry), "#3a9bff", "#b5e3ff", "#1850ad", out, 3.4)
-    shape(img, lambda d: ell(d, 128, 188, 52, 36), "#cdeaff", "#ffffff", "#9fd0ff", None, 0, (0.5, 0.3))
-    eye_y = 138
+        shape(img, lambda d: ell(d, 128 + s * 40, 228, 26, 14), base, hi, lo, out, 3.0)
+    ry = 92 if expr != "fly" else 86
+    shape(img, lambda d: ell(d, 128, 150, 84, ry), base, hi, lo, out, 3.4, (0.35, 0.22))
+    # pale belly: two soft bumps low on the body
     for s in (-1, 1):
-        eye(img, 128 + s * 34, eye_y, 21, expr, "#1d3fae", (0.3 * s if expr == "fly" else 0, 0), s)
-    cheeks(img, 128, 166, 58, 13)
-    mouth(img, 128, 172, 13, expr)
-    return shadow(img, 128, 240, 70)
+        shape(img, lambda d: ell(d, 128 + s * 22, 212, 28, 20), "#eef0f6", "#ffffff", "#c9cde0", None, 0, (0.5, 0.3))
+    for s in (-1, 1):
+        glow_eye(img, 128 + s * 32, 136, 19, expr, (0.3 * s if expr == "fly" else 0, 0))
+    # white whisker streaks on the cheeks
+    for s in (-1, 1):
+        for i in range(2):
+            y0 = 164 + i * 10
+            flat(img, lambda d: line(d, [(128 + s * 52, y0), (128 + s * 70, y0 - 6)], 3.0), "#e8e8f0")
+    if expr in ("idle", "blink"):
+        flat(img, lambda d: line(d, curve((118, 172), (128, 180), (138, 172)), 3.0), "#e8e8f0")
+    else:
+        mouth(img, 128, 174, 10, expr)
+    return shadow(img, 128, 242, 68)
 
 
 def hoot(expr):

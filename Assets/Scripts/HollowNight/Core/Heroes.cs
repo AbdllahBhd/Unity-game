@@ -28,9 +28,9 @@ namespace HollowNight
         {
             new HeroDef
             {
-                type = HeroType.Izan, name = "Izan", sprite = "izan", title = "The Moon Hare",
+                type = HeroType.Izan, name = "Izan", sprite = "izan", title = "The Black Rabbit",
                 ability = "Spirit Dash", abilityHint = "Tap while flying to DASH forward and smash through things.",
-                maxSpeed = 16f, height = 1.35f, color = new Color(0.35f, 0.7f, 1f), unlockLevel = 0
+                maxSpeed = 16f, height = 1.35f, color = new Color(0.8f, 0.85f, 1f), unlockLevel = 0
             },
             new HeroDef
             {
