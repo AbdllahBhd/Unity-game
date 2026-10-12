@@ -184,7 +184,6 @@ namespace HollowNight
             smashing = false;
             dashTimer = 0f;
             trail.emitting = false;
-            if (StageController.I != null) StageController.I.HeroRested();
         }
 
         // ------------------------------------------------------------------ abilities
@@ -292,8 +291,8 @@ namespace HollowNight
                 if (near[i] == null) continue;
                 Crate crate = near[i].GetComponent<Crate>();
                 if (crate != null) crate.Break();
-                Minion minion = near[i].GetComponent<Minion>();
-                if (minion != null) minion.Smash();
+                Hunter hunter = near[i].GetComponent<Hunter>();
+                if (hunter != null) hunter.Smash();
                 Bat bat = near[i].GetComponent<Bat>();
                 if (bat != null) bat.Defeat();
             }

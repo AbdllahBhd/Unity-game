@@ -11,13 +11,9 @@ namespace HollowNight
         readonly LevelData level;
         readonly Transform root;
         readonly bool hasKey;
-        int candyIndex;
-        int minionIndex;
-
         public Door Door { get; private set; }
         public WitchBoss Boss { get; private set; }
-        public int Candies { get; private set; }
-        public int Minions { get; private set; }
+        public int Hunters { get; private set; }
 
         public LevelBuilder(LevelData data, Transform parent)
         {
@@ -58,10 +54,9 @@ namespace HollowNight
             switch (e.kind)
             {
                 case Kind.Platform: Platform(e); break;
-                case Kind.Candy: Candy(e); break;
                 case Kind.Door: MakeDoor(e); break;
                 case Kind.Key: Key(e); break;
-                case Kind.Minion: Minion(e); break;
+                case Kind.Hunter: Hunter(e); break;
                 case Kind.Spikes: Spikes(e); break;
                 case Kind.Mushroom: Mushroom(e); break;
                 case Kind.Mover: Mover(e); break;
@@ -125,22 +120,6 @@ namespace HollowNight
             renderer.gameObject.AddComponent<Solid>();
         }
 
-        void Candy(Elem e)
-        {
-            GameObject go = Holder("Candy", e.pos);
-            SpriteRenderer glow = Art.Make("glow", go.transform, Vector3.zero, 1.6f, Layer.Item - 1, "Glow");
-            glow.color = new Color(1f, 0.85f, 0.4f, 0.45f);
-            glow.gameObject.AddComponent<Pulse>().amount = 0.15f;
-            SpriteRenderer renderer = Art.Make("candy_" + (candyIndex % 5), go.transform, Vector3.zero, 0.8f, Layer.Item, "Sprite");
-            renderer.transform.Rotate(0f, 0f, candyIndex * 25f - 20f);
-            Circle(go, 0.5f, true);
-            Bob bob = go.AddComponent<Bob>();
-            bob.phase = candyIndex * 1.3f;
-            go.AddComponent<Candy>();
-            candyIndex++;
-            Candies++;
-        }
-
         void MakeDoor(Elem e)
         {
             const float height = 2.4f;
@@ -151,7 +130,7 @@ namespace HollowNight
             SpriteRenderer renderer = Art.Make("door_closed", go.transform, Vector3.zero, height, Layer.Item - 1, "Sprite");
             Box(go, new Vector2(1.1f, 1.9f), true).offset = new Vector2(0f, -0.2f);
             Door = go.AddComponent<Door>();
-            bool sealedDoor = level.smashAll && level.Count(Kind.Minion) > 0;
+            bool sealedDoor = level.Count(Kind.Hunter) > 0;
             Door.Setup(renderer, glow, !hasKey && !sealedDoor, hasKey);
         }
 
@@ -165,20 +144,25 @@ namespace HollowNight
             go.AddComponent<KeyItem>();
         }
 
-        void Minion(Elem e)
+        void Hunter(Elem e)
         {
-            const float height = 1.1f;
-            GameObject go = Holder("Minion", e.pos + Vector2.up * (height * 0.5f));
-            Art.Make("minion_" + (minionIndex % 3), go.transform, Vector3.zero, height, Layer.Enemy, "Sprite");
-            Circle(go, height * 0.46f, false);
-            Rigidbody2D body = go.AddComponent<Rigidbody2D>();
-            body.mass = 0.6f;
-            body.gravityScale = 1.5f;
-            body.linearDamping = 0.2f;
-            body.angularDamping = 2f;
-            go.AddComponent<Minion>();
-            minionIndex++;
-            Minions++;
+            const float height = 1.15f;
+            GameObject go = Holder("Hunter", e.pos);
+            SpriteRenderer glow = Art.Make("glow", go.transform, Vector3.zero, 2.8f, Layer.Enemy - 1, "Glow");
+            glow.color = new Color(0.55f, 1f, 0.45f, 0.5f);
+            glow.gameObject.AddComponent<Pulse>().amount = 0.2f;
+            SpriteRenderer renderer = Art.Make("hunter_0", go.transform, Vector3.zero, height, Layer.Enemy, "Sprite");
+            FrameLoop loop = renderer.gameObject.AddComponent<FrameLoop>();
+            loop.frames = new[] { Art.Get("hunter_0"), Art.Get("hunter_1") };
+            loop.fps = 4f;
+            Bob bob = renderer.gameObject.AddComponent<Bob>();
+            bob.amplitude = new Vector2(0.05f, 0.12f);
+            bob.phase = Hunters * 1.7f;
+            Circle(go, height * 0.42f, true);
+            // Full kinematic contacts so the trigger also fires against the resting (kinematic) hero.
+            Kinematic(go).useFullKinematicContacts = true;
+            go.AddComponent<Hunter>().home = e.pos;
+            Hunters++;
         }
 
         void Spikes(Elem e)

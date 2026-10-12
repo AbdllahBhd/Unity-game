@@ -210,7 +210,7 @@ namespace HollowNight.EditorTools
 
             if (Elapsed >= StageSeconds || sc.Ended)
             {
-                Note("Stage " + level + ": launches=" + launches + " state=" + hero.State + " candies=" + sc.Candies
+                Note("Stage " + level + ": launches=" + launches + " state=" + hero.State + " smashed=" + sc.Smashed
                      + " restedAgain=" + sawRest + (sc.Ended ? " (won naturally)" : " -> forcing Win"));
                 if (!sc.Ended) sc.Win(hero.transform.position);
                 Enter(Phase.StageWon);

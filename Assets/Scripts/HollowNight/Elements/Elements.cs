@@ -22,21 +22,6 @@ namespace HollowNight
         }
     }
 
-    public class Candy : Touchable
-    {
-        bool taken;
-
-        protected override void Touch(Hero hero)
-        {
-            if (taken || hero.State == HeroState.Dead) return;
-            taken = true;
-            Fx.Burst(transform.position, "spark", 8, new Color(1f, 0.9f, 0.5f), 4f, 0.5f, 0.35f, 2f);
-            Fx.Flash(transform.position, new Color(1f, 0.85f, 0.4f, 0.8f), 2f);
-            StageController.I.CandyCollected();
-            Destroy(gameObject);
-        }
-    }
-
     public class KeyItem : Touchable
     {
         bool taken;
@@ -91,19 +76,67 @@ namespace HollowNight
         }
     }
 
-    /// <summary>Cursed pumpkin. Breaks when something hits it hard enough.</summary>
-    public class Minion : MonoBehaviour
+    /// <summary>
+    /// Glowing pumpkin that hunts the hero. It drifts toward the hero inside <see cref="Range"/> and floats
+    /// home otherwise. A dashing or fast hero smashes it; a slow touch kills the hero.
+    /// </summary>
+    public class Hunter : MonoBehaviour
     {
-        const float BreakSpeed = 4.5f;
+        public const float BreakSpeed = 4.5f;
+        public const float Range = 3.5f;
+        public const float Speed = 1.2f;
+
+        public Vector2 home;
+        Rigidbody2D body;
+        int satedLaunch = -1;   // launch count at the last kill: the hunter waits at home until the next launch
         bool broken;
 
-        void OnCollisionEnter2D(Collision2D collision)
+        void Awake()
+        {
+            body = GetComponent<Rigidbody2D>();
+        }
+
+        bool Sated
+        {
+            get { return StageController.I != null && StageController.I.Launches == satedLaunch; }
+        }
+
+        void FixedUpdate()
         {
             if (broken) return;
-            Hero hero = collision.collider.GetComponent<Hero>();
-            float impact = collision.relativeVelocity.magnitude;
-            if (hero != null && hero.Powered) Smash();
-            else if (impact > BreakSpeed) Smash();
+            Vector2 target = home;
+            float speed = Speed * 1.5f;
+            Hero hero = StageController.I != null ? StageController.I.Hero : null;
+            if (!Sated && hero != null && hero.State != HeroState.Dead && hero.State != HeroState.Won
+                && Vector2.Distance(hero.Position, body.position) < Range)
+            {
+                target = hero.Position;
+                speed = Speed;
+            }
+            body.MovePosition(Vector2.MoveTowards(body.position, target, speed * Time.fixedDeltaTime));
+        }
+
+        void OnTriggerEnter2D(Collider2D other) { Touch(other); }
+        void OnTriggerStay2D(Collider2D other) { Touch(other); }
+
+        void Touch(Collider2D other)
+        {
+            if (broken) return;
+            Hero hero = other.GetComponent<Hero>();
+            if (hero == null || hero.State == HeroState.Dead || hero.State == HeroState.Won) return;
+            bool flying = hero.State == HeroState.Flying;
+            float impact = flying ? hero.Body.linearVelocity.magnitude : 0f;
+            if (hero.Powered || impact > BreakSpeed)
+            {
+                if (flying) hero.Body.linearVelocity *= 0.6f;
+                Smash();
+            }
+            else if (!Sated && !hero.Invulnerable)
+            {
+                // Die() counts as a launch, so the hunter stays home until the player launches again.
+                hero.Die();
+                if (StageController.I != null) satedLaunch = StageController.I.Launches;
+            }
         }
 
         public void Smash()
@@ -111,12 +144,15 @@ namespace HollowNight
             if (broken) return;
             broken = true;
             Vector2 p = transform.position;
-            Fx.Burst(p, "shard", 9, Color.white, 6f, 0.7f, 0.4f, 12f);
-            Fx.Burst(p, "dot", 6, new Color(1f, 0.7f, 0.2f, 0.9f), 3f, 0.5f, 0.5f, 0f);
-            Fx.Flash(p, new Color(1f, 0.6f, 0.1f, 0.8f), 3f);
+            Fx.Burst(p, "shard", 9, new Color(0.6f, 1f, 0.5f), 6f, 0.7f, 0.4f, 12f);
+            Fx.Burst(p, "dot", 8, new Color(0.7f, 1f, 0.4f, 0.9f), 3.5f, 0.5f, 0.5f, 0f);
+            Fx.Flash(p, new Color(0.6f, 1f, 0.4f, 0.8f), 3.5f);
             Sfx.Play(Sound.Break, 1f, Random.Range(0.9f, 1.15f));
-            StageController.I.Shake(0.18f, 0.15f);
-            StageController.I.MinionSmashed();
+            if (StageController.I != null)
+            {
+                StageController.I.Shake(0.18f, 0.15f);
+                StageController.I.HunterSmashed();
+            }
             Destroy(gameObject);
         }
     }

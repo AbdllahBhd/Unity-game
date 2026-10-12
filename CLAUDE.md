@@ -5,10 +5,11 @@
 
 ## Project Overview
 
-- **Name:** **Hollow Night: Izan and the Moon Lantern** (Unity project folder `game1`).
+- **Name:** **Hollow Night: Izan and the Pumpkin Hunt** (Unity project folder `game1`).
 - **What it does:** 2D Halloween physics puzzle game for mobile portrait. Drag to aim,
-  release to launch a hero, collect candy, reach the door. 4 heroes, 10 stages in
-  3 chapters, a witch boss, story screens. Everything (UI, levels, audio) is built from
+  release to launch Izan the black rabbit, smash the glowing pumpkins that hunt him,
+  reach the door. One hero, 10 stages in 3 chapters, a witch boss, story screens.
+  Design record: `SPEC.md` (redesign of 2026-10-12). Everything (UI, levels, audio) is built from
   code at runtime; scenes contain a single `GameBoot` object.
 - **Tech stack:** Unity **6000.6.5f1** (Unity 6, upgraded from 2019.3 on 2026-10-12), C# code
   kept at **7.3** style, **built-in render pipeline** (URP removed, all sprites use `Sprites/Default`),
@@ -56,9 +57,10 @@ graphify update .
   is disabled in the build. Never rename its classes or public fields; they are wired in scenes.
 - Never read or edit `Library/`, `Temp/`, `obj/`, `Logs/`, `*.csproj`, `*.sln`, or existing
   `.meta` files. Non-asset files go in `Tools/`, not `Assets/`.
-- Status as of 2026-10-12: project opens in Unity 6 and compiles with 0 errors (API updater
-  renamed `velocity`→`linearVelocity`, `drag`→`linearDamping`). All 10 stages pass the
-  simulator. **Not yet play-tested**: expect first-run fixes to scenes, sprite imports, feel.
+- Status as of 2026-10-12: project opens in Unity 6 and compiled with 0 errors before the
+  pumpkin-hunt redesign; the redesign itself is **not yet compile-checked or play-tested**.
+  All 10 stages pass the simulator. `Hollow Night > Smoke Test (all stages)` in the editor
+  menu (from `Assets/Editor/HNSmokeTest.cs`) plays every screen and writes `Tools/smoke_report.txt`.
 
 ## Rules
 

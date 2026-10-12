@@ -4,7 +4,7 @@
 It re-implements the hero physics of the game (approximately) and searches for a chain of
 launches that reaches the door. For each stage it reports:
   - whether the goal is reachable and the fewest launches found
-  - whether each candy can be collected
+  - whether each hunting pumpkin can be smashed (checked at its home position)
   - whether the par of the stage is achievable
 
 Usage (from the project root):
@@ -33,6 +33,7 @@ BOUNCE = 0.2
 FRICTION = 0.49
 KILL_Y = -3.5
 HALF = 6.0
+HUNT_RANGE = 3.5   # Hunter.Range in Elements.cs
 
 
 # ----------------------------------------------------------------------------- parsing
@@ -44,14 +45,12 @@ class Level:
         self.height = 20.0
         self.par = 3
         self.start = (-3.5, 0.45)
-        self.smash_all = False
         self.boxes = []      # static solids: (cx, cy, w, h)
         self.crates = []     # (cx, cy, w, h)
         self.mushrooms = []  # list of box lists
         self.spikes = []     # trigger boxes
-        self.candies = []
         self.keys = []
-        self.minions = []    # (x, y, r)
+        self.minions = []    # hunting pumpkins at their home position: (x, y, r)
         self.movers = []     # (cx, cy, w, h, dx, dy, period)
         self.ghosts = []     # (cx, cy, w, h, period, phase)
         self.winds = []      # (cx, cy, w, h, ax, ay)
@@ -86,9 +85,7 @@ def parse():
             if name in ("Hint", "Decor"):
                 continue
             a = [num(x) for x in raw.split(",")] if raw.strip() else []
-            if name == "SmashAll":
-                lv.smash_all = True
-            elif name == "Start":
+            if name == "Start":
                 lv.start = (a[0], a[1] + R)
             elif name == "Ground":
                 x0, x1 = (a + [-6.0, 6.0])[:2] if len(a) >= 2 else (-6.0, 6.0)
@@ -98,14 +95,12 @@ def parse():
             elif name == "Platform":
                 h = a[3] if len(a) > 3 else 0.6
                 lv.boxes.append((a[0], a[1], a[2] - 0.06, h - 0.08))
-            elif name == "Candy":
-                lv.candies.append((a[0], a[1]))
             elif name == "Door":
                 lv.door = (a[0], a[1] + 1.0, 1.1, 1.9)
             elif name == "Key":
                 lv.keys.append((a[0], a[1]))
-            elif name == "Minion":
-                lv.minions.append((a[0], a[1] + 0.55, 0.506))
+            elif name == "Hunter":
+                lv.minions.append((a[0], a[1], 0.483))
             elif name == "Spikes":
                 lv.spikes.append((a[0], a[1] + 0.19, a[2] - 0.25, 0.34))
             elif name == "Mushroom":
@@ -187,12 +182,12 @@ def ghost_solid(g, t):
 
 # ----------------------------------------------------------------------------- simulation
 class Result:
-    __slots__ = ("kind", "x", "y", "t", "key", "minions", "crates", "candies", "bosshit", "ground", "stable")
+    __slots__ = ("kind", "x", "y", "t", "key", "minions", "crates", "bosshit", "ground", "stable", "camped")
 
     def __init__(self):
         self.kind = "dead"
-        self.candies = set()
         self.bosshit = False
+        self.camped = False
         self.ground = None
         self.stable = True
 
@@ -215,12 +210,17 @@ def simulate(lv, state, vx, vy, plan, rnd):
     web_free = True   # launching from a web does not re-stick
     in_web = [touches_circle(x, y, R, w[0], w[1], w[2]) for w in lv.webs]
     flight = 0.0
-    door_open = (not lv.keys or key) and (not lv.smash_all or not minions)
+    door_open = (not lv.keys or key) and not minions
 
     def finish(kind, ground=None, stable=True):
         res.kind, res.x, res.y, res.t = kind, x, y, t
         res.key, res.minions, res.crates = key, frozenset(minions), frozenset(crates)
         res.ground, res.stable = ground, stable
+        # a rest spot inside a live pumpkin's chase range is not safe to wait on
+        if kind == "rest":
+            for i, m in enumerate(lv.minions):
+                if i in minions and math.hypot(x - m[0], y - m[1]) < HUNT_RANGE + m[2]:
+                    res.camped, res.stable = True, False
         return res
 
     for _ in range(int(9.0 / DT)):
@@ -341,7 +341,7 @@ def simulate(lv, state, vx, vy, plan, rnd):
                 for i, m in enumerate(lv.minions):
                     if i in minions and math.hypot(m[0] - x, m[1] - y) < 2.4 + m[2]:
                         minions.discard(i)
-                door_open = (not lv.keys or key) and (not lv.smash_all or not minions)
+                door_open = (not lv.keys or key) and not minions
             if hero == "Webster" and stick_cd <= 0 and (not tag or tag[0] != "mushroom"):
                 stable = tag is None and ny > 0.6 and abs(box[0]) < HALF
                 return finish("rest", tag, stable)
@@ -350,7 +350,8 @@ def simulate(lv, state, vx, vy, plan, rnd):
         if bounced:
             continue
 
-        # minions behave like obstacles that shatter when hit hard
+        # hunting pumpkins: a fast or dashing hero smashes them, a slow touch kills.
+        # The chase is not simulated; they are checked at their home position.
         for i, m in enumerate(lv.minions):
             if i not in minions or not touches_circle(x, y, R, m[0], m[1], m[2]):
                 continue
@@ -358,26 +359,15 @@ def simulate(lv, state, vx, vy, plan, rnd):
             if speed > 4.5 or powered > 0:
                 minions.discard(i)
                 vx, vy = vx * 0.6, vy * 0.6
-                door_open = (not lv.keys or key) and (not lv.smash_all or not minions)
+                door_open = (not lv.keys or key) and not minions
             else:
-                d = math.hypot(x - m[0], y - m[1]) or 1e-6
-                nx, ny = (x - m[0]) / d, (y - m[1]) / d
-                x, y = m[0] + nx * (R + m[2]), m[1] + ny * (R + m[2])
-                vn = vx * nx + vy * ny
-                if vn < 0:
-                    vx -= vn * nx
-                    vy -= vn * ny
-                if ny > 0.6:
-                    grounded = (None, ("minion", i))
+                return finish("dead")
 
         # triggers
-        for c in lv.candies:
-            if touches_circle(x, y, R, c[0], c[1], 0.5):
-                res.candies.add(c)
         for k in lv.keys:
             if touches_circle(x, y, R, k[0], k[1], 0.55):
                 key = True
-                door_open = (not lv.keys or key) and (not lv.smash_all or not minions)
+                door_open = (not lv.keys or key) and not minions
         for s in lv.spikes:
             if touches_box(x, y, R, s):
                 return finish("dead")
@@ -463,7 +453,8 @@ def check(args):
              "minions": frozenset(range(len(lv.minions))), "crates": frozenset(), "depth": 0, "ground": None}
     frontier = [start]
     seen = {(round(start["x"] * 1.5), round(start["y"] * 1.5), False, start["minions"], start["crates"])}
-    candy_depth = {}
+    hunter_depth = {}
+    camped = set()
     win_depth = None
     boss_depth = {}
     boss_heights = []
@@ -492,8 +483,11 @@ def check(args):
                 res = simulate(lv, s, vx, vy, random_plan(lv.hero, rnd), rnd)
                 if res.kind == "dead":
                     continue
-                for c in res.candies:
-                    candy_depth.setdefault(c, depth)
+                for i in range(len(lv.minions)):
+                    if i not in res.minions:
+                        hunter_depth.setdefault(i, depth)
+                if res.camped:
+                    camped.add((round(res.x), round(res.y)))
                 if res.kind == "bosshit":
                     boss_depth.setdefault(s["boss_y"], depth)
                     continue
@@ -508,13 +502,13 @@ def check(args):
                 nxt.append({"x": res.x, "y": res.y, "t": res.t, "key": res.key, "minions": res.minions,
                             "crates": res.crates, "depth": depth, "ground": res.ground})
         done = win_depth is not None or (boss_heights and len(boss_depth) == 3)
-        if done and len(candy_depth) == len(lv.candies):
+        if done and len(hunter_depth) == len(lv.minions):
             break
         if done and depth >= (win_depth or max(boss_depth.values())) + 2:
             break
         # keep the search bounded: prefer states near the goal
         if lv.door is not None:
-            nxt.sort(key=lambda s: (not s["key"] and bool(lv.keys), len(s["minions"]) if lv.smash_all else 0,
+            nxt.sort(key=lambda s: (not s["key"] and bool(lv.keys), len(s["minions"]),
                                     math.hypot(s["x"] - lv.door[0], s["y"] - lv.door[1])))
         rnd.shuffle(nxt[30:])
         frontier = nxt[:60]
@@ -536,12 +530,15 @@ def check(args):
         if win_depth is None:
             ok = False
             lines.append("    FAIL no route to the door found")
-    for c in lv.candies:
-        if c in candy_depth:
-            lines.append("    candy (%.1f, %.1f) reachable, launch %d" % (c[0], c[1], candy_depth[c]))
+    for i, m in enumerate(lv.minions):
+        if i in hunter_depth:
+            lines.append("    pumpkin (%.1f, %.1f) smashed, launch %d" % (m[0], m[1], hunter_depth[i]))
         else:
             ok = False
-            lines.append("    FAIL candy (%.1f, %.1f) was never collected" % c)
+            lines.append("    FAIL pumpkin (%.1f, %.1f) was never smashed" % (m[0], m[1]))
+    if camped:
+        lines.append("    note: %d rest spot(s) lie within a pumpkin's reach, e.g. (%d, %d): leap quickly there"
+                     % (len(camped), min(camped)[0], min(camped)[1]))
     par_note = ""
     if best is not None:
         if lv.par < best:

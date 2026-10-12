@@ -5,7 +5,7 @@ namespace HollowNight
 {
     public enum Kind
     {
-        Platform, Candy, Door, Key, Minion, Spikes, Mushroom, Mover, Wind, Portal, Bat, Cauldron, Crate, Ghost,
+        Platform, Door, Key, Hunter, Spikes, Mushroom, Mover, Wind, Portal, Bat, Cauldron, Crate, Ghost,
         Web, Decor, Boss
     }
 
@@ -36,7 +36,6 @@ namespace HollowNight
         public float height = 20f;
         public int par = 3;
         public Vector2 start = new Vector2(-3.5f, 0.45f);
-        public bool smashAll;      // the door stays sealed until every minion is smashed
         public string hint;
         public bool showFinger;
         public readonly List<Elem> elems = new List<Elem>();
@@ -61,12 +60,6 @@ namespace HollowNight
             return this;
         }
 
-        public LevelData SmashAll()
-        {
-            smashAll = true;
-            return this;
-        }
-
         /// <summary>Solid block. x, y is the centre.</summary>
         public LevelData Platform(float x, float y, float w, float h = 0.6f)
         {
@@ -86,12 +79,6 @@ namespace HollowNight
             return Platform((x0 + x1) * 0.5f, -0.75f, x1 - x0, 1.5f);
         }
 
-        public LevelData Candy(float x, float y)
-        {
-            Add(Kind.Candy, x, y);
-            return this;
-        }
-
         /// <summary>Exit door standing on a surface at height y.</summary>
         public LevelData Door(float x, float y)
         {
@@ -105,10 +92,13 @@ namespace HollowNight
             return this;
         }
 
-        /// <summary>Cursed pumpkin standing on a surface at height y.</summary>
-        public LevelData Minion(float x, float y)
+        /// <summary>
+        /// Glowing pumpkin floating at (x, y). It drifts toward the hero when close. A fast or dashing hero
+        /// smashes it; a slow touch kills. The door stays sealed until every hunter is smashed.
+        /// </summary>
+        public LevelData Hunter(float x, float y)
         {
-            Add(Kind.Minion, x, y);
+            Add(Kind.Hunter, x, y);
             return this;
         }
 

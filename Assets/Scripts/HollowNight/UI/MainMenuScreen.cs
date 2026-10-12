@@ -44,24 +44,23 @@ namespace HollowNight
                 UIKit.Gold, true);
             title.horizontalOverflow = HorizontalWrapMode.Overflow;
             title.gameObject.AddComponent<Pulse>().amount = 0.02f;
-            UIKit.Label("Izan and the Moon Lantern", root, UIKit.Top, new Vector2(0f, -490f), new Vector2(1000f, 90f), 58,
+            UIKit.Label("Izan and the Pumpkin Hunt", root, UIKit.Top, new Vector2(0f, -490f), new Vector2(1000f, 90f), 58,
                 UIKit.Cream);
 
-            // Heroes standing on a platform.
+            // Izan on a platform, hunted by two glowing pumpkins.
             Image platform = UIKit.Picture("plat_grave", root, UIKit.Center, new Vector2(0f, -250f), new Vector2(900f, 110f), true);
             platform.rectTransform.SetAsLastSibling();
-            string[] cast = { "hoot", "izan", "pip", "webster" };
-            HeroType[] types = { HeroType.Hoot, HeroType.Izan, HeroType.Pip, HeroType.Webster };
-            for (int i = 0; i < cast.Length; i++)
+            Image hero = UIKit.Picture("izan_idle", root, UIKit.Center, new Vector2(0f, -90f), new Vector2(260f, 260f));
+            hero.gameObject.AddComponent<Hopper>().delay = 0.2f;
+            for (int i = 0; i < 2; i++)
             {
-                bool unlocked = Progress.HeroUnlocked(types[i]);
-                Image hero = UIKit.Picture(cast[i] + (unlocked ? "_happy" : "_idle"), root, UIKit.Center,
-                    new Vector2(-330f + i * 220f, -90f), new Vector2(230f, 230f));
-                // Heroes that have not joined yet are shown as silhouettes.
-                hero.color = unlocked ? Color.white : new Color(0.05f, 0.03f, 0.12f, 0.85f);
-                Hopper hopper = hero.gameObject.AddComponent<Hopper>();
-                hopper.delay = i * 0.35f;
-                hopper.active = unlocked;
+                float side = i == 0 ? -1f : 1f;
+                Image pumpkin = UIKit.Picture("hunter_0", root, UIKit.Center, new Vector2(side * 330f, -60f + i * 70f),
+                    new Vector2(190f, 190f));
+                UIFrames frames = pumpkin.gameObject.AddComponent<UIFrames>();
+                frames.frames = new[] { Art.Get("hunter_0"), Art.Get("hunter_1") };
+                frames.fps = 4f;
+                pumpkin.gameObject.AddComponent<Pulse>().amount = 0.06f;
             }
             Image lantern = UIKit.Picture("lantern_dark", root, UIKit.Center, new Vector2(0f, 190f), new Vector2(150f, 200f));
             lantern.gameObject.AddComponent<Pulse>().amount = 0.03f;

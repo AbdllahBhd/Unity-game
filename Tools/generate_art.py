@@ -10,11 +10,12 @@ import os
 import random
 import shutil
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "Assets", "Resources", "HN")
 DECO = os.path.join(ROOT, "Assets", "2D Halloween Decoration", "Assets", "Sprites", "Single Sprites")
+LEGACY_PUMPKIN = os.path.join(ROOT, "Assets", "graphics", "Texture", "Jack o lantern_3.png")
 SS = 4  # supersampling factor
 
 META = """fileFormatVersion: 2
@@ -1107,8 +1108,22 @@ def import_deco():
         save(pad, name, ss=1)
 
 
+def import_hunter():
+    """The hunting pumpkin is the first prototype's jack-o'-lantern; frame 1 is its brighter glow."""
+    a = Image.open(LEGACY_PUMPKIN).convert("RGBA")
+    a = a.crop(a.getbbox())
+    a.thumbnail((236, 236), Image.LANCZOS)
+    frame = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+    frame.paste(a, ((256 - a.width) // 2, (256 - a.height) // 2))
+    save(frame, "hunter_0", ss=1)
+    bright = ImageEnhance.Brightness(frame).enhance(1.3)
+    bright.putalpha(frame.getchannel("A"))
+    save(bright, "hunter_1", ss=1)
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
+    import_hunter()
     for e in EXPRS:
         save(izan(e), "izan_" + e)
         save(hoot(e), "hoot_" + e)
