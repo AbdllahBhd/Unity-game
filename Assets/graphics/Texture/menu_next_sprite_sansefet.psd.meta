@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: a9b780b3ceca48649bf1c40c4ff74161
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5484635019638955533
+    second: menu_next_sprite_sansefet_0
+  - first:
+      213: -2606789720679110533
+    second: menu_next_sprite_sansefet_1
+  - first:
+      213: 8120458980446120196
+    second: menu_next_sprite_sansefet_2
+  - first:
+      213: -2808330157887839862
+    second: menu_next_sprite_sansefet_3
+  - first:
+      213: 38978364876492896
+    second: menu_next_sprite_sansefet_4
+  - first:
+      213: 2437650189686180081
+    second: menu_next_sprite_sansefet_5
+  - first:
+      213: -4637122750971033769
+    second: menu_next_sprite_sansefet_6
+  - first:
+      213: 2005442568821076898
+    second: menu_next_sprite_sansefet_0
+  - first:
+      213: -2389080997309234645
+    second: menu_next_sprite_sansefet_1
+  - first:
+      213: 1427934777312920672
+    second: menu_next_sprite_sansefet_2
+  - first:
+      213: 3326543006582622137
+    second: menu_next_sprite_sansefet_3
+  - first:
+      213: -1784641225679161913
+    second: menu_next_sprite_sansefet_4
+  - first:
+      213: -8799027818620130244
+    second: menu_next_sprite_sansefet_5
+  - first:
+      213: 32041092237054847
+    second: menu_next_sprite_sansefet_6
+  - first:
+      213: 7669977635351993998
+    second: menu_next_sprite_sansefet_7
+  - first:
+      213: 440472157955223280
+    second: menu_next_sprite_sansefet_8
+  - first:
+      213: -2700786554786620201
+    second: menu_next_sprite_sansefet_9
+  - first:
+      213: -1998838831407062535
+    second: menu_next_sprite_sansefet_10
+  - first:
+      213: -3593086593410262807
+    second: menu_next_sprite_sansefet_11
+  - first:
+      213: 5643485939038206294
+    second: menu_next_sprite_sansefet_12
+  - first:
+      213: -3476006028218064084
+    second: menu_next_sprite_sansefet_13
+  - first:
+      213: -3527891757061829929
+    second: menu_next_sprite_sansefet_14
+  - first:
+      213: 3221502304482237053
+    second: menu_next_sprite_sansefet_15
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_0
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 331
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a3f60c1463c4db10800000000000000
+      internalID: 2005442568821076898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_1
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 335
+        width: 29
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b224fb7ad7748ded0800000000000000
+      internalID: -2389080997309234645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_2
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 331
+        width: 31
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 064c92c4d1b01d310800000000000000
+      internalID: 1427934777312920672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_3
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 240
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b7ca6d5d314a2e20800000000000000
+      internalID: 3326543006582622137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_4
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 240
+        width: 43
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c530ebb24eab37e0800000000000000
+      internalID: -1784641225679161913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_5
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 239
+        width: 44
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3ced5671d293e580800000000000000
+      internalID: -8799027818620130244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_6
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 241
+        width: 61
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7351012435d17000800000000000000
+      internalID: 32041092237054847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_7
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 240
+        width: 67
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8e9856a50c317a60800000000000000
+      internalID: 7669977635351993998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_8
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 242
+        width: 61
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0feee5c081fdc1600800000000000000
+      internalID: 440472157955223280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_9
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 164
+        width: 67
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7dcdac310f0e48ad0800000000000000
+      internalID: -2700786554786620201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_10
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 165
+        width: 61
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f1a9b25ca2b244e0800000000000000
+      internalID: -1998838831407062535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_11
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 164
+        width: 64
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e81090c7cac22ec0800000000000000
+      internalID: -3593086593410262807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_12
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 69
+        width: 114
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 659b843af80b15e40800000000000000
+      internalID: 5643485939038206294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_13
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 88
+        width: 66
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2322fa1feeb2cfc0800000000000000
+      internalID: -3476006028218064084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_14
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 89
+        width: 67
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7da0d4673296a0fc0800000000000000
+      internalID: -3527891757061829929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menu_next_sprite_sansefet_15
+      rect:
+        serializedVersion: 2
+        x: 479
+        y: 88
+        width: 67
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7a14c5174315bc20800000000000000
+      internalID: 3221502304482237053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

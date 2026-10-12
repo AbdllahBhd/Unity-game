@@ -1,0 +1,308 @@
+{
+  "Assets/GameManager.cs": {
+    "mtime": 1790701551.9610412,
+    "seen": 1790715805.2403855,
+    "ast_hash": "aeceb29e7858a1c3fcba206576ae4c4b",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/CharacterController2D.cs": {
+    "mtime": 1530582108.0,
+    "seen": 1790699363.9387183,
+    "ast_hash": "c9d2d64e4e1f9cb6e18c45a073eee32e",
+    "semantic_hash": "c9d2d64e4e1f9cb6e18c45a073eee32e"
+  },
+  "Assets/Scripts/PLayer_drag_drop.cs": {
+    "mtime": 1790701551.9900413,
+    "seen": 1790715805.240412,
+    "ast_hash": "44a648c0980012d71225c3bd3cf9b774",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/balltest.cs": {
+    "mtime": 1590659418.218943,
+    "seen": 1790699363.9387205,
+    "ast_hash": "46a9c4fda94d9fec5abd4844febcf517",
+    "semantic_hash": "46a9c4fda94d9fec5abd4844febcf517"
+  },
+  "Assets/Scripts/bbbb.cs": {
+    "mtime": 1590762904.53509,
+    "seen": 1790699363.9387212,
+    "ast_hash": "33778b802cfefa47677e1ca607f4e53b",
+    "semantic_hash": "33778b802cfefa47677e1ca607f4e53b"
+  },
+  "Assets/Scripts/player_script.cs": {
+    "mtime": 1790701552.1410415,
+    "seen": 1790715805.240416,
+    "ast_hash": "e61886c8fdefb9c7f16dce202304ccfe",
+    "semantic_hash": ""
+  },
+  "Assets/button_Press.cs": {
+    "mtime": 1790701552.1560414,
+    "seen": 1790715805.2404172,
+    "ast_hash": "1c4a2903ff4a81be53d1ba8d0f2f9579",
+    "semantic_hash": ""
+  },
+  "Assets/button_menu_.cs": {
+    "mtime": 1790701552.0290413,
+    "seen": 1790715805.2404182,
+    "ast_hash": "71d8e6e5b6cb825990225327bdd35f88",
+    "semantic_hash": ""
+  },
+  "Assets/button_next_.cs": {
+    "mtime": 1790701552.0480413,
+    "seen": 1790715805.2404194,
+    "ast_hash": "5f83ed79be1514262b8c8b719e50cb46",
+    "semantic_hash": ""
+  },
+  "Assets/button_restart_.cs": {
+    "mtime": 1790701552.0670414,
+    "seen": 1790715805.2404203,
+    "ast_hash": "e11998fa75fcf3b1fd3196735c8b1bc0",
+    "semantic_hash": ""
+  },
+  "Assets/carecterScript.cs": {
+    "mtime": 1790701552.1240416,
+    "seen": 1790715805.2404213,
+    "ast_hash": "fb26ba6d4d5fb876a290dad170105b80",
+    "semantic_hash": ""
+  },
+  "Assets/door_Scrip.cs": {
+    "mtime": 1790701552.0860415,
+    "seen": 1790715805.2404225,
+    "ast_hash": "ac0f724d1bba0475db27d9120cf61fe5",
+    "semantic_hash": ""
+  },
+  "Assets/izanScript.cs": {
+    "mtime": 1590829030.138053,
+    "seen": 1790699363.938728,
+    "ast_hash": "4ccfda1b5e6628a8e743d51ad7a17efb",
+    "semantic_hash": "4ccfda1b5e6628a8e743d51ad7a17efb"
+  },
+  "Assets/level_Loader.cs": {
+    "mtime": 1591193748.745523,
+    "seen": 1790699363.938729,
+    "ast_hash": "1095d49f182c977472e585b2b157f66f",
+    "semantic_hash": "1095d49f182c977472e585b2b157f66f"
+  },
+  "Assets/pumkinkScript.cs": {
+    "mtime": 1790701552.1070416,
+    "seen": 1790715805.240426,
+    "ast_hash": "3548f13674590252b9bfbf74fe41a6eb",
+    "semantic_hash": ""
+  },
+  "Assets/start_left.cs": {
+    "mtime": 1591190830.352284,
+    "seen": 1790699363.9387305,
+    "ast_hash": "5962f6987b4b773a47f3c52741c3c675",
+    "semantic_hash": "5962f6987b4b773a47f3c52741c3c675"
+  },
+  "Assets/start_middel.cs": {
+    "mtime": 1591190747.46567,
+    "seen": 1790699363.9387312,
+    "ast_hash": "b3072bcca9ad089c4bc1869d9bb4880b",
+    "semantic_hash": "b3072bcca9ad089c4bc1869d9bb4880b"
+  },
+  "Assets/start_right.cs": {
+    "mtime": 1591190743.205961,
+    "seen": 1790699363.9387324,
+    "ast_hash": "238912a7af1ff7da8bcfed450fa7a64e",
+    "semantic_hash": "238912a7af1ff7da8bcfed450fa7a64e"
+  },
+  "Assets/trajectory_Script.cs": {
+    "mtime": 1590831947.282728,
+    "seen": 1790699363.938733,
+    "ast_hash": "efc175f05f839457e832b8ac9d8389c4",
+    "semantic_hash": "efc175f05f839457e832b8ac9d8389c4"
+  },
+  "Packages/manifest.json": {
+    "mtime": 1590858894.13843,
+    "seen": 1790699363.9387338,
+    "ast_hash": "50d3e3ed6d23b8a40039ecf4b15d59bc",
+    "semantic_hash": "50d3e3ed6d23b8a40039ecf4b15d59bc"
+  },
+  ".claude/settings.json": {
+    "mtime": 1790699455.8315983,
+    "seen": 1790715805.2403824,
+    "ast_hash": "d51809505582275a1fbb4bbecd751613",
+    "semantic_hash": ""
+  },
+  "Assets/LegacyButton.cs": {
+    "mtime": 1790701552.0110414,
+    "seen": 1790715805.2403874,
+    "ast_hash": "4aadbc326c41d15686738d5b384205f2",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Art.cs": {
+    "mtime": 1790700539.8557606,
+    "seen": 1790715805.2403913,
+    "ast_hash": "fa021621a46f2a24901c64a9fcdac8ef",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Flow.cs": {
+    "mtime": 1790700539.9127607,
+    "seen": 1790715805.2403922,
+    "ast_hash": "208e24e295a01a7975356ff714c436bb",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/GameBoot.cs": {
+    "mtime": 1790700807.4861045,
+    "seen": 1790715805.2403932,
+    "ast_hash": "7a0b217cc54119e09d5d2d5ae7875a74",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Heroes.cs": {
+    "mtime": 1790700539.8747606,
+    "seen": 1790715805.2403939,
+    "ast_hash": "f99123f7958228bd6af0f3001ffac707",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Juice.cs": {
+    "mtime": 1790700643.7948942,
+    "seen": 1790715805.240395,
+    "ast_hash": "912cf790b704d130873dfc4526be539f",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Progress.cs": {
+    "mtime": 1790700539.8937607,
+    "seen": 1790715805.240396,
+    "ast_hash": "9c9f8a66219413cb71a92155a91593c3",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Sfx.cs": {
+    "mtime": 1790700643.7728941,
+    "seen": 1790715805.2403967,
+    "ast_hash": "940fc3fa40e5a7f500c94b6f6690c531",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Elements/Elements.cs": {
+    "mtime": 1790701087.3484657,
+    "seen": 1790715805.240398,
+    "ast_hash": "2bb4f558a413c138699439ffebb88900",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Elements/WitchBoss.cs": {
+    "mtime": 1790701046.9594157,
+    "seen": 1790715805.2403986,
+    "ast_hash": "a6df15fac1a11f9fb0d36275257c4e3e",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/CameraRig.cs": {
+    "mtime": 1790701087.3684657,
+    "seen": 1790715805.2403996,
+    "ast_hash": "12d6972cea38f1580c0c3e89c7bd4e37",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/Hero.cs": {
+    "mtime": 1790701087.3484657,
+    "seen": 1790715805.2404003,
+    "ast_hash": "e58dcb683c59e5161f376ab6944844bd",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/LevelBuilder.cs": {
+    "mtime": 1790701383.993833,
+    "seen": 1790715805.2404015,
+    "ast_hash": "5d014423ccf7bcddc27c7bfd387bfb22",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/LevelData.cs": {
+    "mtime": 1790701383.993833,
+    "seen": 1790715805.2404022,
+    "ast_hash": "3d058ef004a34be96c83ed4364414c31",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/LevelLibrary.cs": {
+    "mtime": 1790715771.60346,
+    "seen": 1790715805.2404032,
+    "ast_hash": "f09ed9312cfad0d0dd0b8c8180019639",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/StageController.cs": {
+    "mtime": 1790701255.668674,
+    "seen": 1790715805.240404,
+    "ast_hash": "f4d5f34e9ba7f445e1f8ab7aa8e33ba8",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/StageHud.cs": {
+    "mtime": 1790701383.993833,
+    "seen": 1790715805.240405,
+    "ast_hash": "bf2af5274939ea19f7844a7275db625b",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Story/Story.cs": {
+    "mtime": 1790700807.4591045,
+    "seen": 1790715805.240406,
+    "ast_hash": "991d9e887dfdce6fa254a07f2e354144",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Story/StoryScreen.cs": {
+    "mtime": 1790700807.4601047,
+    "seen": 1790715805.240407,
+    "ast_hash": "a1901dc3c1f205dc27c71a5a158ffb3e",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/UI/MainMenuScreen.cs": {
+    "mtime": 1790700807.5051048,
+    "seen": 1790715805.2404077,
+    "ast_hash": "3a1c5dc23280475fa1f82e301b900db7",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/UI/UIKit.cs": {
+    "mtime": 1790700643.810894,
+    "seen": 1790715805.240409,
+    "ast_hash": "5df50c5860ca248af0512414f90c5bc5",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/UI/WorldMapScreen.cs": {
+    "mtime": 1790700807.5211048,
+    "seen": 1790715805.2404099,
+    "ast_hash": "2f175c6c7aba5d861e9296d23347cb61",
+    "semantic_hash": ""
+  },
+  "Tools/check_levels.py": {
+    "mtime": 1790701697.5843225,
+    "seen": 1790715805.2404342,
+    "ast_hash": "62185981c63f9d050ed738e6b4c8fe9e",
+    "semantic_hash": ""
+  },
+  "Tools/generate_art.py": {
+    "mtime": 1790700258.3714275,
+    "seen": 1790715805.2404351,
+    "ast_hash": "ea1977ce250ad0cf8853eae3ec8afca7",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1790699448.560591,
+    "seen": 1790715805.2404366,
+    "ast_hash": "85695d6e881f4efa1aba438b98b25a3c",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/HN/Fonts/Creepster-OFL.txt": {
+    "mtime": 1790700271.0304415,
+    "seen": 1790715805.2404377,
+    "ast_hash": "004bea72d006c1398d5ad82f78c89b08",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/HN/Fonts/LuckiestGuy-LICENSE.txt": {
+    "mtime": 1790700271.438442,
+    "seen": 1790715805.240439,
+    "ast_hash": "3b83ef96387f14655fc854ddc3c6bd57",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1790699455.8315983,
+    "seen": 1790715805.2404401,
+    "ast_hash": "7b727c0094bebc404f0d4e06c80c64ac",
+    "semantic_hash": ""
+  },
+  "ProjectSettings/ProjectVersion.txt": {
+    "mtime": 1590387665.918793,
+    "seen": 1790715805.2404413,
+    "ast_hash": "58e066e66e52fd08af52150f6774d3f9",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1790699860.497007,
+    "seen": 1790715805.2404425,
+    "ast_hash": "9c3c226844bde6557b9029346817be55",
+    "semantic_hash": ""
+  }
+}

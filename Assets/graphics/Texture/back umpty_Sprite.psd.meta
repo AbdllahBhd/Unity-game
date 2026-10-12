@@ -1,0 +1,632 @@
+fileFormatVersion: 2
+guid: 297012f44c05a4a4b9177320a204e353
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4600295930010088288
+    second: back umpty_Sprite_0
+  - first:
+      213: -6242545245470682168
+    second: back umpty_Sprite_1
+  - first:
+      213: 5252223734955983242
+    second: back umpty_Sprite_2
+  - first:
+      213: -2539898357656133771
+    second: back umpty_Sprite_3
+  - first:
+      213: -4443533872321043479
+    second: back umpty_Sprite_4
+  - first:
+      213: 290519720737896586
+    second: back umpty_Sprite_5
+  - first:
+      213: 5574904302390195451
+    second: back umpty_Sprite_6
+  - first:
+      213: -2157571920330353558
+    second: back umpty_Sprite_7
+  - first:
+      213: -3584568450794090134
+    second: back umpty_Sprite_8
+  - first:
+      213: -7354256030039454049
+    second: back umpty_Sprite_9
+  - first:
+      213: 1075178760961924239
+    second: back umpty_Sprite_10
+  - first:
+      213: 1011434995160428529
+    second: back umpty_Sprite_11
+  - first:
+      213: -6075433943425421736
+    second: back umpty_Sprite_12
+  - first:
+      213: -293974353375179937
+    second: back umpty_Sprite_13
+  - first:
+      213: 2659146921385789084
+    second: back umpty_Sprite_14
+  - first:
+      213: 3301256736652495090
+    second: back umpty_Sprite_15
+  - first:
+      213: 7461752103131575904
+    second: back umpty_Sprite_16
+  - first:
+      213: -1992663062902544965
+    second: back umpty_Sprite_17
+  - first:
+      213: 5867291407744198231
+    second: back umpty_Sprite_18
+  - first:
+      213: -5770307514031359836
+    second: back umpty_Sprite_19
+  - first:
+      213: -3305420705289032131
+    second: back umpty_Sprite_20
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: back umpty_Sprite_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1187
+        width: 2711
+        height: 4809
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0633de166c887df30800000000000000
+      internalID: 4600295930010088288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_1
+      rect:
+        serializedVersion: 2
+        x: 2964
+        y: 4809
+        width: 1462
+        height: 1177
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c39a657c260e59a0800000000000000
+      internalID: -6242545245470682168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_2
+      rect:
+        serializedVersion: 2
+        x: 4722
+        y: 4658
+        width: 1425
+        height: 1388
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a814de2d8a5a3e840800000000000000
+      internalID: 5252223734955983242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_3
+      rect:
+        serializedVersion: 2
+        x: 6495
+        y: 4277
+        width: 1603
+        height: 1715
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57fde4296e770ccd0800000000000000
+      internalID: -2539898357656133771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_4
+      rect:
+        serializedVersion: 2
+        x: 8187
+        y: 4386
+        width: 2719
+        height: 1609
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e363e86c756552c0800000000000000
+      internalID: -4443533872321043479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_5
+      rect:
+        serializedVersion: 2
+        x: 11209
+        y: 4996
+        width: 794
+        height: 475
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a88f3d29522280400800000000000000
+      internalID: 290519720737896586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_6
+      rect:
+        serializedVersion: 2
+        x: 15927
+        y: 1187
+        width: 4
+        height: 4809
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf4b3c80de90e5d40800000000000000
+      internalID: 5574904302390195451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_7
+      rect:
+        serializedVersion: 2
+        x: 3182
+        y: 4044
+        width: 1462
+        height: 695
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a641a5f05c3ce02e0800000000000000
+      internalID: -2157571920330353558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_8
+      rect:
+        serializedVersion: 2
+        x: 4983
+        y: 3492
+        width: 902
+        height: 1072
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6198516cfd014ec0800000000000000
+      internalID: -3584568450794090134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_9
+      rect:
+        serializedVersion: 2
+        x: 6402
+        y: 2926
+        width: 1439
+        height: 1331
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9e493eea1f60f990800000000000000
+      internalID: -7354256030039454049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_10
+      rect:
+        serializedVersion: 2
+        x: 8292
+        y: 2924
+        width: 2610
+        height: 1203
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8c1e25f26dcbee00800000000000000
+      internalID: 1075178760961924239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_11
+      rect:
+        serializedVersion: 2
+        x: 11168
+        y: 1658
+        width: 3861
+        height: 2840
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ffafefe4c6590e00800000000000000
+      internalID: 1011434995160428529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_12
+      rect:
+        serializedVersion: 2
+        x: 3360
+        y: 2604
+        width: 1284
+        height: 1328
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 85ee6c97409bfaba0800000000000000
+      internalID: -6075433943425421736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_13
+      rect:
+        serializedVersion: 2
+        x: 6783
+        y: 2257
+        width: 306
+        height: 360
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5b4ff512e79bebf0800000000000000
+      internalID: -293974353375179937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_14
+      rect:
+        serializedVersion: 2
+        x: 7234
+        y: 2257
+        width: 413
+        height: 446
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9606c6490037e420800000000000000
+      internalID: 2659146921385789084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_15
+      rect:
+        serializedVersion: 2
+        x: 8327
+        y: 1710
+        width: 2435
+        height: 1071
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f8898cd28b60dd20800000000000000
+      internalID: 3301256736652495090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_16
+      rect:
+        serializedVersion: 2
+        x: 6705
+        y: 1385
+        width: 662
+        height: 669
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0667e25f0087d8760800000000000000
+      internalID: 7461752103131575904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_17
+      rect:
+        serializedVersion: 2
+        x: 8821
+        y: 856
+        width: 1455
+        height: 615
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb5e6aa7083a854e0800000000000000
+      internalID: -1992663062902544965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_18
+      rect:
+        serializedVersion: 2
+        x: 3073
+        y: 722
+        width: 1190
+        height: 609
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7566b48f27ecc6150800000000000000
+      internalID: 5867291407744198231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_19
+      rect:
+        serializedVersion: 2
+        x: 5235
+        y: 490
+        width: 918
+        height: 848
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a8b46d63efbbefa0800000000000000
+      internalID: -5770307514031359836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: back umpty_Sprite_20
+      rect:
+        serializedVersion: 2
+        x: 6612
+        y: 576
+        width: 661
+        height: 669
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d3ea604a169c022d0800000000000000
+      internalID: -3305420705289032131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

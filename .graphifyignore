@@ -1,0 +1,25 @@
+# Unity generated / cache folders
+Library/
+Temp/
+Logs/
+obj/
+.vs/
+.vscode/
+*.csproj
+*.sln
+*.meta
+# Third-party asset packs (art only, no game logic)
+Assets/AlienTileSet/
+Assets/2D Halloween Decoration/
+Assets/QS/
+# Binary art
+*.png
+*.psd
+*.pdf
+*.mov
+*.anim
+*.controller
+*.prefab
+*.unity
+*.asset
+*.mat

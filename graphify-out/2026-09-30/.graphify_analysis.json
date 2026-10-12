@@ -1,0 +1,460 @@
+{
+  "communities": {
+    "0": [
+      "packages_manifest_dependencies",
+      "packages_manifest_dependencies_com_unity_2d_animation",
+      "packages_manifest_dependencies_com_unity_2d_pixel_perfect",
+      "packages_manifest_dependencies_com_unity_2d_psdimporter",
+      "packages_manifest_dependencies_com_unity_2d_sprite",
+      "packages_manifest_dependencies_com_unity_2d_spriteshape",
+      "packages_manifest_dependencies_com_unity_2d_tilemap",
+      "packages_manifest_dependencies_com_unity_collab_proxy",
+      "packages_manifest_dependencies_com_unity_ide_rider",
+      "packages_manifest_dependencies_com_unity_ide_vscode",
+      "packages_manifest_dependencies_com_unity_modules_ai",
+      "packages_manifest_dependencies_com_unity_modules_androidjni",
+      "packages_manifest_dependencies_com_unity_modules_animation",
+      "packages_manifest_dependencies_com_unity_modules_assetbundle",
+      "packages_manifest_dependencies_com_unity_modules_audio",
+      "packages_manifest_dependencies_com_unity_modules_cloth",
+      "packages_manifest_dependencies_com_unity_modules_director",
+      "packages_manifest_dependencies_com_unity_modules_imageconversion",
+      "packages_manifest_dependencies_com_unity_modules_imgui",
+      "packages_manifest_dependencies_com_unity_modules_jsonserialize",
+      "packages_manifest_dependencies_com_unity_modules_particlesystem",
+      "packages_manifest_dependencies_com_unity_modules_physics",
+      "packages_manifest_dependencies_com_unity_modules_physics2d",
+      "packages_manifest_dependencies_com_unity_modules_screencapture",
+      "packages_manifest_dependencies_com_unity_modules_terrain",
+      "packages_manifest_dependencies_com_unity_modules_terrainphysics",
+      "packages_manifest_dependencies_com_unity_modules_tilemap",
+      "packages_manifest_dependencies_com_unity_modules_ui",
+      "packages_manifest_dependencies_com_unity_modules_uielements",
+      "packages_manifest_dependencies_com_unity_modules_umbra",
+      "packages_manifest_dependencies_com_unity_modules_unityanalytics",
+      "packages_manifest_dependencies_com_unity_modules_unitywebrequest",
+      "packages_manifest_dependencies_com_unity_modules_unitywebrequestassetbundle",
+      "packages_manifest_dependencies_com_unity_modules_unitywebrequestaudio",
+      "packages_manifest_dependencies_com_unity_modules_unitywebrequesttexture",
+      "packages_manifest_dependencies_com_unity_modules_unitywebrequestwww",
+      "packages_manifest_dependencies_com_unity_modules_vehicles",
+      "packages_manifest_dependencies_com_unity_modules_video",
+      "packages_manifest_dependencies_com_unity_modules_vr",
+      "packages_manifest_dependencies_com_unity_modules_wind",
+      "packages_manifest_dependencies_com_unity_modules_xr",
+      "packages_manifest_dependencies_com_unity_render_pipelines_lightweight",
+      "packages_manifest_dependencies_com_unity_test_framework",
+      "packages_manifest_dependencies_com_unity_textmeshpro",
+      "packages_manifest_dependencies_com_unity_timeline",
+      "packages_manifest_dependencies_com_unity_ugui"
+    ],
+    "1": [
+      "packages_manifest",
+      "ref_com_unity_2d_animation",
+      "ref_com_unity_2d_pixel_perfect",
+      "ref_com_unity_2d_psdimporter",
+      "ref_com_unity_2d_sprite",
+      "ref_com_unity_2d_spriteshape",
+      "ref_com_unity_2d_tilemap",
+      "ref_com_unity_collab_proxy",
+      "ref_com_unity_ide_rider",
+      "ref_com_unity_ide_vscode",
+      "ref_com_unity_modules_ai",
+      "ref_com_unity_modules_androidjni",
+      "ref_com_unity_modules_animation",
+      "ref_com_unity_modules_assetbundle",
+      "ref_com_unity_modules_audio",
+      "ref_com_unity_modules_cloth",
+      "ref_com_unity_modules_director",
+      "ref_com_unity_modules_imageconversion",
+      "ref_com_unity_modules_imgui",
+      "ref_com_unity_modules_jsonserialize",
+      "ref_com_unity_modules_particlesystem",
+      "ref_com_unity_modules_physics",
+      "ref_com_unity_modules_physics2d",
+      "ref_com_unity_modules_screencapture",
+      "ref_com_unity_modules_terrain",
+      "ref_com_unity_modules_terrainphysics",
+      "ref_com_unity_modules_tilemap",
+      "ref_com_unity_modules_uielements",
+      "ref_com_unity_modules_umbra",
+      "ref_com_unity_modules_unityanalytics",
+      "ref_com_unity_modules_unitywebrequest",
+      "ref_com_unity_modules_unitywebrequestassetbundle",
+      "ref_com_unity_modules_unitywebrequestaudio",
+      "ref_com_unity_modules_unitywebrequesttexture",
+      "ref_com_unity_modules_unitywebrequestwww",
+      "ref_com_unity_modules_vehicles",
+      "ref_com_unity_modules_video",
+      "ref_com_unity_modules_vr",
+      "ref_com_unity_modules_wind",
+      "ref_com_unity_render_pipelines_lightweight",
+      "ref_com_unity_test_framework",
+      "ref_com_unity_textmeshpro",
+      "ref_com_unity_timeline",
+      "ref_com_unity_ugui"
+    ],
+    "2": [
+      "assets_button_press_button_press",
+      "assets_button_press_button_press_update",
+      "assets_button_press_cs_animator",
+      "assets_button_press_cs_rigidbody2d",
+      "assets_level_loader_cs_animator",
+      "assets_level_loader_cs_ienumerator",
+      "assets_level_loader_level_loader",
+      "assets_level_loader_level_loader_levelloader",
+      "assets_level_loader_level_loader_loadnexlevel",
+      "assets_level_loader_level_loader_update",
+      "assets_scripts_balltest_balltest",
+      "assets_scripts_balltest_balltest_onmousedown",
+      "assets_scripts_balltest_balltest_onmouseup",
+      "assets_scripts_balltest_balltest_update",
+      "assets_scripts_balltest_cs_rigidbody2d",
+      "assets_start_left_cs_animator",
+      "assets_start_left_start_left",
+      "assets_start_left_start_left_start",
+      "assets_start_left_start_left_update",
+      "assets_start_middel_cs_animator",
+      "assets_start_middel_start_middel",
+      "assets_start_middel_start_middel_start",
+      "assets_start_middel_start_middel_update",
+      "assets_start_right_cs_animator",
+      "assets_start_right_start_right",
+      "assets_start_right_start_right_start",
+      "assets_start_right_start_right_update",
+      "monobehaviour"
+    ],
+    "3": [
+      "assets_gamemanager_cs_animator",
+      "assets_gamemanager_cs_camera",
+      "assets_gamemanager_cs_vector2",
+      "assets_gamemanager_gamemanager",
+      "assets_gamemanager_gamemanager_awake",
+      "assets_gamemanager_gamemanager_ondrag",
+      "assets_gamemanager_gamemanager_ondragend",
+      "assets_gamemanager_gamemanager_ondragstart",
+      "assets_gamemanager_gamemanager_start",
+      "assets_gamemanager_gamemanager_update",
+      "assets_scripts_player_drag_drop_cs_animator",
+      "assets_scripts_player_drag_drop_cs_camera",
+      "assets_scripts_player_drag_drop_cs_circlecollider2d",
+      "assets_scripts_player_drag_drop_cs_collider2d",
+      "assets_scripts_player_drag_drop_cs_rigidbody2d",
+      "assets_scripts_player_drag_drop_cs_vector2",
+      "assets_scripts_player_drag_drop_cs_vector3",
+      "assets_scripts_player_drag_drop_player_drag_drop",
+      "assets_scripts_player_drag_drop_player_drag_drop_activaterb",
+      "assets_scripts_player_drag_drop_player_drag_drop_awake",
+      "assets_scripts_player_drag_drop_player_drag_drop_desactivaterb",
+      "assets_scripts_player_drag_drop_player_drag_drop_onlanding",
+      "assets_scripts_player_drag_drop_player_drag_drop_ontriggerenter2d",
+      "assets_scripts_player_drag_drop_player_drag_drop_pose",
+      "assets_scripts_player_drag_drop_player_drag_drop_poss",
+      "assets_scripts_player_drag_drop_player_drag_drop_push",
+      "assets_scripts_player_drag_drop_player_drag_drop_start",
+      "assets_scripts_player_drag_drop_player_drag_drop_update"
+    ],
+    "4": [
+      "assets_button_menu",
+      "assets_button_next",
+      "assets_button_press",
+      "assets_button_restart",
+      "assets_carecterscript",
+      "assets_door_scrip",
+      "assets_gamemanager",
+      "assets_izanscript",
+      "assets_level_loader",
+      "assets_pumkinkscript",
+      "assets_scripts_balltest",
+      "assets_scripts_bbbb",
+      "assets_scripts_player_drag_drop",
+      "assets_scripts_player_script",
+      "assets_start_left",
+      "assets_start_middel",
+      "assets_start_right",
+      "assets_trajectory_script",
+      "system_collections",
+      "system_collections_generic",
+      "unityeditor",
+      "unityengine",
+      "unityengine_scenemanagement"
+    ],
+    "5": [
+      "assets_scripts_charactercontroller2d",
+      "assets_scripts_charactercontroller2d_boolevent",
+      "assets_scripts_charactercontroller2d_charactercontroller2d",
+      "assets_scripts_charactercontroller2d_charactercontroller2d_awake",
+      "assets_scripts_charactercontroller2d_charactercontroller2d_fixedupdate",
+      "assets_scripts_charactercontroller2d_charactercontroller2d_flip",
+      "assets_scripts_charactercontroller2d_charactercontroller2d_move",
+      "assets_scripts_charactercontroller2d_cs_collider2d",
+      "assets_scripts_charactercontroller2d_cs_rigidbody2d",
+      "assets_scripts_charactercontroller2d_cs_transform",
+      "assets_scripts_charactercontroller2d_cs_vector3",
+      "boolevent",
+      "layermask",
+      "unityengine_events",
+      "unityevent"
+    ],
+    "6": [
+      "assets_scripts_player_script_cs_animator",
+      "assets_scripts_player_script_cs_ienumerator",
+      "assets_scripts_player_script_cs_rigidbody2d",
+      "assets_scripts_player_script_cs_vector2",
+      "assets_scripts_player_script_player_script",
+      "assets_scripts_player_script_player_script_delay",
+      "assets_scripts_player_script_player_script_fixedupdete",
+      "assets_scripts_player_script_player_script_onlanding",
+      "assets_scripts_player_script_player_script_onmousedown",
+      "assets_scripts_player_script_player_script_onmouseup",
+      "assets_scripts_player_script_player_script_update",
+      "springjoint2d"
+    ],
+    "7": [
+      "assets_carecterscript_carecterscript",
+      "assets_carecterscript_carecterscript_activaterb",
+      "assets_carecterscript_carecterscript_awake",
+      "assets_carecterscript_carecterscript_desactivaterb",
+      "assets_carecterscript_carecterscript_pose",
+      "assets_carecterscript_carecterscript_push",
+      "assets_carecterscript_cs_circlecollider2d",
+      "assets_carecterscript_cs_rigidbody2d",
+      "assets_carecterscript_cs_vector2",
+      "assets_carecterscript_cs_vector3"
+    ],
+    "8": [
+      "assets_door_scrip_cs_animator",
+      "assets_door_scrip_cs_collider2d",
+      "assets_door_scrip_cs_gameobject",
+      "assets_door_scrip_cs_ienumerator",
+      "assets_door_scrip_door_scrip",
+      "assets_door_scrip_door_scrip_levelloader",
+      "assets_door_scrip_door_scrip_loadnexlevel",
+      "assets_door_scrip_door_scrip_ontriggerenter2d",
+      "assets_door_scrip_door_scrip_start",
+      "assets_door_scrip_door_scrip_update"
+    ],
+    "9": [
+      "assets_trajectory_script_cs_gameobject",
+      "assets_trajectory_script_cs_transform",
+      "assets_trajectory_script_cs_vector2",
+      "assets_trajectory_script_cs_vector3",
+      "assets_trajectory_script_trajectory_script",
+      "assets_trajectory_script_trajectory_script_hide",
+      "assets_trajectory_script_trajectory_script_preparedots",
+      "assets_trajectory_script_trajectory_script_show",
+      "assets_trajectory_script_trajectory_script_start",
+      "assets_trajectory_script_trajectory_script_updatdots"
+    ],
+    "10": [
+      "assets_izanscript_cs_circlecollider2d",
+      "assets_izanscript_cs_rigidbody2d",
+      "assets_izanscript_cs_vector2",
+      "assets_izanscript_cs_vector3",
+      "assets_izanscript_izanscript",
+      "assets_izanscript_izanscript_activaterb",
+      "assets_izanscript_izanscript_desactivaterb",
+      "assets_izanscript_izanscript_pose",
+      "assets_izanscript_izanscript_push"
+    ],
+    "11": [
+      "assets_pumkinkscript_cs_animator",
+      "assets_pumkinkscript_cs_gameobject",
+      "assets_pumkinkscript_cs_ienumerator",
+      "assets_pumkinkscript_pumkinkscript",
+      "assets_pumkinkscript_pumkinkscript_die",
+      "assets_pumkinkscript_pumkinkscript_oncollisionenter2d",
+      "assets_pumkinkscript_pumkinkscript_update",
+      "collision2d"
+    ],
+    "12": [
+      "assets_button_menu_button_menu",
+      "assets_button_menu_button_menu_levelloader",
+      "assets_button_menu_button_menu_loadnexlevel",
+      "assets_button_menu_button_menu_update",
+      "assets_button_menu_cs_animator",
+      "assets_button_menu_cs_ienumerator",
+      "assets_button_menu_cs_rigidbody2d"
+    ],
+    "13": [
+      "assets_button_next_button_next",
+      "assets_button_next_button_next_levelloader",
+      "assets_button_next_button_next_loadnexlevel",
+      "assets_button_next_button_next_update",
+      "assets_button_next_cs_animator",
+      "assets_button_next_cs_ienumerator",
+      "assets_button_next_cs_rigidbody2d"
+    ],
+    "14": [
+      "assets_button_restart_button_restart",
+      "assets_button_restart_button_restart_levelloader",
+      "assets_button_restart_button_restart_loadnexlevel",
+      "assets_button_restart_button_restart_update",
+      "assets_button_restart_cs_animator",
+      "assets_button_restart_cs_ienumerator",
+      "assets_button_restart_cs_rigidbody2d"
+    ],
+    "15": [
+      "assets_scripts_bbbb_bbbb",
+      "assets_scripts_bbbb_bbbb_start",
+      "assets_scripts_bbbb_bbbb_update",
+      "assets_scripts_bbbb_cs_camera",
+      "assets_scripts_bbbb_cs_rigidbody2d",
+      "assets_scripts_bbbb_cs_vector2",
+      "assets_scripts_bbbb_cs_vector3"
+    ]
+  },
+  "cohesion": {
+    "0": 0.043478260869565216,
+    "1": 0.045454545454545456,
+    "2": 0.07671957671957672,
+    "3": 0.09523809523809523,
+    "4": 0.2490118577075099,
+    "5": 0.17142857142857143,
+    "6": 0.18181818181818182,
+    "7": 0.24444444444444444,
+    "8": 0.2,
+    "9": 0.26666666666666666,
+    "10": 0.2222222222222222,
+    "11": 0.2857142857142857,
+    "12": 0.38095238095238093,
+    "13": 0.38095238095238093,
+    "14": 0.38095238095238093,
+    "15": 0.2857142857142857
+  },
+  "gods": [
+    {
+      "id": "assets_scripts_player_drag_drop_player_drag_drop",
+      "label": "PLayer_drag_drop",
+      "degree": 21
+    },
+    {
+      "id": "assets_scripts_charactercontroller2d_charactercontroller2d",
+      "label": "CharacterController2D",
+      "degree": 14
+    },
+    {
+      "id": "assets_gamemanager_gamemanager",
+      "label": "GameManager",
+      "degree": 13
+    },
+    {
+      "id": "assets_trajectory_script_trajectory_script",
+      "label": "trajectory_Script",
+      "degree": 12
+    },
+    {
+      "id": "assets_scripts_player_script_player_script",
+      "label": "player_script",
+      "degree": 11
+    },
+    {
+      "id": "assets_carecterscript_carecterscript",
+      "label": "carecterScript",
+      "degree": 10
+    },
+    {
+      "id": "assets_izanscript_izanscript",
+      "label": "izanScript",
+      "degree": 9
+    },
+    {
+      "id": "assets_door_scrip_door_scrip",
+      "label": "door_Scrip",
+      "degree": 9
+    },
+    {
+      "id": "assets_scripts_bbbb_bbbb",
+      "label": "bbbb",
+      "degree": 8
+    },
+    {
+      "id": "assets_pumkinkscript_pumkinkscript",
+      "label": "pumkinkScript",
+      "degree": 7
+    }
+  ],
+  "surprises": [
+    {
+      "source": "GameManager",
+      "target": "trajectory_Script",
+      "source_files": [
+        "Assets/GameManager.cs",
+        "Assets/trajectory_Script.cs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "PLayer_drag_drop",
+      "target": "trajectory_Script",
+      "source_files": [
+        "Assets/Scripts/PLayer_drag_drop.cs",
+        "Assets/trajectory_Script.cs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "button_Press",
+      "target": "level_Loader",
+      "source_files": [
+        "Assets/button_Press.cs",
+        "Assets/level_Loader.cs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "GameManager",
+      "target": "PLayer_drag_drop",
+      "source_files": [
+        "Assets/GameManager.cs",
+        "Assets/Scripts/PLayer_drag_drop.cs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `PLayer_drag_drop` connect `Community 3` to `Community 9`, `Community 2`, `Community 4`?",
+      "why": "High betweenness centrality (0.082) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `dependencies` connect `Community 0` to `Community 1`?",
+      "why": "High betweenness centrality (0.082) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `CharacterController2D` connect `Community 5` to `Community 2`?",
+      "why": "High betweenness centrality (0.061) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `com.unity.2d.animation`, `com.unity.2d.pixel-perfect`, `com.unity.2d.psdimporter` to the rest of the system?",
+      "why": "92 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.045454545454545456 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07671957671957672 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

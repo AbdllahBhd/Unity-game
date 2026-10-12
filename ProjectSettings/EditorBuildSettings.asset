@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/HollowNight/HN_MainMenu.unity
+    guid: e0c033dfefba2b0d4fda4226d2ab79f1
+  - enabled: 1
+    path: Assets/Scenes/HollowNight/HN_WorldMap.unity
+    guid: 89dafac43b5e53257e439eb2dc1202e3
+  - enabled: 1
+    path: Assets/Scenes/HollowNight/HN_Story.unity
+    guid: c73d6d1bd49ae38570cb8a65d45b4fa2
+  - enabled: 1
+    path: Assets/Scenes/HollowNight/HN_Stage.unity
+    guid: 4bbf466f2fe0ad2a70c7d47cc3cb76e1
+  - enabled: 0
+    path: Assets/Scenes/Menu_start.unity
+    guid: 656aad8ab786f054a8f1baca66b0296c
+  - enabled: 0
+    path: Assets/Scenes/Level_1.unity
+    guid: 89b4dfbcedd3c7f42983a2ab0cb4c775
+  - enabled: 0
+    path: Assets/Scenes/Menu -Win.unity
+    guid: 571cae79f07c65b46b4101d103d7b7fa
+  m_configObjects: {}

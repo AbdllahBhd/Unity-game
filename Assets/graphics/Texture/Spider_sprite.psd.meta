@@ -1,0 +1,380 @@
+fileFormatVersion: 2
+guid: bcc127f841424c245bd30c864f9cb118
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4926985237523766770
+    second: Spider_sprite_0
+  - first:
+      213: -9171450682281632095
+    second: Spider_sprite_1
+  - first:
+      213: -4691030973588834952
+    second: Spider_sprite_2
+  - first:
+      213: 693922222850510498
+    second: Spider_sprite_3
+  - first:
+      213: -5970536716837191271
+    second: Spider_sprite_4
+  - first:
+      213: -9180427672208732598
+    second: Spider_sprite_5
+  - first:
+      213: 6147857497494632665
+    second: Spider_sprite_6
+  - first:
+      213: 5649167850719388165
+    second: Spider_sprite_7
+  - first:
+      213: -7766747311921573111
+    second: Spider_sprite_8
+  - first:
+      213: -4820794522528151443
+    second: Spider_sprite_9
+  - first:
+      213: 4268840493855447483
+    second: Spider_sprite_10
+  - first:
+      213: -6307038155150223846
+    second: Spider_sprite_11
+  - first:
+      213: -6689933707952049707
+    second: Spider_sprite_12
+  - first:
+      213: 1536149729051495788
+    second: Spider_sprite_13
+  - first:
+      213: -8675417603094743086
+    second: Spider_sprite_14
+  - first:
+      213: 8896780375523879976
+    second: Spider_sprite_15
+  - first:
+      213: 3894115455623763656
+    second: Spider_sprite_16
+  - first:
+      213: -8219808783055138414
+    second: Spider_sprite_17
+  - first:
+      213: -1805978691865757075
+    second: Spider_sprite_18
+  - first:
+      213: -7652763372021390463
+    second: Spider_sprite_19
+  - first:
+      213: 8590644333555455023
+    second: Spider_sprite_20
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Spider_sprite_0
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 617
+        width: 235
+        height: 158
+      alignment: 9
+      pivot: {x: 1, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e026dcfd705df9bb0800000000000000
+      internalID: -4926985237523766770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spider_sprite_1
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 604
+        width: 246
+        height: 171
+      alignment: 9
+      pivot: {x: 0.08305272, y: 0.18484087}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1aed697623678b080800000000000000
+      internalID: -9171450682281632095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spider_sprite_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 423
+        width: 239
+        height: 162
+      alignment: 9
+      pivot: {x: 0.9563564, y: 0.4141501}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 875f1e40f2c16eeb0800000000000000
+      internalID: -4691030973588834952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spider_sprite_3
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 423
+        width: 239
+        height: 162
+      alignment: 9
+      pivot: {x: 0.07811466, y: 0.4141501}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ae01cac59e41a900800000000000000
+      internalID: 693922222850510498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spider_sprite_5
+      rect:
+        serializedVersion: 2
+        x: 702
+        y: 327
+        width: 139
+        height: 273
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4e05df0ca1989080800000000000000
+      internalID: -9180427672208732598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spider_sprite_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 258
+        width: 213
+        height: 146
+      alignment: 9
+      pivot: {x: 0.94073564, y: 0.70242333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5d13b96ccb49823a0800000000000000
+      internalID: -6689933707952049707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spider_sprite_13
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 258
+        width: 213
+        height: 146
+      alignment: 9
+      pivot: {x: 0.08374926, y: 0.70242333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6d4de92a00815510800000000000000
+      internalID: 1536149729051495788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spider_sprite_19
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 80
+        width: 177
+        height: 165
+      alignment: 9
+      pivot: {x: 0.91251534, y: 0.87929994}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1836b8c524cebc590800000000000000
+      internalID: -7652763372021390463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spider_sprite_20
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 80
+        width: 177
+        height: 165
+      alignment: 9
+      pivot: {x: 0.0973059, y: 0.8687638}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f249b459189183770800000000000000
+      internalID: 8590644333555455023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

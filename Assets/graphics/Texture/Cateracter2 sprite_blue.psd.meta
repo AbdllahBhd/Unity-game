@@ -1,0 +1,551 @@
+fileFormatVersion: 2
+guid: 3fbfadf70623e884fa9a114f8a962ca7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -9028955403878879848
+    second: Cateracter2 sprite_blue_0
+  - first:
+      213: 1106526531865074773
+    second: Cateracter2 sprite_blue_1
+  - first:
+      213: -591297262862592410
+    second: Cateracter2 sprite_blue_2
+  - first:
+      213: 2380646151453718014
+    second: Cateracter2 sprite_blue_3
+  - first:
+      213: -1679116409852564349
+    second: Cateracter2 sprite_blue_4
+  - first:
+      213: -5223437431195009208
+    second: Cateracter2 sprite_blue_5
+  - first:
+      213: -8345968754824562757
+    second: Cateracter2 sprite_blue_6
+  - first:
+      213: 1651256232267344333
+    second: Cateracter2 sprite_blue_7
+  - first:
+      213: -2993873109578395459
+    second: Cateracter2 sprite_blue_8
+  - first:
+      213: -6855227216864702105
+    second: Cateracter2 sprite_blue_9
+  - first:
+      213: 4007955900780371365
+    second: Cateracter2 sprite_blue_10
+  - first:
+      213: 6462775271886789204
+    second: Cateracter2 sprite_blue_11
+  - first:
+      213: 2282285212112864181
+    second: Cateracter2 sprite_blue_12
+  - first:
+      213: 4462499424923487438
+    second: Cateracter2 sprite_blue_13
+  - first:
+      213: 7652093939946683768
+    second: Cateracter2 sprite_blue_14
+  - first:
+      213: 471157140495926965
+    second: Cateracter2 sprite_blue_15
+  - first:
+      213: 3125667974875460993
+    second: Cateracter2 sprite_blue_16
+  - first:
+      213: -962469552078692143
+    second: Cateracter2 sprite_blue_0
+  - first:
+      213: 7923349590873447615
+    second: Cateracter2 sprite_blue_1
+  - first:
+      213: 1398261416754039975
+    second: Cateracter2 sprite_blue_2
+  - first:
+      213: 4509660482355055611
+    second: Cateracter2 sprite_blue_3
+  - first:
+      213: 5496120204115158366
+    second: Cateracter2 sprite_blue_4
+  - first:
+      213: -6922928106657985402
+    second: Cateracter2 sprite_blue_5
+  - first:
+      213: 7530546052073452594
+    second: Cateracter2 sprite_blue_6
+  - first:
+      213: -262028699588174455
+    second: Cateracter2 sprite_blue_7
+  - first:
+      213: 1269381827806110532
+    second: Cateracter2 sprite_blue_8
+  - first:
+      213: 5505112650582531016
+    second: Cateracter2 sprite_blue_9
+  - first:
+      213: -86801556683159135
+    second: Cateracter2 sprite_blue_10
+  - first:
+      213: 1918056755309376502
+    second: Cateracter2 sprite_blue_12
+  - first:
+      213: 4134600773359451078
+    second: Cateracter2 sprite_blue_13
+  - first:
+      213: -7561788139909058291
+    second: Cateracter2 sprite_blue_14
+  - first:
+      213: 6804140488260392640
+    second: Cateracter2 sprite_blue_15
+  - first:
+      213: 5793821632146359676
+    second: Cateracter2 sprite_blue_16
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_0
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 783
+        width: 82
+        height: 239
+      alignment: 9
+      pivot: {x: 0.8348476, y: 0.113569826}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d06831ba0f94a2f0800000000000000
+      internalID: -962469552078692143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_1
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 783
+        width: 81
+        height: 239
+      alignment: 9
+      pivot: {x: 0.46918404, y: 0.2911188}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fbc9f33297465fd60800000000000000
+      internalID: 7923349590873447615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_2
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 929
+        width: 145
+        height: 157
+      alignment: 9
+      pivot: {x: 0.6549329, y: 0.38870803}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ac42c8a95f976310800000000000000
+      internalID: 1398261416754039975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_3
+      rect:
+        serializedVersion: 2
+        x: 917
+        y: 913
+        width: 146
+        height: 156
+      alignment: 9
+      pivot: {x: 0.31193563, y: 0.4199962}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bfbc364c058859e30800000000000000
+      internalID: 4509660482355055611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_4
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 835
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e55a129b434264c40800000000000000
+      internalID: 5496120204115158366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_5
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 808
+        width: 73
+        height: 79
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68c4515f091dcef90800000000000000
+      internalID: -6922928106657985402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_6
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 621
+        width: 65
+        height: 120
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 234fe8e5cbfd18860800000000000000
+      internalID: 7530546052073452594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_7
+      rect:
+        serializedVersion: 2
+        x: 658
+        y: 722
+        width: 56
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98dd61839461d5cf0800000000000000
+      internalID: -262028699588174455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_8
+      rect:
+        serializedVersion: 2
+        x: 982
+        y: 705
+        width: 56
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44328b20c00cd9110800000000000000
+      internalID: 1269381827806110532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_9
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 586
+        width: 65
+        height: 121
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cb1b72d9c6166c40800000000000000
+      internalID: 5505112650582531016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_10
+      rect:
+        serializedVersion: 2
+        x: 581
+        y: 126
+        width: 565
+        height: 565
+      alignment: 9
+      pivot: {x: 0.5, y: 0.21283421}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a903ffa17e9bcef0800000000000000
+      internalID: -86801556683159135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_12
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 447
+        width: 110
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f3f047e47e4e9a10800000000000000
+      internalID: 1918056755309376502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_13
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 436
+        width: 110
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6cb35205f7d016930800000000000000
+      internalID: 4134600773359451078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_14
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 243
+        width: 136
+        height: 121
+      alignment: 9
+      pivot: {x: 0.6468314, y: 0.7888098}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0175f530c12f0790800000000000000
+      internalID: -7561788139909058291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_15
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 243
+        width: 139
+        height: 116
+      alignment: 9
+      pivot: {x: 0.44612703, y: 0.8012582}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c61d9469b92d6e50800000000000000
+      internalID: 6804140488260392640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cateracter2 sprite_blue_16
+      rect:
+        serializedVersion: 2
+        x: 1282
+        y: 178
+        width: 443
+        height: 506
+      alignment: 9
+      pivot: {x: 0.51126957, y: 0.10042135}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c75ce04d31ac76050800000000000000
+      internalID: 5793821632146359676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
