@@ -1,0 +1,566 @@
+{
+  "Assets/GameManager.cs": {
+    "mtime": 1790701551.9610412,
+    "seen": 1790715805.2403855,
+    "ast_hash": "aeceb29e7858a1c3fcba206576ae4c4b",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/CharacterController2D.cs": {
+    "mtime": 1791826467.9214537,
+    "seen": 1791831629.518704,
+    "ast_hash": "2fa89ec898dba4b188abcbb98fe5c5aa",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/PLayer_drag_drop.cs": {
+    "mtime": 1791826467.9214537,
+    "seen": 1791831629.5187216,
+    "ast_hash": "0284dbe347f79a1ee6b1d69571ef0e1f",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/balltest.cs": {
+    "mtime": 1590659418.218943,
+    "seen": 1790699363.9387205,
+    "ast_hash": "46a9c4fda94d9fec5abd4844febcf517",
+    "semantic_hash": "46a9c4fda94d9fec5abd4844febcf517"
+  },
+  "Assets/Scripts/bbbb.cs": {
+    "mtime": 1590762904.53509,
+    "seen": 1790699363.9387212,
+    "ast_hash": "33778b802cfefa47677e1ca607f4e53b",
+    "semantic_hash": "33778b802cfefa47677e1ca607f4e53b"
+  },
+  "Assets/Scripts/player_script.cs": {
+    "mtime": 1790701552.1410415,
+    "seen": 1790715805.240416,
+    "ast_hash": "e61886c8fdefb9c7f16dce202304ccfe",
+    "semantic_hash": ""
+  },
+  "Assets/button_Press.cs": {
+    "mtime": 1790701552.1560414,
+    "seen": 1790715805.2404172,
+    "ast_hash": "1c4a2903ff4a81be53d1ba8d0f2f9579",
+    "semantic_hash": ""
+  },
+  "Assets/button_menu_.cs": {
+    "mtime": 1790701552.0290413,
+    "seen": 1790715805.2404182,
+    "ast_hash": "71d8e6e5b6cb825990225327bdd35f88",
+    "semantic_hash": ""
+  },
+  "Assets/button_next_.cs": {
+    "mtime": 1790701552.0480413,
+    "seen": 1790715805.2404194,
+    "ast_hash": "5f83ed79be1514262b8c8b719e50cb46",
+    "semantic_hash": ""
+  },
+  "Assets/button_restart_.cs": {
+    "mtime": 1790701552.0670414,
+    "seen": 1790715805.2404203,
+    "ast_hash": "e11998fa75fcf3b1fd3196735c8b1bc0",
+    "semantic_hash": ""
+  },
+  "Assets/carecterScript.cs": {
+    "mtime": 1791826467.9214537,
+    "seen": 1791831629.5187285,
+    "ast_hash": "0ccf1b3d8263c3362fe2ac230e33778b",
+    "semantic_hash": ""
+  },
+  "Assets/door_Scrip.cs": {
+    "mtime": 1790701552.0860415,
+    "seen": 1790715805.2404225,
+    "ast_hash": "ac0f724d1bba0475db27d9120cf61fe5",
+    "semantic_hash": ""
+  },
+  "Assets/izanScript.cs": {
+    "mtime": 1590829030.138053,
+    "seen": 1790699363.938728,
+    "ast_hash": "4ccfda1b5e6628a8e743d51ad7a17efb",
+    "semantic_hash": "4ccfda1b5e6628a8e743d51ad7a17efb"
+  },
+  "Assets/level_Loader.cs": {
+    "mtime": 1591193748.745523,
+    "seen": 1790699363.938729,
+    "ast_hash": "1095d49f182c977472e585b2b157f66f",
+    "semantic_hash": "1095d49f182c977472e585b2b157f66f"
+  },
+  "Assets/pumkinkScript.cs": {
+    "mtime": 1790701552.1070416,
+    "seen": 1790715805.240426,
+    "ast_hash": "3548f13674590252b9bfbf74fe41a6eb",
+    "semantic_hash": ""
+  },
+  "Assets/start_left.cs": {
+    "mtime": 1591190830.352284,
+    "seen": 1790699363.9387305,
+    "ast_hash": "5962f6987b4b773a47f3c52741c3c675",
+    "semantic_hash": "5962f6987b4b773a47f3c52741c3c675"
+  },
+  "Assets/start_middel.cs": {
+    "mtime": 1591190747.46567,
+    "seen": 1790699363.9387312,
+    "ast_hash": "b3072bcca9ad089c4bc1869d9bb4880b",
+    "semantic_hash": "b3072bcca9ad089c4bc1869d9bb4880b"
+  },
+  "Assets/start_right.cs": {
+    "mtime": 1591190743.205961,
+    "seen": 1790699363.9387324,
+    "ast_hash": "238912a7af1ff7da8bcfed450fa7a64e",
+    "semantic_hash": "238912a7af1ff7da8bcfed450fa7a64e"
+  },
+  "Assets/trajectory_Script.cs": {
+    "mtime": 1590831947.282728,
+    "seen": 1790699363.938733,
+    "ast_hash": "efc175f05f839457e832b8ac9d8389c4",
+    "semantic_hash": "efc175f05f839457e832b8ac9d8389c4"
+  },
+  "Packages/manifest.json": {
+    "mtime": 1791826453.6174111,
+    "seen": 1791831629.518736,
+    "ast_hash": "c99f7b2e7b2dca3c5c233ea6b4945187",
+    "semantic_hash": ""
+  },
+  ".claude/settings.json": {
+    "mtime": 1791827052.417432,
+    "seen": 1791831629.5186982,
+    "ast_hash": "70f4b91e66a662c5d99490b3ff35142a",
+    "semantic_hash": ""
+  },
+  "Assets/LegacyButton.cs": {
+    "mtime": 1790701552.0110414,
+    "seen": 1790715805.2403874,
+    "ast_hash": "4aadbc326c41d15686738d5b384205f2",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Art.cs": {
+    "mtime": 1790700539.8557606,
+    "seen": 1790715805.2403913,
+    "ast_hash": "fa021621a46f2a24901c64a9fcdac8ef",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Flow.cs": {
+    "mtime": 1790700539.9127607,
+    "seen": 1790715805.2403922,
+    "ast_hash": "208e24e295a01a7975356ff714c436bb",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/GameBoot.cs": {
+    "mtime": 1790700807.4861045,
+    "seen": 1790715805.2403932,
+    "ast_hash": "7a0b217cc54119e09d5d2d5ae7875a74",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Heroes.cs": {
+    "mtime": 1791831949.9886277,
+    "seen": 1791831984.868437,
+    "ast_hash": "93e6cb7801e76a1f84ac53ecfc1cb549",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Juice.cs": {
+    "mtime": 1790700643.7948942,
+    "seen": 1790715805.240395,
+    "ast_hash": "912cf790b704d130873dfc4526be539f",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Progress.cs": {
+    "mtime": 1791831949.9886277,
+    "seen": 1791831984.868439,
+    "ast_hash": "542c2f7489fd8d4adfe01b51978d5557",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Core/Sfx.cs": {
+    "mtime": 1790700643.7728941,
+    "seen": 1790715805.2403967,
+    "ast_hash": "940fc3fa40e5a7f500c94b6f6690c531",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Elements/Elements.cs": {
+    "mtime": 1791831949.9886277,
+    "seen": 1791831984.8684409,
+    "ast_hash": "c01f836acda69f48e04ebcce59a0b1a4",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Elements/WitchBoss.cs": {
+    "mtime": 1791826467.9214537,
+    "seen": 1791831629.5187113,
+    "ast_hash": "9c1041e8bf9a45507ffb97ce0d9bd6fb",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/CameraRig.cs": {
+    "mtime": 1790701087.3684657,
+    "seen": 1790715805.2403996,
+    "ast_hash": "12d6972cea38f1580c0c3e89c7bd4e37",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/Hero.cs": {
+    "mtime": 1791831949.9886277,
+    "seen": 1791831984.8684433,
+    "ast_hash": "e50001189da538f7a2f8f9fbdb0cf918",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/LevelBuilder.cs": {
+    "mtime": 1791831411.838654,
+    "seen": 1791831629.5187137,
+    "ast_hash": "a1638164dd2f1d8fcb5ed72a991b5160",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/LevelData.cs": {
+    "mtime": 1791831411.838654,
+    "seen": 1791831629.5187144,
+    "ast_hash": "945202ef8a44d7fe863bb107617ae565",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/LevelLibrary.cs": {
+    "mtime": 1791831544.6948917,
+    "seen": 1791831629.5187151,
+    "ast_hash": "b9b00f372e18003034fcc66cbb5d6543",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/StageController.cs": {
+    "mtime": 1791831949.9886277,
+    "seen": 1791831984.8684464,
+    "ast_hash": "177477e68e10a0e6dcaf89f54685f737",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Stage/StageHud.cs": {
+    "mtime": 1791831411.8396542,
+    "seen": 1791831629.5187163,
+    "ast_hash": "8f5f7718e740345ac5852b762fcf7bc3",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Story/Story.cs": {
+    "mtime": 1791831949.9886277,
+    "seen": 1791831984.868448,
+    "ast_hash": "b85106afce1c65e6ef683d48ba41194c",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/Story/StoryScreen.cs": {
+    "mtime": 1791831949.9886277,
+    "seen": 1791831984.8684487,
+    "ast_hash": "120bc5ae5d9aad29ca5e499656599a79",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/UI/MainMenuScreen.cs": {
+    "mtime": 1791831486.602788,
+    "seen": 1791831629.5187192,
+    "ast_hash": "e107375ec4ff2c279e56808ccc9eba97",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/UI/UIKit.cs": {
+    "mtime": 1790700643.810894,
+    "seen": 1790715805.240409,
+    "ast_hash": "5df50c5860ca248af0512414f90c5bc5",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/HollowNight/UI/WorldMapScreen.cs": {
+    "mtime": 1791831411.8396542,
+    "seen": 1791831629.518721,
+    "ast_hash": "88fce00d98ac52d46c2f593fd35585f2",
+    "semantic_hash": ""
+  },
+  "Tools/check_levels.py": {
+    "mtime": 1791831949.9886277,
+    "seen": 1791831984.868467,
+    "ast_hash": "750b97290faa961ad749b7ef0bc64d67",
+    "semantic_hash": ""
+  },
+  "Tools/generate_art.py": {
+    "mtime": 1791831486.602788,
+    "seen": 1791831629.5187383,
+    "ast_hash": "857f0a0a579d21d88716ef8f243721d9",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1791971685.715541,
+    "seen": 1791971709.0124242,
+    "ast_hash": "5987664378d9fa1efc0367a3e37ca5e0",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/HN/Fonts/Creepster-OFL.txt": {
+    "mtime": 1790700271.0304415,
+    "seen": 1790715805.2404377,
+    "ast_hash": "004bea72d006c1398d5ad82f78c89b08",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/HN/Fonts/LuckiestGuy-LICENSE.txt": {
+    "mtime": 1790700271.438442,
+    "seen": 1790715805.240439,
+    "ast_hash": "3b83ef96387f14655fc854ddc3c6bd57",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1791831666.54611,
+    "seen": 1791831984.8684855,
+    "ast_hash": "7f678a18f48b8333b178a0185b061b86",
+    "semantic_hash": ""
+  },
+  "ProjectSettings/ProjectVersion.txt": {
+    "mtime": 1791826618.0268438,
+    "seen": 1791831629.5187557,
+    "ast_hash": "9e4df1a845f2d3316528b9d7acef9484",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1790699860.497007,
+    "seen": 1790715805.2404425,
+    "ast_hash": "9c3c226844bde6557b9029346817be55",
+    "semantic_hash": ""
+  },
+  ".claude/hooks/done-gate.sh": {
+    "mtime": 1791827052.400432,
+    "seen": 1791831629.5186949,
+    "ast_hash": "2bd6400233a81980c553a34c3ed9abc7",
+    "semantic_hash": ""
+  },
+  ".claude/hooks/validate-code.sh": {
+    "mtime": 1791827052.400432,
+    "seen": 1791831629.5186968,
+    "ast_hash": "417e801882cbacd55cbfad039e34e824",
+    "semantic_hash": ""
+  },
+  ".mcp.json": {
+    "mtime": 1791827052.404432,
+    "seen": 1791831629.5186992,
+    "ast_hash": "f7b1947341f42918806e01438720b4b7",
+    "semantic_hash": ""
+  },
+  "Assets/Editor/HNSmokeTest.cs": {
+    "mtime": 1791831411.8396542,
+    "seen": 1791831629.5187001,
+    "ast_hash": "66df6bae776ded436f7f74e9abbba46d",
+    "semantic_hash": ""
+  },
+  "Packages/packages-lock.json": {
+    "mtime": 1791826458.1644247,
+    "seen": 1791831629.5187366,
+    "ast_hash": "af9fe3865fa564d4f0a033e1346b587a",
+    "semantic_hash": ""
+  },
+  "game1.slnx": {
+    "mtime": 1791827976.4123228,
+    "seen": 1791831629.518739,
+    "ast_hash": "3721e7138e250f7349f31f9d55437c2c",
+    "semantic_hash": ""
+  },
+  "scripts/sync-codex.sh": {
+    "mtime": 1791827052.403432,
+    "seen": 1791831629.5187397,
+    "ast_hash": "60b4cbadcae8e1cae88dc1e41f68252b",
+    "semantic_hash": ""
+  },
+  ".agents/skills/api-conventions/SKILL.md": {
+    "mtime": 1791827052.402432,
+    "seen": 1791831629.5187404,
+    "ast_hash": "07b976c80f3f626a6d967fadf52429eb",
+    "semantic_hash": ""
+  },
+  ".agents/skills/deploy/SKILL.md": {
+    "mtime": 1791827052.402432,
+    "seen": 1791831629.5187411,
+    "ast_hash": "387e0d37ef4e3eb2cbce4d2ec1a46443",
+    "semantic_hash": ""
+  },
+  ".agents/skills/install/SKILL.md": {
+    "mtime": 1791827052.402432,
+    "seen": 1791831629.5187418,
+    "ast_hash": "c577a91a344b4ac4809c8d50cf738bf6",
+    "semantic_hash": ""
+  },
+  ".agents/skills/retro/SKILL.md": {
+    "mtime": 1791827052.402432,
+    "seen": 1791831629.5187426,
+    "ast_hash": "8bbc6f7544e0ef2c51fb5ba5a57b9633",
+    "semantic_hash": ""
+  },
+  ".agents/skills/testing-patterns/SKILL.md": {
+    "mtime": 1791827052.402432,
+    "seen": 1791831629.5187433,
+    "ast_hash": "905634ca681918e575912e1ea0793185",
+    "semantic_hash": ""
+  },
+  ".claude/agents/code-reviewer.md": {
+    "mtime": 1791827052.399432,
+    "seen": 1791831629.518744,
+    "ast_hash": "a43b6851afe3eff4511255654276f37c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-auditor.md": {
+    "mtime": 1791827052.399432,
+    "seen": 1791831629.5187445,
+    "ast_hash": "fd9873e03f889644912cffb8a88acf96",
+    "semantic_hash": ""
+  },
+  ".claude/commands/deploy.md": {
+    "mtime": 1791827052.399432,
+    "seen": 1791831629.5187454,
+    "ast_hash": "a80147f49910710afb5c479874899ba9",
+    "semantic_hash": ""
+  },
+  ".claude/commands/install.md": {
+    "mtime": 1791827052.399432,
+    "seen": 1791831629.5187461,
+    "ast_hash": "28833e149da9df0169810aacc84b13ca",
+    "semantic_hash": ""
+  },
+  ".claude/commands/retro.md": {
+    "mtime": 1791827052.399432,
+    "seen": 1791831629.5187466,
+    "ast_hash": "7669be5d9fe58e9742e0c72dd92a91ef",
+    "semantic_hash": ""
+  },
+  ".claude/rules/code-style.md": {
+    "mtime": 1791827052.400432,
+    "seen": 1791831629.5187473,
+    "ast_hash": "870dd7d947fbf282aed07482e5c2bf18",
+    "semantic_hash": ""
+  },
+  ".claude/rules/pr.md": {
+    "mtime": 1791827052.400432,
+    "seen": 1791831629.5187478,
+    "ast_hash": "f1aaa92681bd3add2ebe8d4f4a8a99c6",
+    "semantic_hash": ""
+  },
+  ".claude/rules/workflow.md": {
+    "mtime": 1791827052.400432,
+    "seen": 1791831629.5187488,
+    "ast_hash": "35061341a03555bcd37c4df0b478818a",
+    "semantic_hash": ""
+  },
+  ".claude/skills/api-conventions/SKILL.md": {
+    "mtime": 1791827052.400432,
+    "seen": 1791831629.5187495,
+    "ast_hash": "07b976c80f3f626a6d967fadf52429eb",
+    "semantic_hash": ""
+  },
+  ".claude/skills/testing-patterns/SKILL.md": {
+    "mtime": 1791827052.400432,
+    "seen": 1791831629.5187502,
+    "ast_hash": "905634ca681918e575912e1ea0793185",
+    "semantic_hash": ""
+  },
+  "CATALOG.md": {
+    "mtime": 1791827052.404432,
+    "seen": 1791831629.5187538,
+    "ast_hash": "be25023a8d5614dcb4160524c47afe80",
+    "semantic_hash": ""
+  },
+  "SPEC.md": {
+    "mtime": 1791830320.9659314,
+    "seen": 1791831629.5187569,
+    "ast_hash": "2c1c26fc2d89dbe5290d45705610c64f",
+    "semantic_hash": ""
+  },
+  "TEMPLATE_README.md": {
+    "mtime": 1791827052.405432,
+    "seen": 1791831629.5187576,
+    "ast_hash": "564b72c21ba3b792d22dfb3abfdfe6a5",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/app.js": {
+    "mtime": 1791971685.6455407,
+    "seen": 1791971709.0123994,
+    "ast_hash": "c76cf332af46d94dad253bcd4e64631f",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/art.js": {
+    "mtime": 1791949412.509508,
+    "seen": 1791968032.348297,
+    "ast_hash": "de78e02806a25ef213fe7a2680fc96e7",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/art.test.js": {
+    "mtime": 1791949412.5205078,
+    "seen": 1791968032.3482983,
+    "ast_hash": "1d40e733d9acebace7866890d01ce11f",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/browser-check.js": {
+    "mtime": 1791967982.197681,
+    "seen": 1791968032.3482993,
+    "ast_hash": "b2fd5575ae56bea7e5cf9532b31f81a8",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/eslint.config.mjs": {
+    "mtime": 1791949412.613508,
+    "seen": 1791968032.3483002,
+    "ast_hash": "237faa869b8582689d3b032be77f4510",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/game.js": {
+    "mtime": 1791968137.8718615,
+    "seen": 1791971709.012404,
+    "ast_hash": "8786e1f2446dad31e89760f6d9bc8baf",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/game.test.js": {
+    "mtime": 1791968137.9958615,
+    "seen": 1791971709.0124047,
+    "ast_hash": "16a48914851a04cd6bd83013a38df7e6",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/levels.js": {
+    "mtime": 1791949412.602508,
+    "seen": 1791968032.3483028,
+    "ast_hash": "b52643128db9a14b8b36163651e03561",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/stories.js": {
+    "mtime": 1791949412.606508,
+    "seen": 1791968032.3483036,
+    "ast_hash": "2c707843b57389b12e6d13373dd8baaa",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/verify-routes.js": {
+    "mtime": 1791949412.611508,
+    "seen": 1791968032.3483043,
+    "ast_hash": "61aa4206612cdf68eab47d7b939364f6",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-10-14T03-38-03-168Z.yml": {
+    "mtime": 1791949083.167093,
+    "seen": 1791968032.3483245,
+    "ast_hash": "441212338e5fc34af470cfd246c7d37f",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-10-14T03-41-11-372Z.yml": {
+    "mtime": 1791949271.3723354,
+    "seen": 1791968032.3483257,
+    "ast_hash": "49ec3fdeee59cb09d2ff6e9d8d7f9b7f",
+    "semantic_hash": ""
+  },
+  "Tools/design/enhancement-proposal.md": {
+    "mtime": 1791948459.5258186,
+    "seen": 1791968032.3483353,
+    "ast_hash": "f9fb7e64017ed71cb1e2eea15599ca22",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/README.md": {
+    "mtime": 1791971685.6805408,
+    "seen": 1791971709.0124333,
+    "ast_hash": "12d12fad053c9808ff95d8cf2b1606db",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/index.html": {
+    "mtime": 1791971707.150564,
+    "seen": 1791971709.0124342,
+    "ast_hash": "a0644760162c13c011b6671b60810589",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/routes.md": {
+    "mtime": 1791949063.2920537,
+    "seen": 1791968032.3483381,
+    "ast_hash": "0ef4bb1e16797e8589d8a6e3696e9491",
+    "semantic_hash": ""
+  },
+  "task_plan.md": {
+    "mtime": 1791968259.9700038,
+    "seen": 1791971709.0124357,
+    "ast_hash": "59ec431925ea44d2ce2e6e17e786bac9",
+    "semantic_hash": ""
+  },
+  "Tools/design/original-scenes.md": {
+    "mtime": 1791971685.752541,
+    "seen": 1791971709.0124323,
+    "ast_hash": "c056326c5d71ae77d7684b39413c52e4",
+    "semantic_hash": ""
+  }
+}

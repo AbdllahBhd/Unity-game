@@ -1,17 +1,17 @@
-# Graph Report - game1  (2026-10-12)
+# Graph Report - game1  (2026-10-19)
 
 ## Corpus Check
-- 73 files · ~50,301 words
+- 114 files · ~197,153 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 7 file(s) not represented in the graph (top: (none) 2, .ttf 2, .toml 1)
+- Unclassified: 13 file(s) not represented in the graph (top: .ttf 5, (none) 2, .css 2)
 
 ## Summary
-- 1586 nodes · 2993 edges · 100 communities (92 shown, 8 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 134 edges (avg confidence: 0.89)
+- 2104 nodes · 4138 edges · 125 communities (107 shown, 18 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 232 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e14fd5e7`
+- Built from commit: `97b0ddcd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,15 +19,15 @@
 - dependencies
 - manifest.json
 - level_Loader
-- PLayer_drag_drop
+- GameManager
 - unityengine
 - CharacterController2D
-- player_script
+- original/art.js
 - carecterScript
 - 8. Legacy prototype
 - HeroType
 - izanScript
-- pumkinkScript
+- sfx.js
 - generate_art.py
 - LegacyButton
 - .Label
@@ -36,40 +36,40 @@
 - LevelData
 - Sfx
 - Hero
-- StoryScreen
-- check_levels.py
-- MonoBehaviour
+- Story
+- mqidec_cloak.py
+- .Start
 - StageController
-- .Play
+- 5. Core classes
 - StageHud
 - Hunter
-- .IsFloor
+- app-green-harvest.js
 - packages-lock.json
-- .Start
+- find-routes.js
 - FlowRunner
 - HNSmokeTest
-- com.unity.modules.uielements
-- GameBoot
-- dependencies
+- com.unity.modules.imgui
+- Timucuha n Yennayer — script
+- com.unity.modules.jsonserialize
 - com.unity.modules.unitywebrequest
-- ButtonJuice
-- .Die
+- Game
+- WitchBoss
 - com.unity.2d.common
 - com.unity.test-framework
 - com.unity.modules.physics
 - balltest
-- com.unity.modules.jsonserialize
-- 3. Folder map
+- prototype/art.js
+- prototype/app.js
 - com.unity.modules.physics2d
-- com.unity.modules.audio
+- com.unity.modules.animation
 - README.md
-- com.unity.modules.ui
+- com.unity.modules.audio
 - com.unity.collab-proxy
 - AI Coding Template — for Claude Code & Codex
-- .Get
+- Hollow Night: three directions for an adult puzzle game
 - com.unity.modules.imageconversion
 - 🔧 Tools — reach beyond the terminal
-- com.unity.modules.imgui
+- com.unity.ext.nunit
 - com.unity.mathematics
 - com.unity.ai.navigation
 - 8. What each piece does (and when the AI reads it)
@@ -79,7 +79,6 @@
 - Testing Patterns
 - API Conventions
 - door_Scrip
-- .Pop
 - ⭐ Skills — knowledge loaded on demand
 - ➕ More verified additions worth knowing
 - 💰 Cost — understand and reduce the burn
@@ -95,8 +94,8 @@
 - /deploy — Guarded Deployment
 - /retro — Learning Flywheel
 - Code Style Rules
-- com.unity.modules.accessibility
-- .Go
+- dependencies
+- tales-art.js
 - /install — Install a tool from the catalog
 - code-reviewer.md
 - security-auditor.md
@@ -105,45 +104,62 @@
 - sync-codex.sh
 - game1.slnx
 - validate-code.sh
-- 5. Core classes
-- CameraRig
-- Bob
-- .Start
-- Hollow Night — AI project guide
-- Project Memory (CLAUDE.md)
-- HeroState
-- 6. Gameplay rules
+- MonoBehaviour
+- StoryScreen
+- .BuildNode
+- .Get
+- Hollow Night browser design study
+- original/eslint.config.mjs
+- game.test.js
+- .Go
+- original/app.js
+- PLayer_drag_drop
+- player_script
+- Timucuha n Yennayer — the tales of Mqidec
+- ButtonJuice
 - com.unity.modules.tetgen
-- com.unity.modules.umbra
+- Project Memory (CLAUDE.md)
+- trajectory_Script
+- SPEC: Black rabbit + hunting pumpkins redesign
+- Hollow Night — AI project guide
+- pumkinkScript
+- HeroState
+- 3. Folder map
+- prototype/verify-routes.js
+- .Shockwave
+- simulateRoute
+- 6. Gameplay rules
+- The user's original handmade scene references
+- characters.js
 
 ## God Nodes (most connected - your core abstractions)
 1. `Hero` - 72 edges
 2. `LevelData` - 49 edges
 3. `StageController` - 41 edges
-4. `LevelBuilder` - 37 edges
-5. `main()` - 33 edges
-6. `shape()` - 28 edges
-7. `Sfx` - 27 edges
-8. `save()` - 27 edges
-9. `canvas()` - 27 edges
-10. `5. Core classes` - 26 edges
+4. `Game` - 40 edges
+5. `LevelBuilder` - 37 edges
+6. `main()` - 33 edges
+7. `chain()` - 32 edges
+8. `env()` - 31 edges
+9. `shape()` - 28 edges
+10. `Sfx` - 27 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `2. Key design decision: everything is built from code` --references--> `GameBoot`  [INFERRED]
+  AGENTS.md → Assets/Scripts/HollowNight/Core/GameBoot.cs
+- `Project Overview` --references--> `GameBoot`  [INFERRED]
+  CLAUDE.md → Assets/Scripts/HollowNight/Core/GameBoot.cs
+- `4. Stages` --references--> `WitchBoss`  [INFERRED]
+  SPEC.md → Assets/Scripts/HollowNight/Elements/WitchBoss.cs
+- `Round 2: polish and tricks (approved 2026-10-18)` --references--> `seesaw()`  [INFERRED]
+  task_plan.md → Tools/design/original/sfx.js
 - `8. Legacy prototype` --references--> `GameManager`  [INFERRED]
   AGENTS.md → Assets/GameManager.cs
-- `8. Legacy prototype` --references--> `LegacyButton`  [INFERRED]
-  AGENTS.md → Assets/LegacyButton.cs
-- `8. Legacy prototype` --references--> `CharacterController2D`  [INFERRED]
-  AGENTS.md → Assets/Scripts/CharacterController2D.cs
-- `5. Core classes` --references--> `Layer`  [INFERRED]
-  AGENTS.md → Assets/Scripts/HollowNight/Core/Art.cs
-- `3. Folder map` --references--> `Art`  [INFERRED]
-  AGENTS.md → Assets/Scripts/HollowNight/Core/Art.cs
 
 ## Import Cycles
 - None detected.
 
-## Communities (100 total, 8 thin omitted)
+## Communities (125 total, 18 thin omitted)
 
 ### Community 0 - "dependencies"
 Cohesion: 0.04
@@ -157,21 +173,21 @@ Nodes (51): com.unity.2d.sprite, com.unity.2d.tilemap, com.unity.modules.ai, com
 Cohesion: 0.20
 Nodes (6): button_Press, Animator, Rigidbody2D, Animator, IEnumerator, level_Loader
 
-### Community 3 - "PLayer_drag_drop"
-Cohesion: 0.07
-Nodes (17): Animator, Camera, Vector2, GameManager, Animator, CircleCollider2D, Collider2D, Rigidbody2D (+9 more)
+### Community 3 - "GameManager"
+Cohesion: 0.17
+Nodes (5): Animator, Camera, Vector2, GameManager, Vector2
 
 ### Community 4 - "unityengine"
-Cohesion: 0.07
-Nodes (20): Animator, start_left, Animator, start_middel, Animator, start_right, HollowNight, HollowNight.EditorTools (+12 more)
+Cohesion: 0.06
+Nodes (25): ScreenKind, MainMenu, Stage, Story, WorldMap, Animator, start_left, Animator (+17 more)
 
 ### Community 5 - "CharacterController2D"
 Cohesion: 0.21
 Nodes (9): BoolEvent, CharacterController2D, Collider2D, Rigidbody2D, Transform, Vector3, BoolEvent, LayerMask (+1 more)
 
-### Community 6 - "player_script"
-Cohesion: 0.18
-Nodes (6): Animator, IEnumerator, Rigidbody2D, Vector2, player_script, SpringJoint2D
+### Community 6 - "original/art.js"
+Cohesion: 0.06
+Nodes (71): Mqidec character art (2026-10-18), backdrop(), bandLozenges(), bandTriangles(), bandZigzag(), blinkAt(), blit(), braid() (+63 more)
 
 ### Community 7 - "carecterScript"
 Cohesion: 0.22
@@ -189,13 +205,13 @@ Nodes (10): Color, HeroDef, Heroes, Count, HeroType, Hoot, Izan, Pip (+2 more)
 Cohesion: 0.22
 Nodes (6): CircleCollider2D, Rigidbody2D, Vector2, Vector3, izanScript, Pose
 
-### Community 11 - "pumkinkScript"
-Cohesion: 0.29
-Nodes (5): Animator, Collision2D, GameObject, IEnumerator, pumkinkScript
+### Community 11 - "sfx.js"
+Cohesion: 0.16
+Nodes (43): ambience(), boing(), bossdown(), bosshit(), caw(), chain(), clink(), crackle() (+35 more)
 
 ### Community 12 - "generate_art.py"
-Cohesion: 0.12
-Nodes (79): hashlib, pil, shutil, background(), hills(), bat(), button(), canvas() (+71 more)
+Cohesion: 0.13
+Nodes (77): hashlib, background(), hills(), bat(), button(), canvas(), cheeks(), cloud() (+69 more)
 
 ### Community 13 - "LegacyButton"
 Cohesion: 0.24
@@ -210,56 +226,60 @@ Cohesion: 0.29
 Nodes (5): bbbb, Camera, Rigidbody2D, Vector2, Vector3
 
 ### Community 16 - "LevelBuilder"
-Cohesion: 0.06
-Nodes (44): Color, Dictionary, Sprite, SpriteRenderer, Transform, Vector2, Vector3, Art (+36 more)
+Cohesion: 0.12
+Nodes (16): SpriteRenderer, Transform, Vector2, Vector3, Pulse, Solid, CircleCollider2D, GameObject (+8 more)
 
 ### Community 17 - "LevelData"
 Cohesion: 0.07
-Nodes (22): 7. How to add or change a stage, List, Vector2, Kind, Bat, Boss, Cauldron, Crate (+14 more)
+Nodes (23): 7. How to add or change a stage, List, Vector2, Elem, Kind, Bat, Boss, Cauldron (+15 more)
 
 ### Community 18 - "Sfx"
 Cohesion: 0.07
 Nodes (27): Dictionary, Sfx, Instance, Sound, BossHit, Bounce, Break, Candy (+19 more)
 
 ### Community 19 - "Hero"
-Cohesion: 0.09
-Nodes (21): IEnumerator, WebPatch, CircleCollider2D, Collider2D, IEnumerator, Rigidbody2D, SpriteRenderer, Transform (+13 more)
+Cohesion: 0.08
+Nodes (23): Collision2D, IEnumerator, Portal, WebPatch, CircleCollider2D, Collider2D, IEnumerator, Rigidbody2D (+15 more)
 
-### Community 20 - "StoryScreen"
-Cohesion: 0.15
-Nodes (12): Dictionary, Dialogue, Line, Story, AllIds, Coroutine, IEnumerator, Image (+4 more)
+### Community 20 - "Story"
+Cohesion: 0.30
+Nodes (6): Dictionary, Dialogue, Line, Story, AllIds, IEnumerable
 
-### Community 21 - "check_levels.py"
-Cohesion: 0.12
-Nodes (24): concurrent_futures, math, os, Random, re, sys, check(), circle_box() (+16 more)
+### Community 21 - "mqidec_cloak.py"
+Cohesion: 0.06
+Nodes (69): bmesh, bpy, concurrent_futures, json, math, mathutils, os, pil (+61 more)
 
-### Community 22 - "MonoBehaviour"
-Cohesion: 0.10
-Nodes (17): Spin, SpriteRenderer, Transform, Vector2, Vector3, Bat, Cauldron, Door (+9 more)
+### Community 22 - ".Start"
+Cohesion: 0.17
+Nodes (8): Image, RectTransform, Sprite, Vector2, Drift, Hopper, MainMenuScreen, UIFrames
 
 ### Community 23 - "StageController"
-Cohesion: 0.13
-Nodes (11): Camera, CircleCollider2D, GameObject, Vector2, StageController, Ended, Hero, I (+3 more)
+Cohesion: 0.06
+Nodes (19): Camera, Color, SpriteRenderer, Transform, Vector2, CameraRig, Trajectory, Camera (+11 more)
 
-### Community 24 - ".Play"
-Cohesion: 0.16
-Nodes (7): Color, Vector2, Fx, Mote, Collision2D, Crate, IEnumerator
+### Community 24 - "5. Core classes"
+Cohesion: 0.17
+Nodes (11): 5. Core classes, Layer, Color, Sprite, SpriteRenderer, Vector2, Vector3, Bob (+3 more)
 
 ### Community 25 - "StageHud"
-Cohesion: 0.23
-Nodes (8): CanvasGroup, Coroutine, IEnumerator, Image, RectTransform, Text, Transform, StageHud
+Cohesion: 0.11
+Nodes (14): Action, CanvasGroup, IEnumerator, Transform, Ease, Tween, CanvasGroup, Coroutine (+6 more)
 
 ### Community 26 - "Hunter"
-Cohesion: 0.18
-Nodes (6): Collider2D, Rigidbody2D, Hunter, Sated, Mover, Velocity
+Cohesion: 0.09
+Nodes (14): Collider2D, Rigidbody2D, Transform, Vector2, Bomb, Cauldron, Hunter, Sated (+6 more)
+
+### Community 27 - "app-green-harvest.js"
+Cohesion: 0.16
+Nodes (25): advanceStory(), applyMute(), cameraTarget(), dismissTip(), finishStage(), frame(), handleEvents(), nextStage() (+17 more)
 
 ### Community 28 - "packages-lock.json"
 Cohesion: 0.06
 Nodes (31): com.unity.2d.sprite, com.unity.2d.tilemap, com.unity.modules.ai, com.unity.modules.animation, com.unity.modules.assetbundle, com.unity.modules.audio, com.unity.modules.director, com.unity.modules.imageconversion (+23 more)
 
-### Community 29 - ".Start"
-Cohesion: 0.17
-Nodes (8): Image, RectTransform, Sprite, Vector2, Drift, Hopper, MainMenuScreen, UIFrames
+### Community 29 - "find-routes.js"
+Cohesion: 0.10
+Nodes (24): ref_node_fs, ref_node_path, args, cloneGame(), existing, file, fs, { Game } (+16 more)
 
 ### Community 30 - "FlowRunner"
 Cohesion: 0.24
@@ -269,57 +289,57 @@ Nodes (7): Canvas, CanvasGroup, GraphicRaycaster, IEnumerator, Image, FlowRunner
 Cohesion: 0.10
 Nodes (18): Canvas, List, HNSmokeTest, Elapsed, Phase, Done, Map, Menu (+10 more)
 
-### Community 32 - "com.unity.modules.uielements"
-Cohesion: 0.08
-Nodes (24): dependencies, depth, source, version, dependencies, depth, source, version (+16 more)
+### Community 32 - "com.unity.modules.imgui"
+Cohesion: 0.07
+Nodes (31): dependencies, depth, source, url, version, dependencies, depth, source (+23 more)
 
-### Community 33 - "GameBoot"
-Cohesion: 0.18
-Nodes (10): 2. Key design decision: everything is built from code, Camera, GameBoot, ScreenKind, MainMenu, Stage, Story, WorldMap (+2 more)
+### Community 33 - "Timucuha n Yennayer — script"
+Cohesion: 0.07
+Nodes (29): After stage 16, After stage 20, After stage 4, After stage 4, After stage 4 (the trap), Before stage 1, Before stage 13, Before stage 17 (+21 more)
 
-### Community 34 - "dependencies"
-Cohesion: 0.10
-Nodes (21): dependencies, depth, source, version, dependencies, depth, source, version (+13 more)
+### Community 34 - "com.unity.modules.jsonserialize"
+Cohesion: 0.07
+Nodes (30): dependencies, depth, source, version, dependencies, depth, source, version (+22 more)
 
 ### Community 35 - "com.unity.modules.unitywebrequest"
 Cohesion: 0.09
-Nodes (25): dependencies, depth, source, version, dependencies, depth, source, version (+17 more)
+Nodes (26): dependencies, depth, source, version, dependencies, dependencies, depth, source (+18 more)
 
-### Community 36 - "ButtonJuice"
-Cohesion: 0.24
-Nodes (5): Vector3, ButtonJuice, IPointerDownHandler, IPointerUpHandler, PointerEventData
+### Community 37 - "WitchBoss"
+Cohesion: 0.16
+Nodes (9): Level objects (`Kind` in `LevelData.cs`, classes in `Elements.cs`), CircleCollider2D, Collider2D, IEnumerator, Rigidbody2D, SpriteRenderer, LanternGoal, WitchBoss (+1 more)
 
 ### Community 38 - "com.unity.2d.common"
-Cohesion: 0.10
-Nodes (22): dependencies, depth, source, url, version, depth, source, url (+14 more)
+Cohesion: 0.08
+Nodes (27): dependencies, depth, source, url, version, dependencies, depth, source (+19 more)
 
 ### Community 39 - "com.unity.test-framework"
-Cohesion: 0.07
-Nodes (32): dependencies, dependencies, depth, source, version, dependencies, depth, source (+24 more)
+Cohesion: 0.08
+Nodes (27): dependencies, depth, source, version, dependencies, dependencies, depth, source (+19 more)
 
 ### Community 40 - "com.unity.modules.physics"
 Cohesion: 0.08
 Nodes (25): dependencies, depth, source, version, dependencies, depth, source, version (+17 more)
 
-### Community 42 - "com.unity.modules.jsonserialize"
+### Community 42 - "prototype/art.js"
+Cohesion: 0.16
+Nodes (31): 1. Goal, 2. The story — "The Green Harvest", 3. Gameplay rules, 4. Stages, 5. Files and interfaces, 6. Verification, 7. Out of scope, 9. Round 2 (2026-10-18): polish and tricks (+23 more)
+
+### Community 43 - "prototype/app.js"
+Cohesion: 0.24
+Nodes (13): advanceReplay(), cancelDrag(), drawAim(), drawComparison(), frame(), loadStage(), renderStory(), saveChoices() (+5 more)
+
+### Community 44 - "com.unity.modules.physics2d"
 Cohesion: 0.10
 Nodes (20): dependencies, depth, source, version, dependencies, depth, source, version (+12 more)
 
-### Community 43 - "3. Folder map"
-Cohesion: 0.16
-Nodes (10): 3. Folder map, Progress, SoundOn, TotalStars, Image, Transform, Vector2, WorldMapScreen (+2 more)
+### Community 45 - "com.unity.modules.animation"
+Cohesion: 0.11
+Nodes (20): dependencies, depth, source, version, dependencies, depth, source, version (+12 more)
 
-### Community 44 - "com.unity.modules.physics2d"
-Cohesion: 0.13
-Nodes (15): dependencies, depth, source, version, dependencies, depth, source, version (+7 more)
-
-### Community 45 - "com.unity.modules.audio"
-Cohesion: 0.09
-Nodes (25): dependencies, depth, source, version, dependencies, depth, source, version (+17 more)
-
-### Community 47 - "com.unity.modules.ui"
-Cohesion: 0.12
-Nodes (16): dependencies, depth, source, version, dependencies, depth, source, version (+8 more)
+### Community 47 - "com.unity.modules.audio"
+Cohesion: 0.11
+Nodes (20): dependencies, depth, source, version, dependencies, depth, source, version (+12 more)
 
 ### Community 48 - "com.unity.collab-proxy"
 Cohesion: 0.33
@@ -329,9 +349,9 @@ Nodes (6): dependencies, depth, source, url, version, com.unity.collab-proxy
 Cohesion: 0.12
 Nodes (16): 10. Commands reference, 11. Using it with Codex too (and Cursor, Gemini...), 12. Optional extras, when you need them, 13. Growing and maintaining it, 1. Why would I use this?, 2. When should I NOT use it?, 3. Setup — NEW project, 4. Setup — EXISTING project (merge, don't overwrite!) (+8 more)
 
-### Community 50 - ".Get"
+### Community 50 - "Hollow Night: three directions for an adult puzzle game"
 Cohesion: 0.18
-Nodes (4): Canvas, GraphicRaycaster, CanvasScaler, EventSystem
+Nodes (10): A — The Last Light, B — The Borrowed Shadow, C — The Thirteenth Bell, Current evidence, Decision after the playable comparison, Hollow Night: three directions for an adult puzzle game, Polish priorities to compare in the prototype, Research and how it informs this proposal (+2 more)
 
 ### Community 51 - "com.unity.modules.imageconversion"
 Cohesion: 0.13
@@ -341,9 +361,9 @@ Nodes (15): dependencies, depth, source, version, dependencies, depth, source, v
 Cohesion: 0.17
 Nodes (12): awesome-mcp-servers — ⭐ ~96k — 📖 Reading, cc-switch — ⭐ ~139k — 💻 Desktop app (per machine), chrome-devtools-mcp — ⭐ ~53k — 🔧 MCP, claude-code-router — ⭐ ~38k — 💻 CLI (per machine), context7 — ⭐ ~63k — 🔧 MCP, firecrawl — ⭐ ~188k — 🔧 MCP (needs API key), github-mcp — ⭐ ~33k — 🔧 MCP (remote), multica — ⭐ ~52k — 💻 Self-hosted app ⚠️ check README (+4 more)
 
-### Community 53 - "com.unity.modules.imgui"
-Cohesion: 0.09
-Nodes (23): dependencies, depth, source, url, version, dependencies, depth, source (+15 more)
+### Community 53 - "com.unity.ext.nunit"
+Cohesion: 0.17
+Nodes (12): dependencies, depth, source, version, dependencies, depth, source, url (+4 more)
 
 ### Community 54 - "com.unity.mathematics"
 Cohesion: 0.18
@@ -380,10 +400,6 @@ Nodes (6): API Conventions, Endpoint Design (REST), Error Responses, Request / R
 ### Community 62 - "door_Scrip"
 Cohesion: 0.29
 Nodes (4): Animator, Collider2D, GameObject, door_Scrip
-
-### Community 63 - ".Pop"
-Cohesion: 0.25
-Nodes (5): Action, CanvasGroup, IEnumerator, Transform, Tween
 
 ### Community 64 - "⭐ Skills — knowledge loaded on demand"
 Cohesion: 0.29
@@ -445,9 +461,13 @@ Nodes (4): Process, /retro — Learning Flywheel, What counts as a lesson, What 
 Cohesion: 0.40
 Nodes (4): Code Style Rules, Hard rules worth repeating (non-default or often violated), Project-specific deviations (edit per project — delete lines that don't apply), The linter owns style
 
-### Community 79 - "com.unity.modules.accessibility"
-Cohesion: 0.40
-Nodes (5): dependencies, depth, source, version, com.unity.modules.accessibility
+### Community 79 - "dependencies"
+Cohesion: 0.10
+Nodes (20): dependencies, depth, source, version, dependencies, depth, source, version (+12 more)
+
+### Community 80 - "tales-art.js"
+Cohesion: 0.08
+Nodes (53): Approved implementation, Evidence and decisions, Hollow Night enhancement exploration, Implementation evidence, Original-art prototype (2026-10-17 to 2026-10-18), Original-reference clarification, Polish pass on the three nights (2026-10-19), Progress (+45 more)
 
 ### Community 81 - "/install — Install a tool from the catalog"
 Cohesion: 0.50
@@ -473,65 +493,121 @@ Nodes (3): has_script(), run_gate(), done-gate.sh script
 Cohesion: 0.83
 Nodes (3): body_without_frontmatter(), frontmatter_description(), sync-codex.sh script
 
-### Community 90 - "5. Core classes"
-Cohesion: 0.20
-Nodes (4): 5. Core classes, Layer, Ease, IEnumerator
+### Community 90 - "MonoBehaviour"
+Cohesion: 0.12
+Nodes (10): Spin, SpriteRenderer, Vector3, Bat, Door, IsOpen, GhostPlatform, Mushroom (+2 more)
 
-### Community 91 - "CameraRig"
-Cohesion: 0.33
-Nodes (3): Camera, Transform, CameraRig
+### Community 91 - "StoryScreen"
+Cohesion: 0.27
+Nodes (6): Coroutine, IEnumerator, Image, RectTransform, Text, StoryScreen
 
-### Community 92 - "Bob"
-Cohesion: 0.22
-Nodes (5): Level objects (`Kind` in `LevelData.cs`, classes in `Elements.cs`), Vector3, Bob, Collider2D, LanternGoal
+### Community 92 - ".BuildNode"
+Cohesion: 0.15
+Nodes (9): Progress, SoundOn, TotalStars, Image, Transform, Vector2, WorldMapScreen, RectMask2D (+1 more)
 
-### Community 93 - ".Start"
-Cohesion: 0.33
-Nodes (4): Color, SpriteRenderer, Vector2, Trajectory
+### Community 93 - ".Get"
+Cohesion: 0.15
+Nodes (10): Color, Dictionary, Sprite, Art, BodyFont, Fallback, SpriteMaterial, TitleFont (+2 more)
 
-### Community 94 - "Hollow Night — AI project guide"
-Cohesion: 0.25
-Nodes (6): 10. Code knowledge graph (Graphify), 11. Rules for AI assistants, 1. What this project is, 4. Scene flow, 9. Verification, Hollow Night — AI project guide
+### Community 94 - "Hollow Night browser design study"
+Cohesion: 0.50
+Nodes (3): Checks, Compare and play, Hollow Night browser design study
 
-### Community 95 - "Project Memory (CLAUDE.md)"
-Cohesion: 0.25
-Nodes (8): Architecture Notes, Essential Commands, Game guide, graphify, Hard Constraints (always follow), Project Memory (CLAUDE.md), Rules, Session & Context Hygiene
+### Community 99 - "game.test.js"
+Cohesion: 0.17
+Nodes (15): ref_node_test, launchVelocity(), stars(), advance(), assert, { Game, launchVelocity, trajectory, stars }, gateLanding(), level() (+7 more)
 
-### Community 96 - "HeroState"
-Cohesion: 0.29
-Nodes (7): Hero states (`HeroState`), HeroState, Cannon, Dead, Flying, Resting, Won
+### Community 101 - "original/app.js"
+Cohesion: 0.17
+Nodes (29): advanceStory(), applyLang(), applyMute(), cameraTarget(), dismissTip(), finishStage(), frame(), handleEvents() (+21 more)
 
-### Community 97 - "6. Gameplay rules"
-Cohesion: 0.33
-Nodes (6): 6. Gameplay rules, Hero (`Heroes.cs`), Hunting pumpkins (`Hunter` in `Elements.cs`), Input (`StageController.Update`), Score, World units
+### Community 102 - "PLayer_drag_drop"
+Cohesion: 0.18
+Nodes (7): Animator, CircleCollider2D, Collider2D, Rigidbody2D, Vector3, PLayer_drag_drop, Pose
 
-### Community 98 - "com.unity.modules.tetgen"
+### Community 103 - "player_script"
+Cohesion: 0.18
+Nodes (6): Animator, IEnumerator, Rigidbody2D, Vector2, player_script, SpringJoint2D
+
+### Community 104 - "Timucuha n Yennayer — the tales of Mqidec"
+Cohesion: 0.13
+Nodes (14): 1. Decisions taken with the user (2026-10-19), 2. The frame: the hearth, 3. The hero and the ogress, 4. The tales, 5. Text and languages, 6. What this changes in the prototype, 7. Open points for the user, Later tales (ideas, not planned) (+6 more)
+
+### Community 105 - "ButtonJuice"
+Cohesion: 0.24
+Nodes (5): Vector3, ButtonJuice, IPointerDownHandler, IPointerUpHandler, PointerEventData
+
+### Community 106 - "com.unity.modules.tetgen"
 Cohesion: 0.40
 Nodes (5): dependencies, depth, source, version, com.unity.modules.tetgen
 
-### Community 99 - "com.unity.modules.umbra"
-Cohesion: 0.40
-Nodes (5): dependencies, depth, source, version, com.unity.modules.umbra
+### Community 107 - "Project Memory (CLAUDE.md)"
+Cohesion: 0.18
+Nodes (9): Architecture Notes, Essential Commands, Game guide, graphify, Hard Constraints (always follow), Project Memory (CLAUDE.md), Project Overview, Rules (+1 more)
+
+### Community 108 - "trajectory_Script"
+Cohesion: 0.27
+Nodes (5): GameObject, Transform, Vector2, Vector3, trajectory_Script
+
+### Community 109 - "SPEC: Black rabbit + hunting pumpkins redesign"
+Cohesion: 0.20
+Nodes (9): 2. The enemy: hunting pumpkins (`Kind.Hunter`), 3. Stars, 4. Stages, 5. Story (`Story.cs`), 6. Files, 7. Platform, 8. Out of scope, 9. Verification (+1 more)
+
+### Community 110 - "Hollow Night — AI project guide"
+Cohesion: 0.20
+Nodes (10): 10. Code knowledge graph (Graphify), 11. Rules for AI assistants, 1. What this project is, 2. Key design decision: everything is built from code, 4. Scene flow, 9. Verification, Browser exploration (2026-10-14), Hollow Night — AI project guide (+2 more)
+
+### Community 111 - "pumkinkScript"
+Cohesion: 0.25
+Nodes (6): Animator, Collision2D, GameObject, IEnumerator, pumkinkScript, Level 1 composition
+
+### Community 112 - "HeroState"
+Cohesion: 0.29
+Nodes (7): Hero states (`HeroState`), HeroState, Cannon, Dead, Flying, Resting, Won
+
+### Community 113 - "3. Folder map"
+Cohesion: 0.18
+Nodes (8): 3. Folder map, Camera, GameBoot, Canvas, GraphicRaycaster, AudioListener, CanvasScaler, EventSystem
+
+### Community 114 - "prototype/verify-routes.js"
+Cohesion: 0.33
+Nodes (5): ref_node_assert, get(), assert, { get }, { simulateRoute }
+
+### Community 116 - "simulateRoute"
+Cohesion: 0.29
+Nodes (3): simulateRoute(), Browser layouts and route evidence, Verified replays
+
+### Community 117 - "6. Gameplay rules"
+Cohesion: 0.33
+Nodes (6): 6. Gameplay rules, Hero (`Heroes.cs`), Hunting pumpkins (`Hunter` in `Elements.cs`), Input (`StageController.Update`), Score, World units
+
+### Community 118 - "The user's original handmade scene references"
+Cohesion: 0.33
+Nodes (5): History limits, Original art, Original rabbit animation and committed code, Retained scenes, The user's original handmade scene references
+
+### Community 120 - "characters.js"
+Cohesion: 0.83
+Nodes (3): currentKey(), frame(), poseFor()
 
 ## Knowledge Gaps
-- **606 isolated node(s):** `validate-code.sh script`, `$schema`, `allow`, `deny`, `PostToolUse` (+601 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 821 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **702 isolated node(s):** `validate-code.sh script`, `$schema`, `allow`, `deny`, `PostToolUse` (+697 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 966 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Sfx` connect `Sfx` to `unityengine`, `3. Folder map`, `.Get`, `check_levels.py`, `MonoBehaviour`, `.Play`, `5. Core classes`?**
-  _High betweenness centrality (0.090) - this node is a cross-community bridge._
-- **Why does `5. Core classes` connect `5. Core classes` to `GameBoot`, `3. Folder map`, `.Label`, `LevelBuilder`, `.Go`, `Sfx`, `Hero`, `LevelData`, `StoryScreen`, `MonoBehaviour`, `StageController`, `.Play`, `StageHud`, `Hollow Night — AI project guide`, `Bob`, `FlowRunner`, `.Pop`?**
-  _High betweenness centrality (0.045) - this node is a cross-community bridge._
-- **Why does `Hero` connect `Hero` to `HeroState`, `unityengine`, `5. Core classes`, `.Die`, `HeroType`, `3. Folder map`, `MonoBehaviour`, `StageController`, `.Play`, `.Update`, `Hunter`, `.IsFloor`, `Bob`, `.Start`?**
-  _High betweenness centrality (0.040) - this node is a cross-community bridge._
+- **Why does `player_script` connect `player_script` to `8. Legacy prototype`, `MonoBehaviour`, `unityengine`?**
+  _High betweenness centrality (0.159) - this node is a cross-community bridge._
+- **Why does `3. Gameplay rules` connect `prototype/art.js` to `Game`, `player_script`?**
+  _High betweenness centrality (0.158) - this node is a cross-community bridge._
+- **Why does `Sfx` connect `Sfx` to `unityengine`, `3. Folder map`, `Hero`, `mqidec_cloak.py`, `5. Core classes`, `MonoBehaviour`, `.Get`?**
+  _High betweenness centrality (0.097) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `Hero` (e.g. with `3. Folder map` and `5. Core classes`) actually correct?**
   _`Hero` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 4 inferred relationships involving `LevelData` (e.g. with `3. Folder map` and `5. Core classes`) actually correct?**
   _`LevelData` has 4 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `validate-code.sh script`, `$schema`, `allow` to the rest of the system?**
-  _606 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _702 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.038461538461538464 - nodes in this community are weakly interconnected._

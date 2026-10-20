@@ -270,9 +270,9 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1791831983.3786912,
-    "seen": 1791831984.8684824,
-    "ast_hash": "1b96cb687af6ccb0db8e038e4b57d365",
+    "mtime": 1792435503.7780936,
+    "seen": 1792435515.1095028,
+    "ast_hash": "70557ddd8e4f7cf9a0f5e20e01f44ee4",
     "semantic_hash": ""
   },
   "Assets/Resources/HN/Fonts/Creepster-OFL.txt": {
@@ -453,6 +453,396 @@
     "mtime": 1791827052.405432,
     "seen": 1791831629.5187576,
     "ast_hash": "564b72c21ba3b792d22dfb3abfdfe6a5",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/app.js": {
+    "mtime": 1791971685.6455407,
+    "seen": 1791971709.0123994,
+    "ast_hash": "c76cf332af46d94dad253bcd4e64631f",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/art.js": {
+    "mtime": 1791949412.509508,
+    "seen": 1791968032.348297,
+    "ast_hash": "de78e02806a25ef213fe7a2680fc96e7",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/art.test.js": {
+    "mtime": 1791949412.5205078,
+    "seen": 1791968032.3482983,
+    "ast_hash": "1d40e733d9acebace7866890d01ce11f",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/browser-check.js": {
+    "mtime": 1791967982.197681,
+    "seen": 1791968032.3482993,
+    "ast_hash": "b2fd5575ae56bea7e5cf9532b31f81a8",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/eslint.config.mjs": {
+    "mtime": 1791949412.613508,
+    "seen": 1791968032.3483002,
+    "ast_hash": "237faa869b8582689d3b032be77f4510",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/game.js": {
+    "mtime": 1792434762.815612,
+    "seen": 1792435515.109472,
+    "ast_hash": "7911dffb2e31316ca41eb5da78b1ec48",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/game.test.js": {
+    "mtime": 1792434773.900649,
+    "seen": 1792435515.1094728,
+    "ast_hash": "6f21b67690e4b015cfbfe4721105b579",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/levels.js": {
+    "mtime": 1791949412.602508,
+    "seen": 1791968032.3483028,
+    "ast_hash": "b52643128db9a14b8b36163651e03561",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/stories.js": {
+    "mtime": 1791949412.606508,
+    "seen": 1791968032.3483036,
+    "ast_hash": "2c707843b57389b12e6d13373dd8baaa",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/verify-routes.js": {
+    "mtime": 1791949412.611508,
+    "seen": 1791968032.3483043,
+    "ast_hash": "61aa4206612cdf68eab47d7b939364f6",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-10-14T03-38-03-168Z.yml": {
+    "mtime": 1791949083.167093,
+    "seen": 1791968032.3483245,
+    "ast_hash": "441212338e5fc34af470cfd246c7d37f",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-10-14T03-41-11-372Z.yml": {
+    "mtime": 1791949271.3723354,
+    "seen": 1791968032.3483257,
+    "ast_hash": "49ec3fdeee59cb09d2ff6e9d8d7f9b7f",
+    "semantic_hash": ""
+  },
+  "Tools/design/enhancement-proposal.md": {
+    "mtime": 1791948459.5258186,
+    "seen": 1791968032.3483353,
+    "ast_hash": "f9fb7e64017ed71cb1e2eea15599ca22",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/README.md": {
+    "mtime": 1791971685.6805408,
+    "seen": 1791971709.0124333,
+    "ast_hash": "12d12fad053c9808ff95d8cf2b1606db",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/index.html": {
+    "mtime": 1791971707.150564,
+    "seen": 1791971709.0124342,
+    "ast_hash": "a0644760162c13c011b6671b60810589",
+    "semantic_hash": ""
+  },
+  "Tools/design/prototype/routes.md": {
+    "mtime": 1791949063.2920537,
+    "seen": 1791968032.3483381,
+    "ast_hash": "0ef4bb1e16797e8589d8a6e3696e9491",
+    "semantic_hash": ""
+  },
+  "task_plan.md": {
+    "mtime": 1792435503.7710936,
+    "seen": 1792435515.1095319,
+    "ast_hash": "09b6e97418622238edbb49a2e295bc47",
+    "semantic_hash": ""
+  },
+  "Tools/design/original-scenes.md": {
+    "mtime": 1791972014.2758942,
+    "seen": 1792269047.622629,
+    "ast_hash": "d170e3ca8bcbbaef95eca1d7c4e5c268",
+    "semantic_hash": ""
+  },
+  ".claude/launch.json": {
+    "mtime": 1792268824.5283744,
+    "seen": 1792269047.622533,
+    "ast_hash": "f9d8c9463f43e151b710f2607f8878db",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/app.js": {
+    "mtime": 1792435012.425448,
+    "seen": 1792435515.1094394,
+    "ast_hash": "80556971078ab4802f9f196b91de6b23",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/art.js": {
+    "mtime": 1792435304.4194257,
+    "seen": 1792435515.1094408,
+    "ast_hash": "d6e07de95567845e30a06f1f10c4424c",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/assets/manifest.js": {
+    "mtime": 1792268551.8406098,
+    "seen": 1792269047.6225855,
+    "ast_hash": "8a3d275644d0562ffd7c19af1254624f",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/eslint.config.mjs": {
+    "mtime": 1792430011.9840539,
+    "seen": 1792434163.3066862,
+    "ast_hash": "945bb9df6e10fe030b3f510369daa596",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/find-routes.js": {
+    "mtime": 1792429584.123699,
+    "seen": 1792434163.3066885,
+    "ast_hash": "5038362d3f87c81abbbb4b66e30a4407",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/levels.js": {
+    "mtime": 1792435232.1521838,
+    "seen": 1792435515.109454,
+    "ast_hash": "dbe43531927612acc9c751c17f9f2958",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/routes.js": {
+    "mtime": 1792435254.5182588,
+    "seen": 1792435515.1094573,
+    "ast_hash": "b1b8649731f1d7d0515a492f6ecb8815",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/story.js": {
+    "mtime": 1792434998.4984014,
+    "seen": 1792435515.1094618,
+    "ast_hash": "ea76fcb518951e8f629337f2ccd6665b",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/verify-routes.js": {
+    "mtime": 1792435264.6822927,
+    "seen": 1792435515.109466,
+    "ast_hash": "809608b2d0031f650333227249e2dea6",
+    "semantic_hash": ""
+  },
+  "Tools/export_original_art.py": {
+    "mtime": 1792268544.82859,
+    "seen": 1792269047.6226006,
+    "ast_hash": "80c1626f91ffa20403a0c208bbd4bdd4",
+    "semantic_hash": ""
+  },
+  "Tools/design/original-prototype-spec.md": {
+    "mtime": 1792271194.9771595,
+    "seen": 1792434163.3068023,
+    "ast_hash": "c30e0807e4f2e4e518b97daa6d8dfbb4",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/README.md": {
+    "mtime": 1792271194.9761596,
+    "seen": 1792434163.3068066,
+    "ast_hash": "70128ee91f667da584ed9fd6e9d582fa",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/assets/fonts/Creepster-OFL.txt": {
+    "mtime": 1792268551.8396096,
+    "seen": 1792269047.6226306,
+    "ast_hash": "004bea72d006c1398d5ad82f78c89b08",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/assets/fonts/LuckiestGuy-LICENSE.txt": {
+    "mtime": 1792268551.8396096,
+    "seen": 1792269047.6226313,
+    "ast_hash": "3b83ef96387f14655fc854ddc3c6bd57",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/index.html": {
+    "mtime": 1792430570.5458279,
+    "seen": 1792434163.3068163,
+    "ast_hash": "349e12dab411f2894e2bf72735112e22",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/assets/bg_far.jpg": {
+    "mtime": 1792268550.2106051,
+    "seen": 1792269047.6226366,
+    "ast_hash": "2000eabbfa265a81d7feb89e08b0d9aa",
+    "semantic_hash": ""
+  },
+  "Tools/blender/mqidec_cloak.py": {
+    "mtime": 1792306926.1935935,
+    "seen": 1792434163.3066704,
+    "ast_hash": "51cbcb089c2afe949caee8def0847620",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/app-green-harvest.js": {
+    "mtime": 1792429874.9516199,
+    "seen": 1792434163.306674,
+    "ast_hash": "e3cec98bcfb76df459ca2a4b2542f4ff",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/assets/cloak/mapping.json": {
+    "mtime": 1792306958.530724,
+    "seen": 1792434163.3066792,
+    "ast_hash": "569cfaf98abb1e70abbd39993eec40d7",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/build-text.py": {
+    "mtime": 1792430570.5468278,
+    "seen": 1792434163.3066828,
+    "ast_hash": "75ec34a79ef808a8b788ac2fc92257ca",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/characters.js": {
+    "mtime": 1792306380.213364,
+    "seen": 1792434163.3066845,
+    "ast_hash": "659fec0157850846460fe586279de8d7",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/levels-green-harvest.js": {
+    "mtime": 1792270709.9326887,
+    "seen": 1792434163.30669,
+    "ast_hash": "97413bdc9d05ce7746937832ed872c44",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/routes-green-harvest.js": {
+    "mtime": 1792271702.2197685,
+    "seen": 1792434163.306693,
+    "ast_hash": "7cff87b2d566fdaff2568df3e8321dff",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/sfx.js": {
+    "mtime": 1792435022.9744833,
+    "seen": 1792435515.109459,
+    "ast_hash": "114a240a8d37d54666ed39f41a5e9c9c",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/story-green-harvest.js": {
+    "mtime": 1792270709.9636889,
+    "seen": 1792434163.3066974,
+    "ast_hash": "36a495e925e354fe62788b9d96dd1655",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/tales-art.js": {
+    "mtime": 1792435451.5319185,
+    "seen": 1792435515.1094632,
+    "ast_hash": "d60020d9f481b3ff56798ee1d9c9892e",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/text.js": {
+    "mtime": 1792434987.8423655,
+    "seen": 1792435515.1094646,
+    "ast_hash": "0b5642ed70191c774452b8c2b433b2c2",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/assets/fonts/NotoSansTifinagh-LICENSE.txt": {
+    "mtime": 1792288324.3035526,
+    "seen": 1792434163.306812,
+    "ast_hash": "35c8217bc931a1c510ad30567ac9615d",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/characters.html": {
+    "mtime": 1792306380.213364,
+    "seen": 1792434163.3068135,
+    "ast_hash": "6656030e3d25628632fe3829fcf1ff18",
+    "semantic_hash": ""
+  },
+  "Tools/design/original/index-green-harvest.html": {
+    "mtime": 1792429874.95062,
+    "seen": 1792434163.3068147,
+    "ast_hash": "b97e1df99494117728237cf6d199d324",
+    "semantic_hash": ""
+  },
+  "Tools/design/yennayer-script.md": {
+    "mtime": 1792434987.8233654,
+    "seen": 1792435515.1095302,
+    "ast_hash": "b0bf49ae6198a1bd4c861bc949e901bc",
+    "semantic_hash": ""
+  },
+  "Tools/design/yennayer-spec.md": {
+    "mtime": 1792435488.8910437,
+    "seen": 1792435515.1095312,
+    "ast_hash": "d7724eb1254ff17d37c1c0e6ac9bb565",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-burnous-dash.jpg": {
+    "mtime": 1792291306.7144735,
+    "seen": 1792434163.30683,
+    "ast_hash": "10c9702048deb0b9449790f5d50916d1",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-burnous-flight.jpg": {
+    "mtime": 1792293794.9183793,
+    "seen": 1792434163.3068314,
+    "ast_hash": "b12a8ef63e7673f394ed42c83dc33a13",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-burnous-hooded.jpg": {
+    "mtime": 1792293794.9163795,
+    "seen": 1792434163.3068326,
+    "ast_hash": "4086573c88dc822d4a22337b8a68bb24",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-burnous-idle.jpg": {
+    "mtime": 1792293794.9193795,
+    "seen": 1792434163.306834,
+    "ast_hash": "174f055c4b3484812cbeb6b48ba26cab",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-designs-1.jpg": {
+    "mtime": 1792275752.6250768,
+    "seen": 1792434163.3068354,
+    "ast_hash": "28b262b1e3e05b74cdc30534d1be9c27",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-designs-2.jpg": {
+    "mtime": 1792275752.6260767,
+    "seen": 1792434163.3068368,
+    "ast_hash": "28cdcade0e22e1b94f9f59f6111e71d9",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-designs.jpg": {
+    "mtime": 1792275167.3387716,
+    "seen": 1792434163.3068385,
+    "ast_hash": "e8c002dbe1bc380c394912fb4c126f02",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-sim-flight.jpg": {
+    "mtime": 1792306983.9418266,
+    "seen": 1792434163.3068397,
+    "ast_hash": "02dfc40d1f001a6858cb7ac061007016",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-sim-hooded.jpg": {
+    "mtime": 1792306983.9408267,
+    "seen": 1792434163.3068411,
+    "ast_hash": "3abd8401c7c55d2746a243bfbf30dd31",
+    "semantic_hash": ""
+  },
+  "output/playwright/mqidec-sim-idle.jpg": {
+    "mtime": 1792306983.9398267,
+    "seen": 1792434163.3068423,
+    "ast_hash": "12ac333ff15edced1ca26b3ed036f9cd",
+    "semantic_hash": ""
+  },
+  "output/playwright/original-prologue.jpg": {
+    "mtime": 1792269053.4910169,
+    "seen": 1792434163.3068438,
+    "ast_hash": "528842b261d1869c166556df9f82cea7",
+    "semantic_hash": ""
+  },
+  "output/playwright/original-smash.jpg": {
+    "mtime": 1792269053.4930167,
+    "seen": 1792434163.306845,
+    "ast_hash": "f5cae7fe1523f043a3f9d9eded523887",
+    "semantic_hash": ""
+  },
+  "output/playwright/original-stage1.jpg": {
+    "mtime": 1792269053.4920168,
+    "seen": 1792434163.306846,
+    "ast_hash": "dd352498d12d92fcef4ef05824902bb2",
+    "semantic_hash": ""
+  },
+  "output/playwright/original-title.jpg": {
+    "mtime": 1792269053.4900167,
+    "seen": 1792434163.3068473,
+    "ast_hash": "60df0e148171b0a4174127c8a1a41cd3",
     "semantic_hash": ""
   }
 }
