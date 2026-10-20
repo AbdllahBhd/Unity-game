@@ -101,6 +101,10 @@
             ? "press"
           : name === "hearth-rain" || name === "spring-rain"
             ? "rain"
+          : name === "hearth-dawn" || name === "pasture-dawn"
+            ? "dawn"
+          : name.startsWith("pasture")
+            ? "pasture"
           : name.startsWith("spring")
             ? "spring"
           : name.startsWith("gorge") || name === "home"
@@ -303,6 +307,10 @@
       sceneFlash = 0.4;
       sound("flood");
     } else if (newBeat && beat.fx === "rain") sound("rain", { volume: 0.7 });
+    else if (newBeat && beat.fx === "avalanche") {
+      sceneFlash = 0.4;
+      sound("avalanche");
+    }
     else sound("page", { volume: 0.5 });
   }
   function advanceStory() {
@@ -388,7 +396,7 @@
     tipQueue = [],
     tip = null,
     teryelVoice = 0;
-  const NOTICE_SOUND = { pot: ["clink", 1], spider: ["snap", 1.6], ijenni: ["whisper", 1], raven: ["caw", 1], rat: ["squeak", 1], frog: ["croak", 1] };
+  const NOTICE_SOUND = { pot: ["clink", 1], spider: ["snap", 1.6], ijenni: ["whisper", 1], raven: ["caw", 1], rat: ["squeak", 1], frog: ["croak", 1], goat: ["bleat", 1] };
 
   function stageLabels() {
     $("stage-number").textContent = `${T("ui.night")} ${Levels.taleOf(stageId)} · ${T("ui.stage")} ${stageId}`;
@@ -447,13 +455,16 @@
     };
     if (level.id === 1) add("launch", level.start.x, level.start.y, 1.4);
     const hunter = level.pumpkins.find((p) => p.range > 0 && !p.roll);
-    if (hunter) add(["ijenni", "raven", "rat", "frog"].includes(level.hunter) ? level.hunter : "hunter", hunter.x, hunter.y, 1.3);
+    if (hunter) add(["ijenni", "raven", "rat", "frog", "goat"].includes(level.hunter) ? level.hunter : "hunter", hunter.x, hunter.y, 1.3);
     if (level.id >= 2) add("dash", level.start.x, level.start.y, 1.4);
     for (const p of level.platforms) {
       if (p.oil) add("oil", p.x, p.y, p.w / 2 + 0.6);
+      if (p.drift) add("drift", p.x, p.y, p.w / 2 + 0.6);
       if (p.type === "wheel") add("wheel", p.cx, p.cy, p.radius + 0.9);
       else if (p.type === "bucket") add("bucket", p.x, (p.top + p.bottom) / 2, (p.top - p.bottom) / 2 + 0.8);
-      else if (p.type === "drop" && p.flood !== undefined) add("cistern", p.x, p.y - p.h / 2, 1.4);
+      else if (p.type === "drop" && p.flood !== undefined)
+        // The snow cornice and the cistern share a rule; the water they release tells them apart.
+        add(level.objects.some((o) => o.id === p.flood && o.snow) ? "cornice" : "cistern", p.x, p.y - p.h / 2, 1.4);
       else if (p.type === "drop" && p.tied !== undefined) add("tied", p.x, p.y, 1.4);
       else if (p.type === "slope") add("slide", p.x, (p.y1 + p.y2) / 2, p.w / 2 + 0.6);
       else if (p.type === "drop" && p.knock) add("knock", p.x, p.y, 1.4);
@@ -462,7 +473,9 @@
     for (const o of level.objects) {
       const kind = o.type === "cannon" ? "cannon" : o.type;
       // Water is pointed at where it is deepest: its surface, or the level a flood fills.
-      if (o.type === "water") add("water", o.x, o.to === undefined ? o.level : o.to, o.w / 2 + 0.4);
+      if (o.type === "water" && o.freeze) add("ice", o.x, o.level, o.w / 2 + 0.4);
+      else if (o.type === "water" && o.snow) continue;
+      else if (o.type === "water") add("water", o.x, o.to === undefined ? o.level : o.to, o.w / 2 + 0.4);
       else if (Story.tips[kind]) add(kind, o.x, o.y, o.type === "zip" ? 2.4 : o.type === "teryel" ? (o.r || 1) + 1 : 1.4);
     }
     const roll = level.pumpkins.find((p) => p.roll);
@@ -619,9 +632,34 @@
       else if (e.type === "flood") {
         shake = Math.max(shake, 0.5);
         whiteFlash = 0.2;
-        fx.splash(at.x, at.y, 3);
-        sound("flood");
-        remark("flood");
+        if (e.snow) {
+          fx.snow(at.x, at.y, 3);
+          sound("avalanche");
+          remark("avalanche");
+        } else {
+          fx.splash(at.x, at.y, 3);
+          sound("flood");
+          remark("flood");
+        }
+      } else if (e.type === "freeze") {
+        const pond = game.objects.find((o) => o.type === "water" && o.freeze && Math.abs(o.x - e.x) < 0.01);
+        if (pond) fx.frost(pond.x, pond.level, pond.w);
+        sound("crack");
+        remark("freeze");
+      } else if (e.type === "thaw") {
+        sound("melt");
+        remark("thaw");
+      } else if (e.type === "drift") {
+        fx.snow(at.x, at.y);
+        sound("crunch", { volume: 0.7 });
+      } else if (e.type === "charge") {
+        shake = Math.max(shake, 0.12);
+        sound("gust", { volume: 0.6 });
+        sound("bleat", { pitch: 0.8 });
+      } else if (e.type === "stuck") {
+        fx.snow(at.x, at.y, 1.5);
+        sound("crunch");
+        remark("stuck");
       }
       else if (e.type === "knock") {
         sound("clink", { pitch: 0.7 });

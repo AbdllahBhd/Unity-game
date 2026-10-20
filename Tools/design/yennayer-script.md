@@ -415,3 +415,66 @@ and the Anzar song line in `t6.end.5`.
 | stage.22 | | The bucket | Asiṭel | Le seau | الدلو |
 | stage.23 | | The well | Lbir | Le puits | البئر |
 | stage.24 | | Teryel at the spring | Teryel deg tala | Teryel à la source | تريال عند النبع |
+
+## Night 7 — Ussan n tmeɣart (the old woman's borrowed days)
+
+Goal object: the old woman's spindle (izdi), goat hair still wound on it. Hunters: her
+half-frozen goats (iɣeṭṭen), which charge when Mqidec stands still on their level. New:
+a pond that freezes on the wind's beat and thaws again, and snowdrifts that stop him
+dead and catch charging goats. Trap: he breaks the snow cornice; the avalanche fills the
+hollow over Teryel. Words to check: "agris" (ice), "adfel" (snow, also used for the
+drift), "aqerru n wedfel" (the cornice), "iɣeṭṭen" (goats), "izdi" (spindle), "tamda"
+(pond), "yesqer" (froze), "yefsi" (melted), "abeṭṭan" (blanket), "Furar" (February),
+"Ǧerǧer" (Djurdjura), and the legend itself as Jida tells it.
+
+### Before stage 25
+
+| id | speaker | EN | TQ | FR | AR |
+|---|---|---|---|---|---|
+| t7.intro.1 | Jida (telling) | Do you know why Yennayer has borrowed days? Once an old woman laughed at January. "Your cold is nothing," she said, and drove her goats up the mountain. | Tessnem acuɣer Yennayer yesɛa ussan yettwareḍlen? Yiwet n tmeɣart teḍsa ɣef Yennayer. "Asemmiḍ-ik d ulac," i as-tenna, tessali iɣeṭṭen-is ɣer wedrar. | Vous savez pourquoi Yennayer a des jours empruntés ? Une vieille femme s'est un jour moquée de janvier. « Ton froid n'est rien », lui dit-elle, et elle mena ses chèvres sur la montagne. | أتعرفون لماذا ليناير أيام مستعارة؟ ذات مرة سخرت عجوز من يناير. «بردك لا شيء»، قالت له، وساقت ماعزها إلى الجبل. |
+| t7.intro.2 | Boy | And January got angry! | U Yennayer yezɛef! | Et janvier s'est fâché ! | فغضب يناير! |
+| t7.intro.3 | Jida (hushed) | He borrowed days from February, and on the last of them he froze her and her goats into rock. They are still up there on the Djurdjura. | Yerḍel ussan seg Furar, deg wass aneggaru yesqer-itt nettat d iɣeṭṭen-is, uɣalen d iẓra. Mazal-iten dinna deg Ǧerǧer. | Il emprunta des jours à février, et le dernier d'entre eux il la changea en rocher, elle et ses chèvres. Elles sont toujours là-haut, sur le Djurdjura. | استعار أياما من فبراير، وفي آخرها جمّدها هي وماعزها فصارت صخورا. ما زالت هناك فوق جرجرة. |
+| t7.intro.4 | Jida (telling) | Teryel was that old woman's friend. When the cold came, she ran off with the old woman's spindle, goat hair still wound on it, and dropped it on the frozen pasture. | Teryel tella d tamddakelt n tmeɣart-nni. Mi d-yusa usemmiḍ, terwel s yizdi n tmeɣart, mazal ccɛer n tɣaṭ fell-as, teǧǧa-t deg wegni yeqqren. | Teryel était l'amie de cette vieille femme. Quand le froid arriva, elle s'enfuit avec le fuseau de la vieille, encore garni de poil de chèvre, et le laissa tomber sur l'alpage gelé. | كانت تريال صديقة تلك العجوز. لما جاء البرد، هربت بمغزل العجوز، وما زال عليه شعر الماعز، وأسقطته في المرعى المتجمّد. |
+| t7.intro.5 | Girl | Why does Mqidec want an old spindle? | Acuɣer i yebɣa Mqidec izdi aqdim? | Pourquoi Mqidec veut-il un vieux fuseau ? | لماذا يريد مقيدش مغزلا قديما؟ |
+| t7.intro.6 | Jida (teasing) | Because my grandmother spun with it, and her blanket is the one on your knees. | Acku jida-w tellem yis-s, abeṭṭan-is d win yellan ɣef tgecrar-im. | Parce que ma grand-mère filait avec, et sa couverture est celle qui est sur tes genoux. | لأن جدّتي كانت تغزل به، وغطاؤها هو الذي على ركبتيك. |
+
+### Stage lines
+
+| id | stage | speaker | EN | TQ | FR | AR |
+|---|---|---|---|---|---|---|
+| t7.s1 | 25 Agris | Jida | The pond up there breathes with the wind. When it blows, the water turns to ice you can stand on. When it stops, the ice is water again. | Tamda n dinna tettneffis d waḍu. Mi ara yeṣṣuḍ, aman ad uɣalen d agris ara k-yerfden. Mi ara yeḥbes, agris ad yuɣal d aman. | La mare là-haut respire avec le vent. Quand il souffle, l'eau devient une glace qui te porte. Quand il s'arrête, la glace redevient eau. | البركة هناك تتنفس مع الريح. حين تهب، يصير الماء جليدا يحملك. حين تسكن، يعود الجليد ماء. |
+| t7.s1.child | 25 | Girl | Quick, before it melts! | Ɣiwel, uqbel ad yefsi! | Vite, avant que ça fonde ! | بسرعة، قبل أن يذوب! |
+| t7.s2 | 26 Adfel | Jida | The goats charge when they see you standing still. But the snow is deep, and a goat in a drift is a goat stuck. | Iɣeṭṭen ttazzalen-d fell-ak mi ara k-walin tbeddeḍ. Maca adfel d alqayan, aɣeṭṭ deg wedfel yeqqim yeṭṭef. | Les chèvres chargent quand elles te voient immobile. Mais la neige est profonde, et une chèvre dans une congère est une chèvre coincée. | الماعز تنطح حين تراك واقفا. لكن الثلج عميق، والعنزة في كومة الثلج عنزة عالقة. |
+| t7.s2.child | 26 | Boy | Make it run into the snow! | Ǧǧ-it ad yazzel ɣer wedfel! | Fais-la foncer dans la neige ! | اجعلها تركض نحو الثلج! |
+| t7.s3 | 27 Iɣeṭṭen | Jida | Ice, snow and goats, all at once. Mqidec listened to the wind and counted, like this: one, two, now. | Agris, adfel d iɣeṭṭen, akk ɣef tikkelt. Mqidec yesla i waḍu, yeḥseb akka: yiwen, sin, tura. | La glace, la neige et les chèvres, tout à la fois. Mqidec écoutait le vent et comptait, comme ça : un, deux, maintenant. | الجليد والثلج والماعز، كلها معا. أصغى مقيدش إلى الريح وعدّ هكذا: واحد، اثنان، الآن. |
+| t7.s3.child | 27 | Girl | One, two, now! | Yiwen, sin, tura! | Un, deux, maintenant ! | واحد، اثنان، الآن! |
+| t7.s4 | 28 Teryel deg wedfel | Jida (hushed) | In the hollow under the snow cornice, Teryel sat spinning with the old woman's spindle, singing to the stone goats. | Deg yiɣzer ddaw uqerru n wedfel, Teryel teqqim tellem s yizdi n tmeɣart, tcennu i yiɣeṭṭen n weẓru. | Dans le creux sous la corniche de neige, Teryel filait avec le fuseau de la vieille et chantait pour les chèvres de pierre. | في التجويف تحت حافة الثلج، كانت تريال تغزل بمغزل العجوز وتغنّي لماعز الحجر. |
+| t7.s4.child | 28 | Boy | Drop the snow on her! | Ssɣli adfel fell-as! | Fais tomber la neige sur elle ! | أسقط الثلج عليها! |
+
+### After stage 28
+
+| id | speaker | EN | TQ | FR | AR |
+|---|---|---|---|---|---|
+| t7.end.1 | Jida (telling) | He struck the cornice with all his speed. The whole lip of snow broke off, came down the slope and filled the hollow to the brim, with Teryel in it. | Yewwet aqerru n wedfel s akk zzerb-is. Yeɣli akk, yers-d seg uḍrar, yeččur yiɣzer armi d imi-s, Teryel daxel. | Il frappa la corniche de toute sa vitesse. Toute la lèvre de neige se détacha, dévala la pente et remplit le creux jusqu'au bord, avec Teryel dedans. | ضرب حافة الثلج بكل سرعته. انفصلت كلها ونزلت المنحدر وملأت التجويف حتى حافته، وتريال فيه. |
+| t7.end.2 | Teryel | Cold! Cold! Who has my nose? I can't feel my nose! | Asemmiḍ! Asemmiḍ! Anwa i yeṭṭfen tinzert-iw? Ur ḥussaɣ ara s tinzert-iw! | Froid ! Froid ! Qui a mon nez ? Je ne sens plus mon nez ! | برد! برد! من أخذ أنفي؟ لا أشعر بأنفي! |
+| t7.end.3 | Jida (telling) | Mqidec walked home over the snowbank with the spindle on his shoulder. The next morning was the first day of February, and the snow stopped. | Mqidec yuɣal s axxam ɣef wedfel, izdi ɣef tayett-is. Azekka-nni d ass amezwaru n Furar, adfel yeḥbes. | Mqidec rentra à la maison par-dessus le banc de neige, le fuseau sur l'épaule. Le lendemain était le premier jour de février, et la neige s'arrêta. | عاد مقيدش إلى البيت فوق ركام الثلج، والمغزل على كتفه. وكان الصباح التالي أول يوم من فبراير، فتوقف الثلج. |
+| t7.end.4 | Girl | And the old woman? Is she still a rock? | Tamɣart-nni? Mazal-itt d aẓru? | Et la vieille femme ? Elle est toujours un rocher ? | والعجوز؟ هل ما زالت صخرة؟ |
+| t7.end.5 | Jida (teasing) | Look at the Djurdjura in the morning. She is the one with her goats around her. So never laugh at January. | Muqel Ǧerǧer taṣebḥit. D nettat i yellan s iɣeṭṭen-is i tt-yezzin. Ihi ur ttaḍsat ara ɣef Yennayer. | Regarde le Djurdjura au matin. C'est elle, avec ses chèvres autour. Alors ne vous moquez jamais de janvier. | انظري إلى جرجرة في الصباح. هي تلك التي حولها ماعزها. فلا تسخروا أبدا من يناير. |
+
+### Night 7 cards, remarks and names
+
+| id | speaker | EN | TQ | FR | AR |
+|---|---|---|---|---|---|
+| tip.ice | | The pond freezes on the wind's beat. Stand on the ice while it lasts: it is slippery, and when it thaws you are in the water. | Tamda tesqar s waḍu. Bedd ɣef ugris ma yella: yeceḍḍeḍ, mi ara yefsi atan deg waman. | La mare gèle au rythme du vent. Tiens-toi sur la glace tant qu'elle dure : elle glisse, et quand elle fond tu es dans l'eau. | تتجمّد البركة مع هبوب الريح. قف على الجليد ما دام: إنه زلق، وحين يذوب تصير في الماء. |
+| tip.drift | | A snowdrift. Land in it and you stop dead. A charging goat that runs into it gets stuck. | Adfel yettwaǧmeɛ. Ɣli deg-s ad tbeddeḍ imir. Aɣeṭṭ ara d-yazzlen ɣur-s ad yeqqim yeṭṭef. | Une congère. Pose-toi dedans et tu t'arrêtes net. Une chèvre qui fonce dedans reste coincée. | كومة ثلج. اهبط فيها فتتوقف فورا. والعنزة التي تندفع نحوها تعلق. |
+| tip.goat | | Her goats charge when you stand still on their level. A goat stuck in snow breaks at a touch. | Iɣeṭṭen-is ttazzalen-d fell-ak mi ara tbeddeḍ ɣef uswir-nsen. Aɣeṭṭ yeṭṭfen deg wedfel ad yerreẓ s tiyita kan. | Ses chèvres chargent quand tu restes immobile à leur hauteur. Une chèvre coincée dans la neige se brise au moindre contact. | ماعزها تنطح حين تقف ساكنا في مستواها. والعنزة العالقة في الثلج تنكسر بلمسة. |
+| tip.cornice | | A lip of snow hanging over the hollow. A hard hit or a dash breaks it off, and the snow fills everything below. | Aqerru n wedfel yettwaɛlaq nnig yiɣzer. Tiyita s zzerb neɣ tazzla ad t-tesɣli, adfel ad yeččar ayen yellan ddaw-s. | Une corniche de neige au-dessus du creux. Un choc fort ou une ruée la détache, et la neige remplit tout en dessous. | حافة ثلج معلّقة فوق التجويف. ضربة قوية أو اندفاعة تسقطها، فيملأ الثلج كل ما تحتها. |
+| r.freeze | Girl | It's freezing! | Yesqer! | Ça gèle ! | إنه يتجمّد! |
+| r.thaw | Boy | It's melting! | Yefsi! | Ça fond ! | إنه يذوب! |
+| r.stuck | Boy | Stuck in the snow! | Yeṭṭef deg wedfel! | Coincée dans la neige ! | عالقة في الثلج! |
+| r.avalanche | Boy | The snow! All of it! | Adfel! Akk! | La neige ! Toute la neige ! | الثلج! كله! |
+| tale.7 | | The old woman's borrowed days | Ussan n tmeɣart | Les jours empruntés de la vieille | أيام العجوز المستعارة |
+| stage.25 | | The ice | Agris | La glace | الجليد |
+| stage.26 | | The snow | Adfel | La neige | الثلج |
+| stage.27 | | The goats | Iɣeṭṭen | Les chèvres | الماعز |
+| stage.28 | | Teryel in the snow | Teryel deg wedfel | Teryel dans la neige | تريال في الثلج |

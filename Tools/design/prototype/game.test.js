@@ -1184,3 +1184,266 @@ test("a stone falling onto a bucket rising fast lands in it instead of passing t
   assert.equal(s.restOn, bucketB(g));
   assert.ok(Math.abs(s.y - (bucketB(g).y + 0.4)) < 0.02, `stone ${s.y} bucket ${bucketB(g).y}`);
 });
+
+/* ---------- Night 7: the old woman's borrowed days (ice, drifts, goats, the avalanche) ---------- */
+const pasture = (extra = {}) => tale({ door: { x: -5, y: 15 }, start: { x: -4.8, y: 0.45 }, ...extra });
+const ground7 = { x: 0, y: 0, w: 12, h: 0.4 };
+// A pond 3 deep (x -2..4) frozen for the first 2 s of every 4 s.
+const pond = (extra = {}) => ({ type: "water", x: 1, y: 0, w: 6, level: 3, freeze: { period: 4, ice: 2, offset: 0 }, ...extra });
+const iceOf = (g) => g.platforms.find((p) => p.type === "ice");
+test("a freezing pond makes ice that is solid only while frozen", () => {
+  const g = pasture({ platforms: [ground7], objects: [pond()] });
+  const ice = iceOf(g);
+  assert.ok(ice && ice.generated, "no generated ice");
+  assert.equal(ice.y, 3);
+  advance(g, 0.5);
+  assert.equal(g.solid(ice), true);
+  advance(g, 2);
+  assert.equal(g.solid(ice), false);
+});
+test("the ice warning timers count down", () => {
+  const g = pasture({ platforms: [ground7], objects: [pond()] });
+  advance(g, 0.5);
+  assert.ok(Math.abs(g.objects[0].iceFor - 1.5) < 0.02, `iceFor ${g.objects[0].iceFor}`);
+  advance(g, 2);
+  assert.ok(Math.abs(g.objects[0].freezeIn - 1.5) < 0.02, `freezeIn ${g.objects[0].freezeIn}`);
+});
+test("he rests on frozen ice, it is never a respawn point, and the thaw drops him in to float", () => {
+  const g = pasture({ platforms: [ground7], objects: [pond()] });
+  Object.assign(g.hero, { x: 0, y: 4, vx: 0, vy: -1, state: "flying" });
+  advance(g, 0.6);
+  assert.equal(g.hero.state, "resting");
+  assert.equal(g.support.type, "ice");
+  assert.deepEqual({ x: g.respawn.x, y: g.respawn.y }, { x: -4.8, y: 0.45 });
+  advance(g, 3);
+  assert.equal(g.hero.state, "float");
+  assert.ok(g.events.some((e) => e.type === "thaw"));
+});
+test("ice is slippery: a fast landing glides on", () => {
+  const g = pasture({ platforms: [ground7], objects: [pond()] });
+  Object.assign(g.hero, { x: -1.5, y: 3.9, vx: 6, vy: -1, state: "flying" });
+  advance(g, 0.3);
+  assert.ok(g.hero.vx > 4, `vx ${g.hero.vx}`);
+  assert.ok(g.hero.y > 3.4, `fell through: ${g.hero.y}`);
+  assert.ok(g.events.some((e) => e.type === "oil"));
+});
+test("freezing lifts a floating hero onto the ice", () => {
+  const g = pasture({ platforms: [ground7], objects: [pond()] });
+  advance(g, 2.2);
+  Object.assign(g.hero, { x: 0, y: 4, vx: 0, vy: -1, state: "flying" });
+  advance(g, 1.6);
+  assert.equal(g.hero.state, "float");
+  advance(g, 0.4);
+  assert.equal(g.hero.state, "resting");
+  assert.equal(g.support.type, "ice");
+  assert.ok(Math.abs(g.hero.y - 3.45) < 0.02, `y ${g.hero.y}`);
+  assert.ok(g.events.some((e) => e.type === "freeze"));
+});
+test("freezing lifts a hero deep under the surface onto the ice too", () => {
+  const g = pasture({ platforms: [ground7], objects: [pond()] });
+  advance(g, 3.9);
+  Object.assign(g.hero, { x: 0, y: 1, vx: 0, vy: 0, state: "flying" });
+  advance(g, 0.2);
+  assert.equal(g.hero.state, "resting");
+  assert.ok(Math.abs(g.hero.y - 3.45) < 0.02, `y ${g.hero.y}`);
+});
+test("freezing water that also rises is rejected", () => {
+  assert.throws(() => pasture({ objects: [pond({ rise: { dy: 1, period: 6 } })] }), /freez/);
+});
+test("water that never freezes gets no platform", () => {
+  const g = pasture({ platforms: [ground7], objects: [{ type: "water", x: 1, y: 0, w: 6, level: 3 }] });
+  assert.equal(g.platforms.some((p) => p.generated), false);
+});
+test("a snowdrift stops a fast landing dead", () => {
+  const run = (drift) => {
+    const g = pasture({ platforms: [{ ...ground7, drift }] });
+    Object.assign(g.hero, { x: -4, y: 1, vx: 7, vy: -3, state: "flying" });
+    advance(g, 1);
+    return g;
+  };
+  const soft = run(true),
+    hard = run(false);
+  assert.ok(soft.hero.x < -3, `drift x ${soft.hero.x}`);
+  assert.ok(hard.hero.x > soft.hero.x + 0.5, `floor x ${hard.hero.x}`);
+  assert.ok(soft.events.some((e) => e.type === "drift"));
+});
+test("a snowdrift stops a glide coming off ice", () => {
+  const g = pasture({ platforms: [{ x: -3, y: 0, w: 6, h: 0.4, oil: true }, { x: 3, y: 0, w: 6, h: 0.4, drift: true }] });
+  Object.assign(g.hero, { x: -5, y: 0.9, vx: 6, vy: -1, state: "flying" });
+  advance(g, 2);
+  assert.ok(g.hero.x < 0.8, `x ${g.hero.x}`);
+});
+// A goat on its ledge: it charges along `walk` at `speed` when he rests level with it.
+const goat = (x, surface, walk = 2.5, speed = 6, range = 4) => ({ x, y: surface + 0.4, range: 3.5, speed: 1, walk, charge: { speed, range } });
+const restAt = (g, x, y) => {
+  Object.assign(g.hero, { x, y, vx: 0, vy: 0, state: "resting" });
+};
+test("a goat lowers its head, then charges along its ledge and kills a hero standing still", () => {
+  const g = pasture({ platforms: [ground7], pumpkins: [goat(3, 0)] });
+  restAt(g, 0, 0.45);
+  advance(g, 0.3);
+  assert.equal(g.pumpkins[0].state, "lower");
+  assert.equal(g.pumpkins[0].x, 3);
+  advance(g, 1.2);
+  assert.equal(g.deaths, 1);
+  assert.ok(g.events.some((e) => e.type === "charge"));
+});
+test("a goat's charge ends at the end of its ledge; it walks home and can charge again", () => {
+  const g = pasture({ platforms: [ground7, { x: 3, y: 3, w: 3, h: 0.5 }], pumpkins: [goat(3, 3, 1.2)] });
+  restAt(g, 0, 3.45);
+  let low = Infinity,
+    charges = 0,
+    was = "idle";
+  for (let i = 0; i < 720; i++) {
+    g.step(1 / 120);
+    const k = g.pumpkins[0];
+    low = Math.min(low, k.x);
+    assert.equal(k.y, 3.4);
+    if (k.state === "charge" && was !== "charge") charges++;
+    was = k.state;
+  }
+  assert.ok(Math.abs(low - 1.8) < 1e-9, `went to ${low}`);
+  assert.equal(g.deaths, 0);
+  assert.ok(charges >= 2, `charged ${charges} times`);
+});
+test("a goat does not charge unless he is level with it", () => {
+  const g = pasture({ platforms: [ground7], pumpkins: [goat(3, 0)] });
+  restAt(g, 1, 4);
+  advance(g, 2);
+  assert.equal(g.pumpkins[0].state, "idle");
+  assert.equal(g.pumpkins[0].x, 3);
+  restAt(g, 1, 0.45);
+  advance(g, 0.2);
+  assert.equal(g.pumpkins[0].state, "lower");
+});
+test("a goat does not charge while it is safe after a death", () => {
+  const g = pasture({ platforms: [ground7], pumpkins: [goat(-1.5, 0)] });
+  g.die();
+  advance(g, 2);
+  assert.ok(!["lower", "charge"].includes(g.pumpkins[0].state), g.pumpkins[0].state);
+  assert.equal(g.deaths, 1);
+  // A launch ends the safe time; resting level with it again brings the charge back.
+  g.launch(0, 2);
+  advance(g, 0.8);
+  assert.equal(g.pumpkins[0].state, "lower");
+});
+test("aiming pauses a goat's warning and its charge", () => {
+  const g = pasture({ platforms: [ground7], pumpkins: [goat(3, 0)] });
+  restAt(g, 0, 0.45);
+  advance(g, 0.3);
+  g.setAim(true);
+  advance(g, 1);
+  assert.equal(g.pumpkins[0].state, "lower");
+  assert.equal(g.pumpkins[0].x, 3);
+});
+test("a death sends a charging goat home", () => {
+  const g = pasture({ platforms: [ground7], pumpkins: [goat(3, 0)] });
+  restAt(g, -0.5, 0.45);
+  advance(g, 0.65);
+  assert.equal(g.pumpkins[0].state, "charge");
+  g.die();
+  assert.equal(g.pumpkins[0].x, 3);
+  assert.equal(g.pumpkins[0].state, "return");
+});
+test("a charging goat sticks in a drift, and a slow touch breaks it", () => {
+  const g = pasture({
+    platforms: [{ x: -3, y: 0, w: 6, h: 0.4 }, { x: 1.5, y: 0, w: 1, h: 0.4, drift: true }, { x: 4, y: 0, w: 4, h: 0.4 }],
+    pumpkins: [goat(4, 0, 3, 6, 6)],
+  });
+  restAt(g, -1, 0.45);
+  advance(g, 1.2);
+  const k = g.pumpkins[0];
+  assert.equal(k.state, "stuck");
+  assert.ok(k.x > 1 && k.x < 2, `x ${k.x}`);
+  assert.ok(g.events.some((e) => e.type === "stuck"));
+  Object.assign(g.hero, { x: k.x, y: 2, vx: 0, vy: -1, state: "flying" });
+  advance(g, 0.5);
+  assert.equal(k.alive, false);
+  assert.equal(g.deaths, 0);
+});
+// The snow cornice and the hollow it fills.
+const cornice = { x: 1, y: 1.5, w: 1, h: 1.5, type: "drop", knock: true, delay: 99, flood: "s" };
+const hollow = { type: "water", id: "s", snow: true, x: 3.5, y: 0, w: 5, level: 0, to: 3 };
+const bankOf = (g) => g.platforms.find((p) => p.type === "snowbank");
+const knockCornice = (g) => Object.assign(g.hero, { x: -1, y: 0.8, vx: 8, vy: 0, state: "flying" });
+test("the avalanche fills the hollow, traps Teryel and settles into a snowbank he can stand on", () => {
+  const g = pasture({ platforms: [ground7, { ...cornice }], objects: [{ ...hollow }, teryelAt(4.5)] });
+  assert.equal(g.solid(bankOf(g)), false);
+  knockCornice(g);
+  advance(g, 2.5);
+  assert.ok(g.events.some((e) => e.type === "flood" && e.snow), "the avalanche is not announced as snow");
+  assert.equal(g.objects[1].trapped, true);
+  assert.equal(g.solid(bankOf(g)), true);
+  assert.equal(g.waterAt(3, 2), null);
+  Object.assign(g.hero, { x: 3, y: 4.5, vx: 0, vy: -1, state: "flying" });
+  advance(g, 0.6);
+  assert.equal(g.hero.state, "resting");
+  assert.equal(g.support, bankOf(g));
+  assert.ok(Math.abs(g.hero.y - 3.45) < 0.02, `y ${g.hero.y}`);
+});
+test("a hero standing in the hollow ends on top of the snowbank, and a respawn under it moves up", () => {
+  const g = pasture({ platforms: [ground7, { ...cornice }], objects: [{ ...hollow }] });
+  restAt(g, 3, 0.45);
+  g.support = g.platforms[0];
+  g.respawn = { x: 3.5, y: 0.45 };
+  Object.assign(g.objects[0], { flooded: true, floodT: 0, floodFrom: 0 });
+  advance(g, 2);
+  assert.equal(g.hero.state, "resting");
+  assert.ok(Math.abs(g.hero.y - 3.45) < 0.02, `hero ${g.hero.y}`);
+  assert.ok(Math.abs(g.respawn.y - 3.45) < 0.02, `respawn ${g.respawn.y}`);
+});
+test("the snowbank survives a death", () => {
+  const g = pasture({ platforms: [ground7, { ...cornice }], objects: [{ ...hollow }] });
+  knockCornice(g);
+  advance(g, 2.5);
+  g.die();
+  advance(g, 0.2);
+  assert.equal(g.solid(bankOf(g)), true);
+  assert.equal(g.platforms[1].alive, false);
+});
+test("a hero pressed under a ledge in the water still floats, and can launch", () => {
+  const ledge = { x: 0, y: 4, w: 2, h: 0.5 };
+  const g = pasture({ platforms: [ground7, ledge], objects: [{ type: "water", x: 1, y: 0, w: 6, level: 4 }] });
+  Object.assign(g.hero, { x: 0, y: 2.5, vx: 0, vy: 0, state: "flying" });
+  advance(g, 3);
+  assert.equal(g.hero.state, "float");
+  assert.ok(g.hero.y + 0.45 <= ledge.y - ledge.h + 0.02, `inside the ledge: ${g.hero.y}`);
+  assert.equal(g.launch(5, 3), true);
+});
+test("freezing never lifts him up through a ledge", () => {
+  const ledge = { x: 0, y: 3.2, w: 2, h: 0.5 };
+  const g = pasture({ platforms: [ground7, ledge], objects: [pond({ level: 3.2 })] });
+  advance(g, 2.2);
+  Object.assign(g.hero, { x: 0, y: 2, vx: 0, vy: 0, state: "flying" });
+  advance(g, 2);
+  assert.ok(g.hero.y + 0.45 <= ledge.y - ledge.h + 0.02, `lifted through the ledge: ${g.hero.y}`);
+});
+test("freezing never sets him down touching a hunter", () => {
+  const g = pasture({ platforms: [ground7], objects: [pond()], pumpkins: [{ x: 2, y: 3.6, range: 0, speed: 0 }] });
+  advance(g, 2.2);
+  Object.assign(g.hero, { x: 1.2, y: 3, vx: 0, vy: 0, state: "flying" });
+  advance(g, 2.5);
+  assert.equal(g.deaths, 0);
+  assert.equal(g.hero.state, "resting");
+  assert.ok(Math.hypot(g.hero.x - 2, g.hero.y - 3.6) >= 0.9, `too close: ${g.hero.x}, ${g.hero.y}`);
+});
+test("a hero launching up out of the pond as it freezes is not caught by the ice", () => {
+  const g = pasture({ platforms: [ground7], objects: [pond()] });
+  advance(g, 2.2);
+  Object.assign(g.hero, { x: 0, y: 4, vx: 0, vy: -1, state: "flying" });
+  advance(g, 1.75);
+  assert.equal(g.hero.state, "float");
+  g.launch(0, 10);
+  advance(g, 0.3);
+  assert.equal(g.hero.state, "flying");
+  assert.ok(g.hero.y > 4.5, `y ${g.hero.y}`);
+});
+test("every landing in a drift is announced, even straight after a launch from one", () => {
+  const g = pasture({ platforms: [{ ...ground7, drift: true }] });
+  Object.assign(g.hero, { x: 0, y: 1.5, vx: 0, vy: -1, state: "flying" });
+  advance(g, 1);
+  assert.equal(g.hero.state, "resting");
+  g.launch(0.5, -1);
+  advance(g, 1);
+  assert.equal(g.events.filter((e) => e.type === "drift").length, 2);
+});

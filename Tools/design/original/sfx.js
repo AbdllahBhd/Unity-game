@@ -18,11 +18,16 @@
  *            death bosshit bossdown star tap page lightning
  *            snore growl clink whisper crackle creak caw squeak drip
  *            splash croak rope flood rain
+ *            gust crack melt crunch bleat avalanche
  *            (splash scales with opts.volume like every sound; rain is a 3 s wash that
- *            can be played again and again)
- *   HNSfx.setPlace(place)     "hearth" | "kitchen" | "loom" | "gorge" | "roofs" | "press" | "spring" | "rain":
+ *            can be played again and again; gust is the wind's 1 s beat that freezes the
+ *            pond, crack the ice closing, melt the ice giving way, crunch a landing in
+ *            snow, avalanche the cornice's 2.5 s fall)
+ *   HNSfx.setPlace(place)     "hearth" | "kitchen" | "loom" | "gorge" | "roofs" | "press" | "spring" | "rain"
+ *                             | "pasture" | "dawn":
  *                             changes the ambience bed (indoor fire, creaking loom, wind and
- *                             water outside, crickets and frogs on a dry summer night, rain).
+ *                             water outside, crickets and frogs on a dry summer night, rain,
+ *                             a blizzard on the high pasture, a still winter morning).
  *   Unknown names do nothing. play() is a no-op until unlock() ran, and while muted.
  *   At most 4 instances of the same sound play at once.
  */
@@ -321,6 +326,54 @@
         chain(tone("sine", [1800 * p * (0.8 + Math.random() * 0.5), 700 * p], 0.04, t + d), env(0.05, t + d, 0.002, 0.02, 0.3, 0.015, 0.04), out);
       }
     },
+    // The wind's beat on the high pasture: a whoosh that rises, peaks and falls away.
+    gust(t, p, out) {
+      chain(noise(1, t), filter("bandpass", 260 * p, 1.2, t, 1500 * p, 0.6), env(0.4, t, 0.45, 0.25, 0.5, 0.3, 1), out);
+      const whistle = tone("sine", [520 * p, 900 * p], 1, t);
+      lfo("sine", 5, 18 * p, whistle.frequency, t, 1);
+      chain(whistle, env(0.035, t, 0.4, 0.3, 0.4, 0.3, 1), out);
+    },
+    // The pond freezing over: a run of sharp, glassy ticks and a thin ring.
+    crack(t, p, out) {
+      for (let i = 0; i < 5; i++) {
+        const d = i * 0.045 + Math.random() * 0.02;
+        chain(noise(0.03, t + d), filter("highpass", 3500 * p * (0.8 + Math.random() * 0.5), 2, t + d), env(0.35 - i * 0.05, t + d, 0.001, 0.02, 0.2, 0.008, 0.03), out);
+      }
+      chain(tone("sine", [3100 * p, 2500 * p], 0.3, t), env(0.05, t, 0.002, 0.12, 0.3, 0.12, 0.3), out);
+    },
+    // The ice giving way: a soft, dull crack, then water dripping off the edges.
+    melt(t, p, out) {
+      chain(noise(0.12, t), filter("bandpass", 900 * p, 1.5, t, 400 * p, 0.12), env(0.3, t, 0.003, 0.06, 0.3, 0.04, 0.12), out);
+      chain(tone("sine", [160 * p, 90 * p], 0.15, t), env(0.2, t, 0.003, 0.08, 0.2, 0.05, 0.15), out);
+      [0.2, 0.38, 0.55].forEach((d, i) => {
+        chain(tone("sine", [1500 * p * (1 - i * 0.12), 500 * p], 0.08, t + d), env(0.1, t + d, 0.002, 0.04, 0.3, 0.03, 0.08), out);
+      });
+    },
+    // Landing in deep snow: a short, grainy crunch.
+    crunch(t, p, out) {
+      const g = env(0.4, t, 0.004, 0.08, 0.4, 0.06, 0.2);
+      lfo("square", 60, 0.18, g.gain, t, 0.2);
+      chain(noise(0.2, t), filter("bandpass", 1300 * p, 1.2, t, 600 * p, 0.2), g, out);
+      chain(tone("sine", [80 * p, 45 * p], 0.1, t), env(0.15, t, 0.004, 0.06, 0.2, 0.03, 0.1), out);
+    },
+    // A goat: a nasal, quavering "meh", falling at the end.
+    bleat(t, p, out) {
+      const o = tone("sawtooth", [560 * p, 430 * p], 0.6, t);
+      lfo("sine", 8, 22 * p, o.frequency, t, 0.6);
+      const g = env(0.16, t, 0.03, 0.15, 0.7, 0.2, 0.6);
+      lfo("sine", 8, 0.06, g.gain, t, 0.6);
+      chain(o, filter("bandpass", 1100 * p, 3, t), g, out);
+      chain(tone("square", [280 * p, 215 * p], 0.6, t), filter("lowpass", 900 * p, 1, t), env(0.04, t, 0.03, 0.15, 0.7, 0.2, 0.6), out);
+    },
+    // The cornice breaks: a crack, then a deep rumble under a rushing hiss of snow.
+    avalanche(t, p, out) {
+      chain(noise(0.1, t), filter("lowpass", 3000 * p, 1, t, 500 * p, 0.1), env(0.6, t, 0.002, 0.06, 0.3, 0.03, 0.1), out);
+      const rumble = env(0.7, t + 0.05, 0.3, 0.8, 0.6, 1, 2.45);
+      lfo("sine", 5, 0.2, rumble.gain, t, 2.5);
+      chain(noise(2.45, t + 0.05, true), filter("lowpass", 220 * p, 1, t, 80 * p, 2.5), rumble, out);
+      chain(tone("sine", [55 * p, 30 * p], 2.2, t + 0.1), env(0.5, t + 0.1, 0.3, 0.8, 0.5, 0.8, 2.2), out);
+      chain(noise(2.3, t + 0.2, true), filter("highpass", 2500 * p, 0.7, t), env(0.18, t + 0.2, 0.4, 0.6, 0.6, 1, 2.3), out);
+    },
     lightning(t, p, out) {
       chain(noise(0.08, t), filter("highpass", 1800 * p, 1, t), env(0.9, t, 0.002, 0.05, 0.2, 0.02, 0.08), out);
       const rumble = env(0.6, t + 0.05, 0.05, 0.5, 0.5, 0.5, 1.15);
@@ -334,6 +387,7 @@
     bossdown: 1.2, star: 0.3, tap: 0.05, page: 0.15, lightning: 1.2,
     snore: 1.6, growl: 0.8, clink: 0.12, whisper: 0.9, crackle: 0.03, creak: 0.7, caw: 0.45, squeak: 0.16, drip: 0.09,
     splash: 0.45, croak: 0.3, rope: 0.3, flood: 2, rain: 3,
+    gust: 1, crack: 0.35, melt: 0.65, crunch: 0.2, bleat: 0.6, avalanche: 2.5,
   };
 
   function play(name, opts) {
@@ -370,6 +424,14 @@
       // The bed turns into a steady hiss of rain on the roofs.
       amb.filter.frequency.setTargetAtTime(rand(2200, 3200), t, len * 0.4);
       amb.src.gainParam.setTargetAtTime(rand(0.035, 0.05), t, len * 0.4);
+    } else if (amb.place === "pasture") {
+      // A blizzard on the high pasture: a loud, restless wind rising and dropping fast.
+      amb.filter.frequency.setTargetAtTime(rand(450, 1200), t, len * 0.25);
+      amb.src.gainParam.setTargetAtTime(rand(0.06, 0.12), t, len * 0.25);
+    } else if (amb.place === "dawn") {
+      // The snow has stopped: a light wind over the drifts.
+      amb.filter.frequency.setTargetAtTime(rand(220, 420), t, len * 0.4);
+      amb.src.gainParam.setTargetAtTime(rand(0.008, 0.02), t, len * 0.4);
     } else if (amb.place === "spring") {
       // A still, hot night: only a breath of air in the ravine.
       amb.filter.frequency.setTargetAtTime(rand(200, 380), t, len * 0.4);
@@ -458,6 +520,35 @@
         setTimeout(() => out.disconnect(), 800);
       }
       next = rand(0.8, 2.6);
+    } else if (amb.place === "pasture") {
+      // Gusts through the rocks, the cold making the ice creak, now and then a distant goat.
+      if (live) {
+        const out = ctx.createGain();
+        out.connect(amb.gain);
+        const roll = Math.random();
+        if (roll < 0.2) {
+          out.gain.value = 0.12;
+          SOUNDS.bleat(ctx.currentTime, rand(0.75, 0.9), out, {});
+        } else if (roll < 0.45) {
+          out.gain.value = 0.1;
+          SOUNDS.crack(ctx.currentTime, rand(0.5, 0.7), out, {});
+        } else {
+          out.gain.value = 0.25;
+          SOUNDS.gust(ctx.currentTime, rand(0.7, 1.1), out, {});
+        }
+        setTimeout(() => out.disconnect(), 1100);
+      }
+      next = rand(3, 7);
+    } else if (amb.place === "dawn") {
+      // A bird or two in the cedars, far apart.
+      if (live && Math.random() < 0.7) {
+        const out = ctx.createGain();
+        out.gain.value = 0.14;
+        out.connect(amb.gain);
+        bird(ctx.currentTime, rand(0.9, 1.2), out);
+        setTimeout(() => out.disconnect(), 900);
+      }
+      next = rand(4, 9);
     } else if (amb.place === "rain") {
       // Overlapping washes keep the rain going; drops ring in the gutters.
       if (live) {
@@ -479,6 +570,15 @@
       const g = env(0.12, t + d, 0.005, 0.03, 0.8, 0.02, 0.07);
       lfo("square", 38, 0.1, g.gain, t + d, 0.07);
       chain(tone("sine", 4400 * p, 0.07, t + d), g, out);
+    }
+  }
+
+  // A small bird: two or three quick, bright chirps sliding upward.
+  function bird(t, p, out) {
+    const n = 2 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < n; i++) {
+      const d = i * 0.16;
+      chain(tone("sine", [2600 * p, 3900 * p], 0.09, t + d), env(0.12, t + d, 0.005, 0.04, 0.5, 0.03, 0.09), out);
     }
   }
 

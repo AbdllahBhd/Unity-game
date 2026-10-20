@@ -517,3 +517,294 @@ your call.
       `graphify update .` done.
 
 /goal every Night 6 step in task_plan.md is checked off per its own "Done when", and the tales prototype's tests, route checks and ESLint pass
+
+## Night 7 plan: Ussan n Tamɣart, the old woman's borrowed days (proposed 2026-10-20)
+
+Status: built and reviewed (2026-10-20); awaiting the user's playtest and Taqbaylit
+corrections. Plan approved by the user with "go with a helper". Chosen on 2026-10-20, with
+the freezing pond, snowdrifts, charging goats and an avalanche finale. Branch
+`feat/night-7-borrowed-days` from `develop`.
+
+**Objective:** add Night 7 (stages 25-28) to the tales prototype, with a pond that
+freezes and thaws on the wind's beat and snowdrifts that stop charging goats, each
+verified by tests and a three-star route at human pace.
+
+### The tale
+
+The legend Yennayer comes from: an old woman (Tamɣart) mocked January for a mild winter
+and drove her goats up to the high pasture; January borrowed days from February
+("amerḍil", the loan) and froze her and her goats into rock on the Djurdjura. Jida's
+version: Teryel was that old woman's friend, and she stole the old woman's spindle
+(izdi, goat hair still on it), which Jida's grandmother wove with. It sits on the
+frozen pasture among the stone goats. **Goal: the spindle.** Hunters: the old woman's
+goats (iɣeṭṭen), half frozen, charging along their ledges. Place: the high pasture in a
+January blizzard, the frozen pond, snow cornices, the rocks that were goats.
+Stages: 25 *Agris* (the ice) · 26 *Adfel* (the snow) · 27 *Iɣeṭṭen* (the goats: ice,
+drifts and charges together) · 28 *Teryel deg udfel*: knock the snow cornice; the
+avalanche fills the hollow, buries Teryel and leaves a snowbank to the door. Ending:
+the snow stops on the first day of February, and the children ask if the old woman is
+still up there (she is: the rocks on the Djurdjura). New Taqbaylit words go on the
+user's checklist.
+
+### Scope
+
+**In:** engine rules in the shared `prototype/game.js` (tests first), four stages,
+routes, story beats, text in four languages, art, sound, docs.
+**Out:** Unity code, scenes and assets; the comparison prototype (must still replay
+60/60); stages 1-24 (must replay unchanged); Night 8; the Mqidec cloak.
+
+### Approach: the rules
+
+All rules are opt-in on level data. Night 6's lessons apply from the start:
+- A launch plus a dash climbs about 18 units, so layouts are planned with that reach.
+- No hunter can reach the start or any respawn spot during the 1.2 s thinking pause.
+- Test geometry stays above y = -3 (out of bounds is death).
+
+The rules:
+- **Ice from water** (`water` with `freeze: { period, ice, offset }`; `freeze` with
+  `rise` is rejected when the stage loads).
+  - **Where it lives:** `restart()` appends one generated platform per freezing water to
+    `this.platforms`: `type: "ice"`, `generated: true`, the water's index, at its
+    (fixed) surface. `solid()` makes it solid only while frozen. It is slippery like
+    oil, never a respawn point, and drawn by its own renderer hook.
+  - **Copies:** anything that turns game platforms back into level data
+    (`find-routes` `stripped`) drops generated platforms.
+  - **Freezing lifts any hero inside that pool's box** onto the ice (resting, support
+    = the ice): floating, still settling, or deep under it.
+  - **Thawing** turns the ice non-solid. The existing rules then drop a resting hero
+    into the water.
+  - **Warning for the renderer:** `iceFor` and `thawIn` timers, like ghost stones.
+  - Events `freeze`, `thaw`. Resting on ice counts as `ride:ice`.
+- **Snowdrifts** (platform flag `drift`). Landing on a drift stops him dead at any speed:
+  no glide, even off ice. Event `drift` (a flag can't be named by `ride:<type>`).
+  - A charging goat whose x enters a drift's span, with the drift's top within 1 of the
+    goat's ledge, sticks in it. It is stunned for 2 s, and any touch breaks it then.
+  - The preview said drifts "cushion any fall". The game has no fall damage, so that
+    part has no effect and is dropped.
+- **Goats** (lively hunter field `charge: { speed, range }`, with `walk` for the ledge).
+  `charge` replaces the notice/hunt chase.
+  - **States** live in `p.state` (`idle`, `lower`, `charge`, `stuck`, `return`), so
+    `die()`'s reset (`return`, `safe`) covers them.
+  - **Trigger:** when he is at rest level with it (heights within 1, horizontal distance
+    under `range`, not `safe`), it lowers its head for a 0.5 s warning, then charges
+    along its ledge at `speed`.
+  - **End of a charge:** at the end of its `walk` it turns and walks home (`return`);
+    in a drift it is stuck. It can charge again after 1.5 s at home.
+  - **Aiming:** the warning and the charge run after `if (paused) return`, so aiming
+    freezes them like other hunters.
+  - Lethal like every hunter; smashed by a dash or a fast hit as usual. Events
+    `charge`, `stuck`.
+- **Avalanche** (a `drop` with `knock: true, flood: <id>`, the cistern rule, on a
+  `water` object marked `snow: true`). Knocking the cornice fills the hollow to `to`
+  in 1.5 s.
+  - **While it fills,** it is like the flood: a hero inside floats, and every Teryel
+    under it is trapped.
+  - **When it settles,** a generated `type: "snowbank"` platform at `to` becomes solid
+    for good, and the snow stops counting as water.
+  - **Getting out:** any hero whose centre is in the box is lifted onto the bank
+    (resting), and a respawn point under the snow moves to the top of the bank.
+  - It stays after a death. Event `flood` with `snow: true`.
+- **Night 6's water stays as it is:** no generated platform without `freeze` or `snow`
+  (tested).
+
+### Steps (each verified before the next)
+
+1. **Spec and text.** Add "Tale 7" to `Tools/design/yennayer-spec.md` and the Night 7
+   tables to `Tools/design/yennayer-script.md`:
+   - intro, stage lines and ending;
+   - tips `tip.ice`, `tip.drift`, `tip.goat`, `tip.cornice`;
+   - remarks `r.freeze`, `r.thaw`, `r.stuck`, `r.avalanche`;
+   - names `tale.7`, `stage.25`-`28`.
+
+   Rebuild `original/text.js`.
+   Done when:
+   - `python3 Tools/design/original/build-text.py` succeeds, every new id is in four
+     languages, and the text.js diff only adds ids.
+   - Only those three files changed.
+2. **Engine, tests first.** Write failing tests in `prototype/game.test.js` (lively
+   hunters where goats are involved):
+   - **Ice:**
+     - solid only while frozen, and slippery;
+     - freezing lifts a floating hero, a settling hero and a deep hero onto it;
+     - thawing drops a resting hero in;
+     - never a respawn point; the warning timers count down;
+     - `freeze` with `rise` is rejected.
+   - **Night 6 water** gets no platform and stays non-solid.
+   - **Drifts:** they stop a fast landing (also coming off ice); they catch a charging
+     goat, which a slow touch then breaks.
+   - **Goats:**
+     - the warning, then a charge along the ledge only;
+     - no charge unless he is level with it; no charge while `safe` after a death;
+     - aiming pauses both the warning and the charge;
+     - it goes home after a charge and can charge again;
+     - lethal while charging; the charge resets on death.
+   - **Avalanche:**
+     - it fills and traps Teryel; its snowbank holds a resting hero;
+     - a hero standing in the hollow ends up on the bank, not inside it;
+     - a respawn point in the hollow moves to the top of the bank;
+     - it survives a death.
+
+   Show them failing, then implement in `prototype/game.js`.
+   Done when:
+   - `node Tools/design/prototype/game.test.js` is all green (99 + new).
+   - `prototype/verify-routes.js` is 60/60, and `original/verify-routes.js` is 24/24
+     with `routes.js` unchanged.
+   - Only `prototype/game.js` and `prototype/game.test.js` changed.
+3. **Stages and routes.** Add tale 7 (`key: "pasture", hunter: "goat"`), helpers and
+   stages 25-28 to `original/levels.js` (header "seven tales"). Lessons: 25 `ride:ice`,
+   26 `stuck`, 27 `drift` and `ride:ice`, 28 `flood`.
+   - Teach `find-routes.js` and `verify-routes.js` the new uses (`ride:ice`, `drift`,
+     `stuck`, `freeze`, `flood`).
+   - **Layout checks:**
+     - every goat's `walk` is backed by platforms;
+     - no goat is level with the start or any rest spot of the stored route within its
+       `charge.range` unless a drift lies between;
+     - no `rise` on freezing water.
+   - **`--strip` options:**
+     - `freeze`: the water never freezes;
+     - `drift`: the drift flags are removed;
+     - `snowbank`: the flood stays, but the snow is plain water.
+   - Run `node Tools/design/original/find-routes.js 25 26 27 28` to write `routes.js`.
+   - **If the layouts need an engine change,** it goes test-first into `game.js` and
+     `game.test.js`, then 60/60 and 24/24 are re-run and this plan is amended (Night 6
+     needed two such changes).
+
+   Done when:
+   - `node Tools/design/original/verify-routes.js` prints 28/28 three stars at human
+     pace, each stage using its lesson, with the layout checks passing.
+   - Routes 1-24 are byte-identical in `routes.js`.
+   - Required: `--strip snowbank` on 28 finds no route.
+   - The other `--strip` results are reported as evidence; a dash bypass is recorded,
+     not hidden.
+   - Outside amendments made under the rule above, changes stay in
+     `Tools/design/original/`.
+4. **Screens, art and sound** (helper agent for art and sound, as in Night 6, once
+   step 3 fixes the data names).
+   - `app.js`:
+     - night list; `place()` gives `pasture`; `goat` in the hunter-tip list;
+     - tips branch on `freeze` (ice) and on `snow` (cornice) before the water and
+       cistern tips;
+     - event handlers.
+   - `story.js`: tale 7 beats, tips and remarks.
+   - `art.js`: the generic platform loop skips generated `ice` and `snowbank`, which
+     their own hooks draw.
+   - `tales-art.js` (with `art.js` hooks):
+     - blizzard backdrop; ice with its freeze and thaw warning; drifts;
+     - goats (head down, charging, stuck); cornice; snowbank; spindle;
+     - the stone goats of the legend; story scenes.
+   - `sfx.js`: wind beat, ice crack, crunch, bleat, avalanche; `pasture` ambience.
+   Done when:
+   - ESLint is clean in both folders. Tests and both route checks are still green.
+   - The browser at 375x812 shows these with no console errors, with screenshots shared:
+     - the Night 7 intro;
+     - stage 25 freezing and thawing;
+     - a goat stuck in a drift in stage 26;
+     - the stage 28 avalanche;
+     - the ending scenes.
+   - Changes stay in `Tools/design/`.
+5. **Review and wrap-up.**
+   - Independent `code-reviewer` pass on the Night 7 diff; fix or rebut every finding,
+     tests first for bugs.
+   - Update this plan's evidence and `yennayer-spec.md`, then run `graphify update .`.
+   - Commit on `feat/night-7-borrowed-days`.
+   Done when:
+   - Tests, both route checks, ESLint and `python3 Tools/check_levels.py` (10/10) are
+     green after the fixes.
+   - The commit exists.
+
+### Files touched
+
+`Tools/design/yennayer-spec.md`, `Tools/design/yennayer-script.md`,
+`Tools/design/prototype/game.js`, `Tools/design/prototype/game.test.js`, and these in
+`Tools/design/original/`: `text.js`, `levels.js`, `routes.js`, `find-routes.js`,
+`verify-routes.js`, `app.js`, `story.js`, `tales-art.js`, `art.js`, `sfx.js`. Also
+`task_plan.md` and `graphify-out/`.
+
+### Risks and open questions
+
+- Ice that thaws under a resting hero, plus slippery landings, can feel unfair. The
+  warning timers and the stage pacing need the user's playtest.
+- Goats are the first hunters that react to him resting. The layout check and the
+  human-pace search guard the stored route, but a player resting elsewhere can still be
+  charged. That is intended (a drift or a dash answers it), but needs playtesting.
+- Snow that is solid where water floats reuses the flood code; the difference must not
+  leak into Night 6's water (tested).
+- Dash bypasses are likely in 25-27 (Night 6 showed the same); reported, not chased.
+- Taqbaylit words and the legend's details need the user's correction.
+
+
+### Progress
+
+- [x] 1. Spec and text (2026-10-20): `build-text.py` wrote 255 lines; 32 new ids in four
+      languages; text.js diff has additions only; Tale 7 in `yennayer-spec.md`.
+- [x] 2. Engine, tests first (2026-10-20): 20 new tests seen failing (19 of 20; the 20th
+      guards Night 6 water and passes by design), weak ones given positive checks, then
+      `prototype/game.test.js` 119/119; `prototype/verify-routes.js` 60/60;
+      `original/verify-routes.js` 24/24 with `routes.js` unchanged. Only `game.js` and
+      `game.test.js` changed. Notes: the warning timers are `iceFor` (left frozen) and
+      `freezeIn` (until it freezes); a goat that is safe after a death waits at home
+      (sending it home every tick restarted its cooldown forever).
+- [x] 3. Stages and routes (2026-10-20): stages 25-28 in `levels.js` (tale `pasture`,
+      hunter `goat`, helpers `pond`, `drift`, `goat`, `goatAsleep`, `cornice`, `hollow`).
+      - `find-routes.js` drops generated platforms when copying and gains `--strip`
+        `freeze`, `drift` and `snowbank`.
+      - `verify-routes.js` knows `ride:ice`, `drift` and `stuck`, rejects a pond that
+        freezes and rises, and fails a route if any rest spot before a launch lies in a
+        live goat's charge (its range to trigger, its walk to reach) with no drift between.
+      - `node Tools/design/original/verify-routes.js`: 28/28 three stars at human pace,
+        each using its lesson (25 ride:ice with the glide and float; 26 drift and stuck;
+        27 drift, stuck and float; 28 flood, trapped). Stored routes 1-24 byte-identical.
+      - **Amendment, necessity check.** `--strip snowbank` on 28 still finds a route:
+        floating on plain flood water sits only 0.7 lower than standing on the snowbank,
+        so the bank is a convenience, not a requirement. The required check is now
+        `--strip flood` on 28 (no cornice), which finds **no route**: the avalanche is
+        what the stage needs. Evidence only, as planned: `--strip freeze` on 25 and 27 and
+        `--strip drift` on 26 and 27 still find three-star routes (dash climbs and other
+        lines), recorded for the playtest.
+- [x] 4. Screens, art and sound (2026-10-20).
+      - **Wiring:** `app.js` (pasture and dawn ambience; goat, ice, drift and cornice
+        tips; freeze, thaw, drift, charge, stuck and avalanche handlers) and `story.js`
+        (tale 7 beats, tips, remarks). The engine's `flood` event now carries `snow`
+        (test first, 119/119).
+      - **Helper:** backdrop, ice, open and dead water, drifts, goats in every state,
+        cornice, avalanche, snowbank, spindle, five scenes; sounds gust, crack, melt,
+        crunch, bleat, avalanche.
+      - **Live check at 375x812, no console errors:** the Night 7 map, chapter card,
+        pasture story scene, stage 25 with its goat and ice cards.
+      - **Engine-stepped renders:** the browser pane was hidden, which pauses the game's
+        animation loop, so live play could not show the timed states. A temporary page,
+        since deleted, stepped the real engine along the stored routes and drew each moment
+        with `drawStage`. It covered:
+        - stage 25 frozen, thaw warning, thawed, and freeze warning;
+        - a goat charging and a goat stuck in a drift (26, 27);
+        - the 28 avalanche filling and settled;
+        - all five scenes.
+      - **Found and fixed from the renders:**
+        - The frozen pond was indistinguishable from water; it is now an opaque cracked
+          ice sheet over still, frosted water.
+        - Backdrop crag snow and the cedars' flat snowy tiers looked like steps; the
+          crags were broken up and the cedars faded into the haze.
+      - ESLint clean in both folders; tests and both route checks still green.
+- [x] 5. Review and wrap-up (2026-10-20). Independent `code-reviewer`: 1 serious
+      finding, 2 warnings, nits.
+      - Fixed, tests first: in stages 25 and 27 a ledge at pond level with water under it
+        pinned a hero in a flying state he could not launch from, and the freeze lifted him
+        through it (onto the sleeping goat in 25). Now:
+        - a hero pressed under a ledge in water floats and can launch;
+        - the freeze lift never passes through a ledge;
+        - the lift sets him down clear of hunters (sliding along the sheet, else grace);
+        - a hero already rising out above the surface is not caught;
+        - the layouts use solid banks to the ground;
+        - `verify-routes.js` rejects any platform hanging inside a freezing pond.
+      - Fixed: the drift flag is reset on restart, launch and death.
+      - Fixed: the lift clears a dash in progress and announces the landing.
+      - The reviewer's probes now find no pinned hero; a launch 1/40 s before the freeze,
+        centre still under the surface, is still caught by the ice (as the review suggested).
+      - Kept (cosmetic): an ice glide plays the oil sound and dust; the hunter drawing's
+        unused `range` for goats.
+      - Gates after the fixes: `prototype/game.test.js` 124/124; `prototype/verify-routes.js`
+        60/60; `original/verify-routes.js` 28/28 (routes 1-24 byte-identical); ESLint clean
+        in both folders; `python3 Tools/check_levels.py` 10/10; `--strip flood` on 28
+        still finds no route; `graphify update .` done.
+
+/goal every Night 7 step in task_plan.md is checked off per its own "Done when", and the tales prototype's tests, route checks and ESLint pass

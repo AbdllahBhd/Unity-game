@@ -1,4 +1,4 @@
-/* The tales of Mqidec: six tales of four stages (Tools/design/yennayer-spec.md).
+/* The tales of Mqidec: seven tales of four stages (Tools/design/yennayer-spec.md).
  * World units follow the shared engine: x from -6 to 6, y up, platform y is the
  * walking surface, door y is the centre of its trigger (surface + 1).
  * Every stage holds three hunters; each one broken is a star. The fourth stage of
@@ -58,6 +58,17 @@
   const frog = (x, surface, walk = 0.4, height = 1.6, every = 2.4, range = 3) => ({ x, y: surface + 0.4, range, speed: 1, walk, leap: { height, every } });
   // The cracked cistern wall: a hard hit or a dash breaks it and floods the water `id`.
   const cistern = (x, surface, id, h = 1.6) => ({ x, y: surface + h, w: 1, h, type: "drop", knock: true, delay: 99, flood: id });
+  // A pond that freezes on the wind's beat: ice for `ice` s at the start of every `period` s.
+  const pond = (x, w, level, period = 6, ice = 3, offset = 0) => water(x, 0, w, level, { freeze: { period, ice, offset } });
+  // Snow piled on a surface: landing in it stops him dead, and it catches a charging goat.
+  const drift = (x, surface, w = 1.2) => ({ ...ledge(x, surface + 0.3, w), h: 0.3, drift: true });
+  // A goat charges along `walk` when he rests level with it within `range`; a sleeper never does.
+  const goat = (x, surface, walk = 2, range = 4.5, speed = 6) => ({ x, y: surface + 0.4, range: 3.5, speed: 1, walk, charge: { speed, range } });
+  const goatAsleep = (x, surface) => ({ x, y: surface + 0.4, range: 0, speed: 0 });
+  // The snow cornice over the hollow `id`: a hard hit or a dash breaks it off.
+  const cornice = (x, surface, id, h = 1.4) => ({ x, y: surface + h, w: 1.2, h, type: "drop", knock: true, delay: 99, flood: id });
+  // The hollow the avalanche fills with snow up to `to`.
+  const hollow = (x, w, to, id) => water(x, 0, w, 0, { id, snow: true, to });
 
   const tales = [
     { id: 1, key: "kitchen", hunter: "pot" },
@@ -66,6 +77,7 @@
     { id: 4, key: "roofs", hunter: "raven" },
     { id: 5, key: "press", hunter: "rat" },
     { id: 6, key: "spring", hunter: "frog" },
+    { id: 7, key: "pasture", hunter: "goat" },
   ];
 
   const stages = [
@@ -393,6 +405,52 @@
       platforms: [ground, ledge(-2.4, 4, 2.4), cistern(-1.7, 4, "flood"), ledge(4.4, 6.8, 2.2), ledge(-4.4, 10.6, 2.2)],
       pumpkins: [frog(-0.2, 0, 0.6), frog(-3, 4, 0.3), frog(4.4, 6.8, 0.5)],
       objects: [water(2.5, 0, 7, 0, { id: "flood", to: 3.4 }), teryel(3.6, 0, 1.2, 1.2, 7)],
+    },
+    /* ---------- Tale 7: the old woman's borrowed days. Her goats hunt him. ---------- */
+    // The pond freezes on the wind's beat: land on the ice and glide into the stone goat.
+    {
+      id: 25,
+      height: 16,
+      teaches: "ride:ice",
+      start: { x: -4.8, y: 0.45 },
+      door: { x: -4.4, y: 13.5 },
+      platforms: [ground, post(-2, 0, 3.2), post(5.4, 0, 3.2, 1.2), ledge(-4.4, 6, 2.4), ledge(3.6, 8.6, 2.6), ledge(-4.4, 12.5, 2.2)],
+      pumpkins: [goatAsleep(5.4, 3.2), goat(-4.4, 6, 0.6), goat(3.6, 8.6, 0.9)],
+      objects: [pond(1.575, 6.65, 3.2)],
+    },
+    // Drifts: rest beyond one and let the goat charge into it.
+    {
+      id: 26,
+      height: 14,
+      teaches: "stuck",
+      start: { x: -4.8, y: 0.45 },
+      door: { x: -4.4, y: 11.5 },
+      platforms: [ground, drift(0.8, 0, 1.2), ledge(-1.2, 5, 1.6), ledge(3.6, 5, 4.8), drift(2, 5, 1), ledge(-4.4, 10.5, 2.2), ledge(4.4, 9, 2.2)],
+      pumpkins: [goat(2.5, 0, 3), goat(3.9, 5, 2, 6), goatAsleep(4.4, 9)],
+      objects: [],
+    },
+    // Ice, drifts and goats together: count the wind.
+    {
+      id: 27,
+      height: 16,
+      teaches: "drift",
+      start: { x: -4.8, y: 0.45 },
+      door: { x: 4.6, y: 13.5 },
+      platforms: [ground, post(-2, 0, 3.2), post(4.6, 0, 3.2, 2.8), drift(3.8, 3.2, 0.8), ledge(-4.3, 7, 3.2), drift(-3.3, 7, 0.8), ledge(0.5, 9.5, 2.4), ledge(4.6, 12.5, 2.2)],
+      pumpkins: [goat(4.9, 3.2, 1), goat(-4.6, 7, 1.2, 4), goatAsleep(0.5, 9.5)],
+      objects: [pond(0.6, 5.2, 3.2, 6, 3, 1.5)],
+    },
+    // Break the cornice: the avalanche fills the hollow over Teryel and leaves a snowbank.
+    {
+      id: 28,
+      height: 14,
+      rules: TRAP,
+      teaches: "flood",
+      start: { x: -4.8, y: 0.45 },
+      door: { x: 4.6, y: 10 },
+      platforms: [ground, ledge(-1.8, 4, 2.4), cornice(-1.2, 4, "avalanche"), ledge(4.4, 6.5, 2.2), ledge(4.6, 9, 2.2)],
+      pumpkins: [goat(-2.6, 0, 0.6, 3), goatAsleep(-2.6, 4), goatAsleep(4.4, 6.5)],
+      objects: [hollow(2.7, 6.6, 3.6, "avalanche"), teryel(3.4, 0, 1.2, 1.4, 7)],
     },
   ];
   const taleOf = (id) => Math.ceil(id / 4);

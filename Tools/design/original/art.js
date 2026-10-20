@@ -1920,6 +1920,13 @@
     };
   }
 
+  // A goat's charge as the drawing needs it (engine: charge {speed, range}, state, timer):
+  // goat {state: idle | lower | charge | stuck | return, timer: seconds left in it}.
+  function goatPose(p) {
+    if (!p.charge) return {};
+    return { goat: { state: p.state || "idle", timer: p.timer || 0 } };
+  }
+
   // view: {width, height, cameraY, chapter, time, aim, fx, hidden, doorFrame, enterFrame}
   function drawStage(c, g, view) {
     const w = view.width,
@@ -1961,11 +1968,16 @@
         th.bucketBack(c, X(p.x), Y(p.y), p.w * S, S);
       }
     }
+    // A snowdrift is an ordinary platform under a soft pile of snow (the tale draws it).
+    const drift = (p) => p.drift && th && th.drift && th.drift(c, p, X, Y, S, t, g);
     for (const p of g.platforms) {
+      // Ice sheets and snowbanks belong to their water; the tale draws them with it.
+      if (p.generated) continue;
       const top = Y(p.y);
       if (p.type === "ground") {
         if (th) th.ground(c, X(p.x - p.w / 2), X(p.x + p.w / 2), top, h + 10, g.level.theme, t);
         else earth(c, X(p.x - p.w / 2), X(p.x + p.w / 2), top, h + 10);
+        drift(p);
         continue;
       }
       if (p.type === "post") {
@@ -1985,6 +1997,8 @@
         }
         continue;
       }
+      // The snow cornice: a knock drop whose water is snow (the tale says no otherwise).
+      if (p.type === "drop" && p.flood !== undefined && th && th.cornice && th.cornice(c, p, X, Y, S, t, g)) continue;
       // The cracked cistern wall: a knock drop that floods a water when it breaks.
       if (p.type === "drop" && p.flood !== undefined && th && th.cistern) {
         th.cistern(c, X(p.x), top, p.w * S, (p.h || 0.4) * S, t);
@@ -2042,6 +2056,7 @@
       }
       disc(X(p.x), top, p.w * S, solidNow(p, t));
       if (p.oil && th && th.oil) th.oil(c, X(p.x), top, p.w * S, t);
+      drift(p);
     }
 
     for (const o of g.objects) {
@@ -2148,6 +2163,7 @@
         ring: mood === "notice" ? 0.55 : mood === "chase" && view.showRings ? 0.18 : 0,
         rangePx: p.range * S,
         ...frogPose(p),
+        ...goatPose(p),
       };
       if (th) th.hunter(c, g.level.hunter, X(p.x), Y(p.y), S * 1.05, t, mood, extra);
       else pumpkin(c, X(p.x), Y(p.y), S * 1.05, t, mood, false, extra);
@@ -2305,10 +2321,37 @@
       }
       this.items.push({ kind: "ring", x, y, vx: 0, vy: 0, size: 0.5 + strength * 0.4, life: 0.7, max: 0.7 });
     }
+    // Snow thrown up at (x, y): soft puffs of powder that swell and hang, a few grains.
+    // strength: about 1 for a landing in a drift or a goat's hooves, 3 for the avalanche.
+    snow(x, y, strength = 1) {
+      const n = Math.round(4 + strength * 5);
+      for (let i = 0; i < n; i++) {
+        const a = Math.PI * (0.1 + (0.8 * i) / Math.max(1, n - 1));
+        const v = (1 + (i % 3) * 0.6) * (0.6 + strength * 0.35);
+        this.items.push({ kind: "puff", x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v * 0.8 + 0.4, size: 0.18 + (i % 4) * 0.06 + strength * 0.04, life: 0.9, max: 0.9 });
+      }
+      this.sparks(x, y, "rgba(240,246,255,", Math.round(4 + strength * 3));
+    }
+    // Frost glittering up off a sheet of ice w wide centred on (x, y), as it closes.
+    frost(x, y, w) {
+      const n = Math.max(4, Math.min(24, Math.round(w * 3)));
+      for (let i = 0; i < n; i++)
+        this.items.push({
+          kind: "spark",
+          color: "rgba(215,238,255,",
+          x: x + (i / (n - 1) - 0.5) * w,
+          y,
+          vx: Math.sin(i * 2.3) * 0.4,
+          vy: 0.6 + (i % 3) * 0.4,
+          life: 0.6,
+          max: 0.6,
+        });
+    }
     update(dt) {
       for (const p of this.items) {
         p.life -= dt;
-        p.vy -= (p.kind === "piece" ? 14 : p.kind === "drop" ? 12 : p.kind === "ring" ? 0 : 4) * dt;
+        if (p.kind === "puff") p.vx *= Math.max(0, 1 - dt * 2.5);
+        p.vy -= (p.kind === "piece" ? 14 : p.kind === "drop" ? 12 : p.kind === "ring" ? 0 : p.kind === "puff" ? 1.5 : 4) * dt;
         p.x += p.vx * dt;
         p.y += p.vy * dt;
         if (p.spin) p.angle += p.spin * dt;
@@ -2336,6 +2379,13 @@
           c.fillStyle = `rgba(200,225,250,${a})`;
           c.beginPath();
           c.ellipse(X(p.x), Y(p.y), S * 0.045, S * 0.065, 0, 0, TAU);
+          c.fill();
+        } else if (p.kind === "puff") {
+          const r = S * p.size * (1 + (1 - a) * 1.2);
+          c.globalAlpha = a * 0.75;
+          c.fillStyle = "#eef4fb";
+          c.beginPath();
+          c.arc(X(p.x), Y(p.y), r, 0, TAU);
           c.fill();
         } else if (p.kind === "strand") {
           c.strokeStyle = "rgba(235,242,255,0.9)";

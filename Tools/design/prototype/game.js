@@ -72,6 +72,7 @@
       this.slide = null;
       this.slopeCooldown = 0;
       this.oiled = false;
+      this.drifted = false;
       this.float = null;
       this.wet = false;
       this.waterCooldown = 0;
@@ -83,7 +84,8 @@
         alive: true,
       }));
       for (const o of this.objects)
-        if (o.type === "water") Object.assign(o, { surface: o.level, flooded: false, floodT: 0 });
+        if (o.type === "water") Object.assign(o, { surface: o.level, flooded: false, floodT: 0, settled: false });
+      this.addSurfacePlatforms();
       this.ropes = this.buildRopes();
       this.switches = clone(l.switches || []).map((s) => ({
         ...s,
@@ -160,6 +162,7 @@
       this.stable = 0;
       this.support = null;
       this.oiled = false;
+      this.drifted = false;
       this.recording = [];
       for (const p of this.pumpkins) p.safe = false;
       this.emit("launch");
@@ -225,6 +228,7 @@
     solid(p) {
       return (
         p.alive !== false &&
+        (!p.generated || (p.type === "ice" ? this.objects[p.water].frozen : this.objects[p.water].settled)) &&
         (p.type !== "gate" || !this.switches.every((s) => s.active)) &&
         this.active(p) &&
         (p.type !== "ghost" ||
@@ -248,6 +252,7 @@
       this.zip = null;
       this.slide = null;
       this.oiled = false;
+      this.drifted = false;
       this.float = null;
       this.wet = false;
       this.waterCooldown = 0;
@@ -378,10 +383,13 @@
       if (p.flood !== undefined && !p.flooded) {
         p.flooded = true;
         p.alive = false;
+        let snow = false;
         for (const o of this.objects)
-          if (o.type === "water" && o.id === p.flood && !o.flooded)
+          if (o.type === "water" && o.id === p.flood && !o.flooded) {
             Object.assign(o, { flooded: true, floodT: 0, floodFrom: o.surface });
-        this.emit("flood", { x: p.x, y: p.y });
+            snow = snow || Boolean(o.snow);
+          }
+        this.emit("flood", { x: p.x, y: p.y, snow });
         return;
       }
       this.trapAt(p.x, p.y - (p.h || 0.4) / 2, Math.max(0.4, p.w / 2));
@@ -587,7 +595,13 @@
     waterAt(x, y, margin = 0) {
       return (
         this.objects.find(
-          (o) => o.type === "water" && Math.abs(x - o.x) < o.w / 2 && y < o.surface - margin && y > o.y,
+          (o) =>
+            o.type === "water" &&
+            !o.frozen &&
+            !o.settled &&
+            Math.abs(x - o.x) < o.w / 2 &&
+            y < o.surface - margin &&
+            y > o.y,
         ) || null
       );
     }
@@ -598,10 +612,164 @@
         if (o.flooded) {
           o.floodT += dt;
           o.surface = o.floodFrom + (o.to - o.floodFrom) * Math.min(1, o.floodT / 1.5);
-        } else if (o.rise)
+          if (o.snow && !o.settled && o.floodT >= 1.5) this.settleSnow(o);
+        } else if (o.freeze) this.freezeTick(o);
+        else if (o.rise)
           o.surface = o.level + (o.rise.dy * (1 - Math.cos((this.time * 2 * Math.PI) / (o.rise.period || 8)))) / 2;
         o.surfaceV = dt > 0 ? (o.surface - before) / dt : 0;
       }
+    }
+    // A freezing pond gets an ice sheet at its surface; settling snow gets a snowbank as deep
+    // as the hollow. Both are generated platforms, solid only while frozen or once settled.
+    addSurfacePlatforms() {
+      this.objects.forEach((o, i) => {
+        if (o.type !== "water") return;
+        if (o.freeze && o.rise) throw new Error(`water at x ${o.x}: a pond cannot both freeze and rise`);
+        if (o.freeze) {
+          this.platforms.push({ type: "ice", generated: true, water: i, x: o.x, y: o.level, w: o.w, h: 0.3, oil: true });
+          o.frozen = this.frozenAt(o, 0);
+        }
+        if (o.snow)
+          this.platforms.push({ type: "snowbank", generated: true, water: i, x: o.x, y: o.to, w: o.w, h: o.to - o.y });
+      });
+    }
+    // The wind's beat: frozen for `ice` s at the start of every `period` s (shifted by `offset`).
+    frozenAt(o, time) {
+      const f = o.freeze,
+        period = f.period || 6;
+      const phase = (((time + (f.offset || 0)) % period) + period) % period;
+      o.iceFor = phase < f.ice ? f.ice - phase : 0;
+      o.freezeIn = phase < f.ice ? 0 : period - phase;
+      return phase < f.ice;
+    }
+    freezeTick(o) {
+      const was = o.frozen;
+      o.frozen = this.frozenAt(o, this.time);
+      if (o.frozen === was) return;
+      if (!o.frozen) {
+        this.emit("thaw", { x: o.x, y: o.level });
+        return;
+      }
+      this.emit("freeze", { x: o.x, y: o.level });
+      // The ice closes over anyone in the pond and lifts him onto it.
+      this.liftOnto(o, this.platforms.find((p) => p.generated && p.type === "ice" && this.objects[p.water] === o), o.level);
+    }
+    settleSnow(o) {
+      o.settled = true;
+      const bank = this.platforms.find((p) => p.generated && p.type === "snowbank" && this.objects[p.water] === o);
+      this.liftOnto(o, bank, o.to);
+      const r = this.respawn;
+      if (Math.abs(r.x - o.x) < o.w / 2 && r.y < o.to + R && r.y > o.y) r.y = o.to + R;
+    }
+    liftOnto(o, sheet, top) {
+      const h = this.hero;
+      if (!["flying", "float", "resting"].includes(h.state)) return;
+      if (Math.abs(h.x - o.x) >= o.w / 2 || h.y <= o.y || h.y >= top + R) return;
+      // A hero already rising out above the surface just leaves.
+      if (h.state === "flying" && h.vy > 0 && h.y >= top) return;
+      // Never through a ledge between him and the surface.
+      const blocked = this.platforms.some(
+        (q) =>
+          q !== sheet &&
+          q.type !== "slope" &&
+          this.solid(q) &&
+          h.x + R > q.x - q.w / 2 &&
+          h.x - R < q.x + q.w / 2 &&
+          q.y - (q.h || 0.4) >= h.y - 0.001 &&
+          q.y - (q.h || 0.4) < top + R,
+      );
+      if (blocked) return;
+      // Set down clear of any hunter, sliding along the sheet; if there is no room, a
+      // moment of grace instead.
+      const y = top + R,
+        lo = o.x - o.w / 2 + R,
+        hi = o.x + o.w / 2 - R;
+      let x = h.x;
+      for (const p of this.pumpkins) {
+        if (!p.alive || Math.abs(y - p.y) >= 0.95) continue;
+        const need = Math.sqrt(0.95 * 0.95 - (y - p.y) * (y - p.y));
+        if (Math.abs(x - p.x) >= need) continue;
+        const side = [p.x - need, p.x + need].filter((v) => v >= lo && v <= hi).sort((a, b) => Math.abs(a - x) - Math.abs(b - x));
+        if (side.length) x = side[0];
+        else this.grace = Math.max(this.grace, 0.6);
+      }
+      Object.assign(h, { x, y, vx: 0, vy: 0, state: "resting" });
+      this.support = sheet;
+      this.float = null;
+      this.wet = false;
+      this.floatStable = 0;
+      this.stable = 0;
+      this.dashTime = 0;
+      this.emit("land");
+    }
+    // Where a floating hero would sit: the float line, or just under a ledge above it.
+    floatLine(pool) {
+      const h = this.hero;
+      let line = pool.surface - FLOAT;
+      for (const q of this.platforms) {
+        if (!this.solid(q) || q.type === "slope" || h.x + R <= q.x - q.w / 2 || h.x - R >= q.x + q.w / 2) continue;
+        const bottom = q.y - (q.h || 0.4);
+        if (bottom >= h.y - 0.001 && bottom - R < line) line = bottom - R;
+      }
+      return line;
+    }
+    // Goats charge instead of hunting: head down when he rests level with them, then a run
+    // along the ledge that ends at its end (home again) or stuck in a drift.
+    goatTick(p, dt, paused) {
+      const h = this.hero,
+        c = p.charge;
+      // Safe after a death: it goes home and waits there (its cooldown still runs).
+      if (p.safe && p.state !== "return" && p.state !== "idle") p.state = "return";
+      if (paused) return;
+      p.cool = Math.max(0, (p.cool || 0) - dt);
+      if (p.state === "idle") {
+        const level = atRest(h.state) && Math.abs(h.y - p.y) < 1 && Math.abs(h.x - p.x) < c.range;
+        if (level && !p.safe && p.cool === 0) {
+          p.state = "lower";
+          p.timer = 0.5;
+          p.face = Math.sign(h.x - p.x) || 1;
+          this.emit("notice", { x: p.x, y: p.y });
+        }
+      } else if (p.state === "lower") {
+        p.timer -= dt;
+        if (p.timer <= 0) {
+          p.state = "charge";
+          this.emit("charge", { x: p.x, y: p.y, face: p.face });
+        }
+      } else if (p.state === "charge") {
+        p.x += p.face * c.speed * dt;
+        p.vx = p.face * c.speed;
+        const lo = p.homeX - (p.walk || 0),
+          hi = p.homeX + (p.walk || 0);
+        const drift = this.platforms.find(
+          (q) => q.drift && this.solid(q) && Math.abs(p.x - q.x) < q.w / 2 && Math.abs(q.y - (p.homeY - 0.4)) < 1,
+        );
+        if (drift) {
+          p.state = "stuck";
+          p.timer = 2;
+          p.vx = 0;
+          this.emit("stuck", { x: p.x, y: p.y });
+        } else if (p.x <= lo || p.x >= hi) {
+          p.x = Math.max(lo, Math.min(hi, p.x));
+          p.vx = 0;
+          p.state = "return";
+        }
+      } else if (p.state === "stuck") {
+        p.timer -= dt;
+        if (p.timer <= 0) p.state = "return";
+      } else if (p.state === "return") {
+        const d = p.homeX - p.x;
+        if (Math.abs(d) < 0.05) {
+          p.x = p.homeX;
+          p.vx = 0;
+          p.state = "idle";
+          p.cool = 1.5;
+        } else {
+          p.face = Math.sign(d);
+          p.x += Math.sign(d) * Math.min(Math.abs(d), c.speed * 0.3 * dt);
+        }
+      }
+      p.y = p.homeY;
     }
     enterFloat(pool) {
       const h = this.hero;
@@ -1045,16 +1213,19 @@
           const k = Math.exp(-4 * dt);
           h.vx *= k;
           h.vy *= k;
-          if (Math.abs(pool.surface - FLOAT - h.y) < 0.25 && Math.hypot(h.vx, h.vy - (pool.surfaceV || 0)) < 1.2) this.floatStable += dt;
+          if (Math.abs(this.floatLine(pool) - h.y) < 0.25 && Math.hypot(h.vx, h.vy - (pool.surfaceV || 0)) < 1.2)
+            this.floatStable += dt;
           else this.floatStable = 0;
         } else {
           this.wet = false;
           this.floatStable = 0;
         }
         let landed = false;
-        // Only the first tick of a glide on oil is announced.
+        // Only the first tick of a glide on oil, or of a landing in a drift, is announced.
         const wasOiled = this.oiled;
         this.oiled = false;
+        const wasDrift = this.drifted;
+        this.drifted = false;
         const colliders = this.platforms.concat(
           this.objects
             .filter((o) => o.type === "crate" && o.alive)
@@ -1116,8 +1287,12 @@
               (p.type === "wheel" || p.type === "bucket") && p.previousY !== undefined
                 ? Math.min(0, (p.y - p.previousY) / dt)
                 : 0;
-            // Spilt oil: a fast landing keeps gliding; a gentle one still stops.
-            if (p.oil && Math.abs(h.vx) >= 1.2) {
+            // A snowdrift stops him dead; spilt oil (and ice) keeps a fast landing gliding.
+            if (p.drift) {
+              if (!wasDrift) this.emit("drift", { x: h.x, y: top });
+              this.drifted = true;
+              h.vx = 0;
+            } else if (p.oil && Math.abs(h.vx) >= 1.2) {
               h.vx *= Math.exp(-0.2 * dt);
               if (!wasOiled && !this.oiled) this.emit("oil", { x: h.x, y: top });
               this.oiled = true;
@@ -1159,6 +1334,7 @@
             this.support.type !== "gate" &&
             this.support.type !== "drop" &&
             this.support.type !== "bucket" &&
+            this.support.type !== "ice" &&
             !this.waterAt(h.x, h.y) &&
             !this.inTeryelPath(h.x, h.y) &&
             this.support.phase === undefined
@@ -1202,7 +1378,8 @@
           (this.options.pursuit === "planning" &&
             (this.aim || atRest(h.state))) ||
           (this.options.pursuit === "aim" && this.aim);
-        if (this.lively) this.livelyPumpkin(p, dt, target, paused);
+        if (p.charge) this.goatTick(p, dt, paused);
+        else if (this.lively) this.livelyPumpkin(p, dt, target, paused);
         else {
           const chasing = !p.safe && dist(p, target) < p.range;
           const destination = chasing ? target : { x: p.homeX, y: p.homeY };
@@ -1218,12 +1395,18 @@
         if (!p.alive) continue;
         if (!p.safe && dist(h, p) < R + 0.45) {
           // Gliding on oil he cannot stop: whatever sits at the end is knocked flat.
-          if (this.dashTime > 0 || Math.hypot(h.vx, h.vy) > 4.5 || (this.oiled && h.state === "flying")) {
+          // A goat stuck in a drift breaks at any touch.
+          if (
+            this.dashTime > 0 ||
+            Math.hypot(h.vx, h.vy) > 4.5 ||
+            (this.oiled && h.state === "flying") ||
+            p.state === "stuck"
+          ) {
             p.alive = false;
             h.vx *= 0.6;
             h.vy *= 0.6;
             this.emit("smash", { x: p.x, y: p.y });
-          } else {
+          } else if (this.grace <= 0) {
             this.die();
             return;
           }
