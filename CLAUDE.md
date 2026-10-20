@@ -89,6 +89,9 @@ only sessions that touch an API pay for them. (This project has no HTTP API.)
 - Never push directly to `main` — always work on a feature branch.
 - Run `python3 Tools/check_levels.py` (and the compile check when available) before
   claiming a task is complete. Never claim a Unity play-test that did not happen.
+  The Stop hook `.claude/hooks/done-gate.sh` enforces this and the browser prototype
+  tests, re-running an area only when it changed since its checks last passed
+  (tests: `bash .claude/hooks/done-gate.test.sh`).
 - Use Unity 6 APIs (`linearVelocity`, `linearDamping`, `angularDamping`); keep code simple C# 7.3 style.
 - After changing game code: run `graphify update .` and update the Game guide below.
 - Prefer editing existing files over creating new ones.
