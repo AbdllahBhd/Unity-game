@@ -1,17 +1,17 @@
 # Graph Report - game1  (2026-10-20)
 
 ## Corpus Check
-- 968 files · ~1,755,131 words
+- 968 files · ~1,778,182 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 153 file(s) not represented in the graph (top: .ttf 59, .csv 53, (none) 18)
 
 ## Summary
-- 16744 nodes · 24155 edges · 1040 communities (919 shown, 121 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 621 edges (avg confidence: 0.88)
+- 16820 nodes · 24362 edges · 1055 communities (922 shown, 133 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 646 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ac8bf34b`
+- Built from commit: `82865835`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,17 +19,17 @@
 - dependencies
 - manifest.json
 - .agents/skills/impeccable/scripts/live-browser.js
-- GameManager
+- PLayer_drag_drop
 - unityengine
 - CharacterController2D
-- original/art.js
+- drawStage
 - carecterScript
 - MonoBehaviour
 - WitchBoss
 - .claude/skills/impeccable/scripts/live-browser.js
 - sfx.js
 - generate_art.py
-- design_system.py
+- test_design_system_mode.py
 - .Get
 - pathlib
 - LevelBuilder
@@ -40,7 +40,7 @@
 - mqidec_cloak.py
 - assets.mjs
 - StageController
-- FrameLoop
+- re
 - connectSSE
 - connectSSE
 - app-green-harvest.js
@@ -113,30 +113,30 @@
 - game.test.js
 - syncPageChatFocus
 - original/app.js
-- PLayer_drag_drop
-- Hollow Night: The Green Harvest — browser prototype on the original art
+- HeroType
+- original/art.js
 - 4. The tales
 - ButtonJuice
 - com.unity.modules.tetgen
 - Game guide
-- trajectory_Script
+- SpriteRenderer
 - .agents/skills/impeccable/scripts/modern-screenshot.umd.js
-- test_data_contracts.py
-- pumkinkScript
+- DesignSystemGenerator
+- TestSearchDomains
 - .claude/skills/impeccable/reference/live.md
 - el
 - prototype/verify-routes.js
-- unittest
-- .activate
+- csv
+- Browser layouts and route evidence
 - cip/core.py
-- The user's original handmade scene references
+- Brand
 - textStyle
 - characters.js
 - setLiveState
 - Superpowers Release Notes
 - ref_fs
 - 4. Component Stylings
-- .claude/skills/impeccable/reference/new-work.md
+- .claude/skills/impeccable/SKILL.md
 - elevation
 - Subagent-Driven Development
 - Design System Inspired by kami (紙 / 纸)
@@ -144,7 +144,7 @@
 - 4. Component Stylings
 - Subagent-Driven Development
 - draw.mjs
-- test_core.py
+- TestDomainDetection
 - slide_search_core.py
 - Tailwind CSS Utility Reference
 - Design System Inspired by Mastercard
@@ -245,7 +245,7 @@
 - Global Constraints
 - Test-Driven Development (TDD)
 - server.test.js
-- html-token-validator.py
+- ValidationResult
 - Atelier Zero
 - The Library Catalog
 - My Skill
@@ -254,13 +254,13 @@
 - Logo Usage Rules
 - Component Specifications
 - shadcn/ui Accessibility Patterns
-- test_catalog_summary_line_endings.py
+- TestThresholdGate
 - Design System Inspired by Revolut
 - Visual Brainstorming Companion — Issue & Change Catalog
 - Testing Skills With Subagents
 - Skill structure
-- cip/generate.py
-- icon/generate.py
+- generate_cip_set
+- generate_icon
 - Design System Inspired by Wise
 - keyframes
 - Diagnosing Superpowers Sessions — Design
@@ -287,12 +287,12 @@
 - transition
 - 2026-04-06-worktree-rototill.md
 - Claude Code Skills Tests
-- test_plugin.py
+- _load_plugin
 - .agents/skills/impeccable/reference/adapt.md
 - .agents/skills/impeccable/SKILL.md
 - handleManualEditActivity
 - .claude/skills/impeccable/reference/adapt.md
-- .claude/skills/impeccable/SKILL.md
+- Extract Flow
 - handleManualEditActivity
 - Workflow
 - test_icon_generate.py
@@ -317,7 +317,7 @@
 - onAnnotDown
 - handleGo
 - Design System Inspired by xAI
-- generate-slide.py
+- Night 6 plan: Tislit n Wanzar, the bride of Anzar (proposed 2026-10-20)
 - Design System Inspired by Airtable
 - 2. Color Palette & Roles
 - 2. Color Palette & Roles
@@ -325,12 +325,12 @@
 - ref_node_fs
 - build_tokens.mjs
 - verify_mobile_first.mjs
-- Night 6 plan: Tislit n Wanzar, the bride of Anzar (proposed 2026-10-20)
+- Patterns
 - blur.json
 - .agents/skills/impeccable/reference/live.md
 - The Toolkit
 - The Toolkit
-- os
+- .hermes-plugin/__init__.py
 - color
 - WCAG 2.2 Accessibility Checklist
 - Design System Inspired by Duolingo
@@ -398,7 +398,7 @@
 - test-helpers.sh
 - test_bootstrap.py
 - .agents/skills/impeccable/reference/animate.md
-- document
+- Night 7 plan: Ussan n Tamɣart, the old woman's borrowed days (proposed 2026-10-20)
 - Root Cause Tracing
 - Systematic Debugging
 - [Analysis Title]
@@ -409,7 +409,7 @@
 - Design Principles
 - TestShadcnInstaller
 - typography.json
-- art.test.js
+- Pi Extension and Evals Implementation Plan
 - Design
 - Visual Companion Final Hardening Fixup Design
 - Installation
@@ -434,7 +434,7 @@
 - Per-system notes
 - Next.js 15 App Router Patterns
 - Component Patterns
-- verify_interactive.mjs
+- mqidec
 - badge
 - Architecture
 - SDD plan-scoped workspace — design
@@ -458,8 +458,8 @@
 - Layout Patterns
 - Tailwind Integration
 - Layout Patterns
-- TestWebStackFreshness
-- Design Taste — The Anti-Slop Doctrine
+- Words
+- pastureScene
 - width
 - component
 - axis
@@ -527,7 +527,7 @@
 - Defense-in-Depth Validation
 - Writing Plans
 - .agents/skills/impeccable/reference/clarify.md
-- capture
+- Impeccable Asset Producer
 - Nielsen's 10 Heuristics
 - .agents/skills/impeccable/reference/polish.md
 - .agents/skills/impeccable/reference/quieter.md
@@ -614,7 +614,7 @@
 - File Structure
 - Brainstorming rebuild: intent
 - v6.4.1 (2026-09-18)
-- test-pi-extension.mjs
+- verify_screen_economy.mjs
 - test-lint-shell.sh
 - Brainstorming
 - Generate Combined Critique Report
@@ -647,7 +647,7 @@
 - Condition-Based Waiting
 - Verification Before Completion
 - windows-lifecycle.test.sh
-- Impeccable Asset Producer
+- TestStyleTaxonomy
 - Common Cognitive Load Violations
 - iOS platform
 - Operate mode depth (and Read notes)
@@ -655,7 +655,7 @@
 - enableInlineEdit
 - .agents/skills/systematic-debugging/condition-based-waiting-example.ts
 - .agents/skills/using-superpowers/references/codex-tools.md
-- Impeccable Asset Producer
+- Skill authoring best practices
 - Common Cognitive Load Violations
 - iOS platform
 - Operate mode depth (and Read notes)
@@ -680,12 +680,12 @@
 - Document Review System Design
 - stop-server.test.sh
 - test-run-hook-cmd-windows.sh
-- teryel
+- dawnWindow
 - .agents/skills/diagnosing-superpowers/templates/issue.md
 - Persona-Based Design Testing
 - Phase
 - Android platform
-- .claude/skills/impeccable/reference/colorize.md
+- cloakFront
 - Persona-Based Design Testing
 - input
 - Internationalization & RTL
@@ -693,7 +693,7 @@
 - Icon System
 - Organisms
 - contrast.py
-- measure_render.mjs
+- Effects
 - figma
 - $type
 - $type
@@ -723,16 +723,16 @@
 - Impeccable Finish Reviewer
 - .agents/skills/impeccable/scripts/impeccable
 - .agents/skills/impeccable/scripts/live-browser-ignores.js
-- Motion — animation rules that read as premium
-- Gemini CLI Tool Mapping
+- Android platform
+- Extract Flow
 - Hermes Agent Tool Mapping
-- REFACTOR Phase: Close Loopholes (Stay Green)
+- Impeccable Manual Edit Applier
 - Generate Report
 - Cognitive Load Assessment
 - Impeccable Finish Reviewer
 - .claude/skills/impeccable/scripts/impeccable
 - .claude/skills/impeccable/scripts/live-browser-ignores.js
-- Motion — animation rules that read as premium
+- logo/search.py
 - tasteskill v2 (`design-taste-frontend`)
 - Slides Reference
 - HTML Slide Template
@@ -764,15 +764,15 @@
 - UI Quality — the premium baseline, applied without being asked
 - Muse Tool Mapping
 - .agents/skills/using-superpowers/SKILL.md
-- Skill Discovery Optimization (SDO)
-- Bulletproofing Skills Against Rationalization
+- _run
+- validate_tokens.py
 - Diagnostic Scan
 - Visualize: Direction Comps & Asset Production
 - app.json
 - 9. Type and colour
 - WCAG 2.2 AAA — Upgrade Guide
 - Templates
-- 4. Component Stylings
+- Gemini CLI Tool Mapping
 - The Contract — 5 things every adapter resolves
 - Adapter: Angular
 - Adapter: Bootstrap 5
@@ -802,15 +802,15 @@
 - start-server.test.sh
 - test-executing-plans-scripts.sh
 - UI Quality — the premium baseline, applied without being asked
-- Impeccable Documenter
-- Region map
+- REFACTOR Phase: Close Loopholes (Stay Green)
+- TestLayoutResolution
 - Pressure Test 1: Emergency Production Fix
 - Pressure Test 2: Sunk Cost + Exhaustion
 - Pressure Test 3: Authority + Social Pressure
-- Anti-Patterns
-- Testing All Skill Types
-- RED-GREEN-REFACTOR for Skills
-- VERIFY GREEN: Pressure Testing
+- .claude/skills/impeccable/reference/bolder.md
+- CatalogSummaryLineEndingsTest
+- TestTokenizer
+- Bulletproofing Skills Against Rationalization
 - Impeccable Documenter
 - kinds
 - 3. The shell
@@ -822,8 +822,8 @@
 - radius
 - TestStackFlagWithDesignSystem
 - Overlay & Utility Components
-- 2. Color Palette & Roles
-- 8. Responsive Behavior
+- .agents/skills/writing-skills/anthropic-best-practices.md
+- Region map
 - Golden Examples — the quality bar, demonstrated
 - reference/
 - gate.md
@@ -849,9 +849,9 @@
 - GitHub issues
 - Heuristics Scoring Guide
 - Pi Tool Mapping
-- File Organization
-- Skill Types
-- Example: TDD Skill Bulletproofing
+- TestBm25CoreBehavior
+- TestMetricMath
+- Anti-Patterns
 - Heuristics Scoring Guide
 - builder
 - commerce
@@ -1021,18 +1021,33 @@
 - kimi/test-plugin-manifest.sh
 - opencode/run-tests.sh
 - test-session-bootstrap.sh script
+- Testing All Skill Types
+- RED-GREEN-REFACTOR for Skills
+- VERIFY GREEN: Pressure Testing
+- Evaluation and iteration
+- Checklist for effective Skills
+- Core principles
+- Operate
+- Read
+- GeminiModelIdTests
+- TestFixtureValidation
+- File Organization
+- Skill Types
+- Example: TDD Skill Bulletproofing
+- .score
+- TestDiagnosticsContracts
 
 ## God Nodes (most connected - your core abstractions)
 1. `Hero` - 74 edges
 2. `TailwindConfigGenerator` - 60 edges
-3. `Game` - 53 edges
+3. `Game` - 60 edges
 4. `LevelData` - 49 edges
-5. `Superpowers Release Notes` - 46 edges
-6. `TestTailwindConfigGenerator` - 41 edges
-7. `StageController` - 41 edges
-8. `env()` - 39 edges
-9. `DesignSystemGenerator` - 38 edges
-10. `chain()` - 38 edges
+5. `env()` - 46 edges
+6. `Superpowers Release Notes` - 46 edges
+7. `chain()` - 45 edges
+8. `TestTailwindConfigGenerator` - 41 edges
+9. `StageController` - 41 edges
+10. `tone()` - 39 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Personal skills directory` --references--> `name()`  [INFERRED]
@@ -1041,15 +1056,15 @@
   .agents/skills/writing-skills/anthropic-best-practices.md → .claude/skills-optional/taste/taste-skill/scripts/inspect.mjs
 - `13. Growing and maintaining it` --references--> `name()`  [INFERRED]
   TEMPLATE_README.md → .claude/skills-optional/taste/taste-skill/scripts/inspect.mjs
-- `Flutter / mobile` --references--> `Hero`  [INFERRED]
-  .agents/skills/motion/SKILL.md → Assets/Scripts/HollowNight/Stage/Hero.cs
-- `Flutter / mobile` --references--> `Hero`  [INFERRED]
-  .claude/skills/motion/SKILL.md → Assets/Scripts/HollowNight/Stage/Hero.cs
+- `Output Contract` --references--> `files()`  [INFERRED]
+  .agents/skills/impeccable/reference/degraded/manual-edit-applier.md → .claude/skills-optional/xias/root-assets/scripts/check_links.py
+- `Round 2: polish and tricks (approved 2026-10-18)` --references--> `seesaw()`  [INFERRED]
+  task_plan.md → Tools/design/original/sfx.js
 
 ## Import Cycles
 - None detected.
 
-## Communities (1040 total, 121 thin omitted)
+## Communities (1055 total, 133 thin omitted)
 
 ### Community 0 - "dependencies"
 Cohesion: 0.04
@@ -1063,9 +1078,9 @@ Nodes (51): com.unity.2d.sprite, com.unity.2d.tilemap, com.unity.modules.ai, com
 Cohesion: 0.03
 Nodes (156): addManualContextText(), applyEditing(), applyGlobalBarLabelState(), applyLiveBarPreference(), applyPlaceholderSizingStyles(), averageRgb01(), bindEditBadgeProxy(), bufferToBase64() (+148 more)
 
-### Community 3 - "GameManager"
-Cohesion: 0.17
-Nodes (5): Animator, Camera, Vector2, GameManager, Vector2
+### Community 3 - "PLayer_drag_drop"
+Cohesion: 0.07
+Nodes (17): Animator, Camera, Vector2, GameManager, Animator, CircleCollider2D, Collider2D, Rigidbody2D (+9 more)
 
 ### Community 4 - "unityengine"
 Cohesion: 0.10
@@ -1075,9 +1090,9 @@ Nodes (14): HollowNight, HollowNight.EditorTools, system, system_collections, sy
 Cohesion: 0.21
 Nodes (9): BoolEvent, CharacterController2D, Collider2D, Rigidbody2D, Transform, Vector3, BoolEvent, LayerMask (+1 more)
 
-### Community 6 - "original/art.js"
-Cohesion: 0.05
-Nodes (75): Brand, Brand Sync Workflow, Quick Start, References, Routing, Script Paths, Scripts, Subcommands (+67 more)
+### Community 6 - "drawStage"
+Cohesion: 0.17
+Nodes (22): backdrop(), centred(), drawStage(), earth(), fireflies(), fog(), frogPose(), glow() (+14 more)
 
 ### Community 7 - "carecterScript"
 Cohesion: 0.22
@@ -1085,11 +1100,11 @@ Nodes (6): carecterScript, Pose, CircleCollider2D, Rigidbody2D, Vector2, Vector3
 
 ### Community 8 - "MonoBehaviour"
 Cohesion: 0.03
-Nodes (49): button_menu_, PressedParameter, button_next_, PressedParameter, button_Press, Animator, Rigidbody2D, button_restart_ (+41 more)
+Nodes (54): button_menu_, PressedParameter, button_next_, PressedParameter, button_Press, Animator, Rigidbody2D, button_restart_ (+46 more)
 
 ### Community 9 - "WitchBoss"
-Cohesion: 0.08
-Nodes (24): Color, HeroDef, Heroes, Count, HeroType, Hoot, Izan, Pip (+16 more)
+Cohesion: 0.12
+Nodes (15): CircleCollider2D, Rigidbody2D, SpriteRenderer, WitchBoss, Health, 1. The hero: Izan the black rabbit (single hero), 2. The enemy: hunting pumpkins (`Kind.Hunter`), 3. Stars (+7 more)
 
 ### Community 10 - ".claude/skills/impeccable/scripts/live-browser.js"
 Cohesion: 0.03
@@ -1097,27 +1112,27 @@ Nodes (138): applyGlobalBarLabelState(), applyLiveBarPreference(), applyParamDef
 
 ### Community 11 - "sfx.js"
 Cohesion: 0.06
-Nodes (89): Breakpoints: Content-Driven, Detect Input Method, Not Just Screen Size, Layout Adaptation Patterns, Mobile-First: Write It Right, Picture Element for Art Direction, Responsive Design, Responsive Images: Get It Right, Safe Areas: Handle the Notch (+81 more)
+Nodes (96): Breakpoints: Content-Driven, Detect Input Method, Not Just Screen Size, Layout Adaptation Patterns, Mobile-First: Write It Right, Picture Element for Art Direction, Responsive Design, Responsive Images: Get It Right, Safe Areas: Handle the Notch (+88 more)
 
 ### Community 12 - "generate_art.py"
 Cohesion: 0.05
 Nodes (121): Appendix A: fixture generator (v3), Appendix B: scenario prompt, Disambiguation cost, Fixture iterations, GREEN behavior notes, Limitations, RED quote bank (verbatim, carried from the Task 1 evidence doc), Results (+113 more)
 
-### Community 13 - "design_system.py"
-Cohesion: 0.03
-Nodes (81): The contract (read once), ambiguous_python_import_18bd00b49c89, ambiguous_python_import_7e75a92273f5, The contract (read once), ansi_ljust(), _button_outline_text_color(), _contrast_ratio(), _derive_dark_palette() (+73 more)
+### Community 13 - "test_design_system_mode.py"
+Cohesion: 0.04
+Nodes (45): ansi_ljust(), _button_outline_text_color(), _contrast_ratio(), _derive_dark_palette(), _filter_anti_patterns_for_mode(), format_ascii_box(), add_wrapped(), wrap_text() (+37 more)
 
 ### Community 14 - ".Get"
 Cohesion: 0.06
-Nodes (41): AspectRatioFitter, Progress, SoundOn, TotalStars, Image, RectTransform, Sprite, Transform (+33 more)
+Nodes (38): AspectRatioFitter, Flow, Progress, SoundOn, TotalStars, RectTransform, Transform, Vector2 (+30 more)
 
 ### Community 15 - "pathlib"
 Cohesion: 0.03
-Nodes (74): ambiguous_python_import_2e73cc314169, ambiguous_python_import_4a212eccc1fd, argparse, format_brief(), format_results(), main(), Format search results for display, CIP Design Search CLI - Search corporate identity design guidelines (+66 more)
+Nodes (106): ambiguous_python_import_07c68608d41f, ambiguous_python_import_18bd00b49c89, ambiguous_python_import_290c7db414dc, ambiguous_python_import_4a212eccc1fd, ambiguous_python_import_60d90a19a4c6, ambiguous_python_import_76edf8a6b215, ambiguous_python_import_7e75a92273f5, ambiguous_python_import_bdf66abf938a (+98 more)
 
 ### Community 16 - "LevelBuilder"
-Cohesion: 0.14
-Nodes (17): SpriteRenderer, Transform, Vector2, Vector3, Pulse, Solid, CircleCollider2D, GameObject (+9 more)
+Cohesion: 0.13
+Nodes (18): SpriteRenderer, Transform, Vector2, Vector3, Pulse, Solid, CircleCollider2D, GameObject (+10 more)
 
 ### Community 17 - "LevelData"
 Cohesion: 0.07
@@ -1129,27 +1144,27 @@ Nodes (27): Dictionary, Sfx, Instance, Sound, BossHit, Bounce, Break, Candy (+19
 
 ### Community 19 - "Hero"
 Cohesion: 0.03
-Nodes (59): Layer, Color, Vector2, Vector3, Bob, Fx, Mote, Collider2D (+51 more)
+Nodes (67): Flutter / mobile, Hard rules, Motion — animation rules that read as premium, The numbers (use these, don't improvise), Web, What may animate (and nothing else), Layer, Color (+59 more)
 
 ### Community 20 - "StoryScreen"
-Cohesion: 0.12
-Nodes (13): Flow, Dictionary, Dialogue, Line, Story, AllIds, Coroutine, IEnumerator (+5 more)
+Cohesion: 0.15
+Nodes (12): Dictionary, Dialogue, Line, Story, AllIds, Coroutine, IEnumerator, Image (+4 more)
 
 ### Community 21 - "mqidec_cloak.py"
 Cohesion: 0.13
 Nodes (24): bmesh, bpy, Bug Fixes, Cursor Support, v5.0.3 (2026-03-15), mathutils, boundary_indices(), build_cloak() (+16 more)
 
 ### Community 22 - "assets.mjs"
-Cohesion: 0.06
-Nodes (88): The frontmatter: token schema, The frontmatter: token schema, AIC_FIELDS, AIC_HEADERS, applyThumb(), ARCHIVE_LICENCE, args, argv (+80 more)
+Cohesion: 0.05
+Nodes (100): The frontmatter: token schema, The frontmatter: token schema, AIC_FIELDS, AIC_HEADERS, applyThumb(), ARCHIVE_LICENCE, args, argv (+92 more)
 
 ### Community 23 - "StageController"
 Cohesion: 0.04
-Nodes (33): Action, CanvasGroup, IEnumerator, Transform, Ease, Tween, Camera, Color (+25 more)
+Nodes (32): Action, CanvasGroup, IEnumerator, Transform, Ease, Tween, Camera, Color (+24 more)
 
-### Community 24 - "FrameLoop"
-Cohesion: 0.40
-Nodes (3): Sprite, SpriteRenderer, FrameLoop
+### Community 24 - "re"
+Cohesion: 0.05
+Nodes (37): Every script invocation in the shipped skill markdown resolves from the skill…, Return (target, None) for a skill-relative path, or (None, reason)., resolve(), shipped_invocations(), SkillScriptPathsTest, Every relative link in the docs must resolve to a file that exists. Splitting a…, iter_files(), main() (+29 more)
 
 ### Community 25 - "connectSSE"
 Cohesion: 0.06
@@ -1168,8 +1183,8 @@ Cohesion: 0.06
 Nodes (31): com.unity.2d.sprite, com.unity.2d.tilemap, com.unity.modules.ai, com.unity.modules.animation, com.unity.modules.assetbundle, com.unity.modules.audio, com.unity.modules.director, com.unity.modules.imageconversion (+23 more)
 
 ### Community 29 - "find-routes.js"
-Cohesion: 0.10
-Nodes (25): args, cloneGame(), existing, file, fs, { Game, atRest }, ids, levels (+17 more)
+Cohesion: 0.09
+Nodes (27): Approach: the rules, args, cloneGame(), existing, file, fs, { Game, atRest }, ids (+19 more)
 
 ### Community 30 - "FlowRunner"
 Cohesion: 0.24
@@ -1184,8 +1199,8 @@ Cohesion: 0.07
 Nodes (31): dependencies, depth, source, url, version, dependencies, depth, source (+23 more)
 
 ### Community 33 - "Timucuha n Yennayer — script"
-Cohesion: 0.06
-Nodes (34): After stage 16, After stage 20, After stage 24, After stage 4, After stage 4, After stage 4 (the trap), Before stage 1, Before stage 13 (+26 more)
+Cohesion: 0.05
+Nodes (39): After stage 16, After stage 20, After stage 24, After stage 28, After stage 4, After stage 4, After stage 4 (the trap), Before stage 1 (+31 more)
 
 ### Community 34 - "com.unity.modules.jsonserialize"
 Cohesion: 0.07
@@ -1197,7 +1212,7 @@ Nodes (26): dependencies, depth, source, version, dependencies, dependencies, de
 
 ### Community 37 - "ref_node_path"
 Cohesion: 0.04
-Nodes (52): argv, blocking, dark, [file], localAxe, argv, dark, files (+44 more)
+Nodes (52): argv, dark, files, L(), lin(), ratio(), argv, dark (+44 more)
 
 ### Community 38 - "com.unity.2d.common"
 Cohesion: 0.08
@@ -1216,12 +1231,12 @@ Cohesion: 0.07
 Nodes (56): ae(), be(), bt(), Ce(), s(), Ct(), de(), dt() (+48 more)
 
 ### Community 42 - "prototype/art.js"
-Cohesion: 0.62
-Nodes (14): backdrop(), boss(), door(), draw(), drawSheet(), glow(), line(), object() (+6 more)
+Cohesion: 0.10
+Nodes (38): Animator, IEnumerator, Rigidbody2D, Vector2, player_script, Step 3 — Wire the bootstrap injection, SpringJoint2D, 1. Goal (+30 more)
 
 ### Community 43 - "prototype/app.js"
-Cohesion: 0.24
-Nodes (13): advanceReplay(), cancelDrag(), drawAim(), drawComparison(), frame(), loadStage(), renderStory(), saveChoices() (+5 more)
+Cohesion: 0.15
+Nodes (18): History limits, Original art, Original rabbit animation and committed code, Retained scenes, The user's original handmade scene references, advanceReplay(), cancelDrag(), drawAim() (+10 more)
 
 ### Community 44 - "com.unity.modules.physics2d"
 Cohesion: 0.10
@@ -1353,15 +1368,15 @@ Nodes (4): Process, /retro — Learning Flywheel, What counts as a lesson, What 
 
 ### Community 78 - "validate_data.py"
 Cohesion: 0.07
-Nodes (50): ambiguous_python_import_210648bab8b8, ambiguous_python_import_9ff07ef5d2f9, Semantic quality contracts for the core UI/UX datasets., read_rows(), TestAccessibilityGuidance, TestChartsTypographyAndIcons, TestCurrentReactGuidance, TestSemanticColors (+42 more)
+Nodes (51): ambiguous_python_import_210648bab8b8, ambiguous_python_import_9ff07ef5d2f9, Semantic quality contracts for the core UI/UX datasets., read_rows(), TestAccessibilityGuidance, TestChartsTypographyAndIcons, TestCurrentReactGuidance, TestSemanticColors (+43 more)
 
 ### Community 79 - "dependencies"
 Cohesion: 0.10
 Nodes (20): dependencies, depth, source, version, dependencies, depth, source, version (+12 more)
 
 ### Community 80 - "Hollow Night enhancement exploration"
-Cohesion: 0.14
-Nodes (13): Approved implementation, Evidence and decisions, Hollow Night enhancement exploration, Implementation evidence, Original-art prototype (2026-10-17 to 2026-10-18), Original-reference clarification, Polish pass on the three nights (2026-10-19), Progress (+5 more)
+Cohesion: 0.12
+Nodes (17): Approved implementation, Evidence and decisions, Hollow Night enhancement exploration, Implementation evidence, Mqidec character art (2026-10-18), Original-art prototype (2026-10-17 to 2026-10-18), Original-reference clarification, Progress (+9 more)
 
 ### Community 81 - "/install — Install a tool from the catalog"
 Cohesion: 0.50
@@ -1408,8 +1423,8 @@ Cohesion: 0.50
 Nodes (3): Checks, Compare and play, Hollow Night browser design study
 
 ### Community 99 - "game.test.js"
-Cohesion: 0.08
-Nodes (20): Approach: the rules, Files, launchVelocity(), stars(), advance(), assert, basin, cistern (+12 more)
+Cohesion: 0.07
+Nodes (21): launchVelocity(), advance(), assert, basin, cistern, cornice, deep, { Game, launchVelocity, trajectory, stars } (+13 more)
 
 ### Community 100 - "syncPageChatFocus"
 Cohesion: 0.07
@@ -1419,17 +1434,17 @@ Nodes (58): agentHasWorkInFlight(), armPageChatForTyping(), attachSteerFocusDebu
 Cohesion: 0.17
 Nodes (29): advanceStory(), applyLang(), applyMute(), cameraTarget(), dismissTip(), finishStage(), frame(), handleEvents() (+21 more)
 
-### Community 102 - "PLayer_drag_drop"
-Cohesion: 0.18
-Nodes (7): Animator, CircleCollider2D, Collider2D, Rigidbody2D, Vector3, PLayer_drag_drop, Pose
+### Community 102 - "HeroType"
+Cohesion: 0.10
+Nodes (22): Color, HeroDef, Heroes, Count, HeroType, Hoot, Izan, Pip (+14 more)
 
-### Community 103 - "Hollow Night: The Green Harvest — browser prototype on the original art"
-Cohesion: 0.14
-Nodes (11): IEnumerator, SpringJoint2D, 1. Goal, 2. The story — "The Green Harvest", 3. Gameplay rules, 4. Stages, 5. Files and interfaces, 6. Verification (+3 more)
+### Community 103 - "original/art.js"
+Cohesion: 0.20
+Nodes (20): bandTriangles(), bandZigzag(), blinkAt(), cloakHidesEars(), earStripes(), fibula(), glyphTrail(), knitCap() (+12 more)
 
 ### Community 104 - "4. The tales"
 Cohesion: 0.12
-Nodes (15): 1. Decisions taken with the user (2026-10-19), 2. The frame: the hearth, 3. The hero and the ogress, 4. The tales, 5. Text and languages, 6. What this changes in the prototype, 7. Open points for the user, Later tales (ideas, not planned) (+7 more)
+Nodes (16): 1. Decisions taken with the user (2026-10-19), 2. The frame: the hearth, 3. The hero and the ogress, 4. The tales, 5. Text and languages, 6. What this changes in the prototype, 7. Open points for the user, Later tales (ideas, not planned) (+8 more)
 
 ### Community 105 - "ButtonJuice"
 Cohesion: 0.24
@@ -1440,28 +1455,24 @@ Cohesion: 0.40
 Nodes (5): dependencies, depth, source, version, com.unity.modules.tetgen
 
 ### Community 107 - "Game guide"
-Cohesion: 0.05
-Nodes (37): Camera, GameBoot, ScreenKind, MainMenu, Stage, Story, WorldMap, HeroState (+29 more)
+Cohesion: 0.08
+Nodes (25): Camera, GameBoot, ScreenKind, MainMenu, Stage, Story, WorldMap, AudioListener (+17 more)
 
-### Community 108 - "trajectory_Script"
-Cohesion: 0.27
-Nodes (5): GameObject, Transform, Vector2, Vector3, trajectory_Script
+### Community 108 - "SpriteRenderer"
+Cohesion: 0.15
+Nodes (7): SpriteRenderer, Vector3, Door, IsOpen, GhostPlatform, Mushroom, WindStreak
 
 ### Community 109 - ".agents/skills/impeccable/scripts/modern-screenshot.umd.js"
 Cohesion: 0.09
 Nodes (55): ae(), be(), bt(), Ce(), s(), Ct(), de(), dt() (+47 more)
 
-### Community 110 - "test_data_contracts.py"
+### Community 110 - "DesignSystemGenerator"
 Cohesion: 0.05
-Nodes (27): ambiguous_python_import_2decd95230db, 1. Write the argument first, 2. The two-line headline, 3. Headline shapes that work, 4. Supporting line, body, buttons, 5. Proof without inventing it, 6. Things that read as generated, 7. Micro-typography (+19 more)
-
-### Community 111 - "pumkinkScript"
-Cohesion: 0.25
-Nodes (6): Animator, Collision2D, GameObject, IEnumerator, pumkinkScript, Level 1 composition
+Nodes (31): The contract (read once), ambiguous_python_import_2decd95230db, The contract (read once), DesignSystemGenerator, Generates design system recommendations from aggregated searches., Load reasoning rules from CSV., Execute searches across multiple domains., Find matching reasoning rule for a category. (+23 more)
 
 ### Community 112 - ".claude/skills/impeccable/reference/live.md"
 Cohesion: 0.04
-Nodes (49): Checks, Entry Atomicity, Impeccable Manual Edit Applier, Input Contract, Output Contract, Workflow, First-time setup, append-arrays (+41 more)
+Nodes (49): First-time setup, append-arrays, append-string, Config drift, Consent prompt (use this phrasing), CSP detection (first-time only), Troubleshooting, Write the config (+41 more)
 
 ### Community 113 - "el"
 Cohesion: 0.07
@@ -1471,17 +1482,17 @@ Nodes (55): actionLabel(), applyConfigureBarChrome(), bindConfigureCountPillTool
 Cohesion: 0.33
 Nodes (5): ref_node_assert, get(), assert, { get }, { simulateRoute }
 
-### Community 115 - "unittest"
-Cohesion: 0.04
-Nodes (25): ambiguous_python_import_04ccc3ac090d, ambiguous_python_import_07c68608d41f, ambiguous_python_import_2a7c0ae16882, ambiguous_python_import_42ded66247b9, Offline contract tests for deterministic upstream catalog refreshes., Freshness and migration contracts for native, desktop, and 3D stacks., _rows(), TestNativeDesktopStackFreshness (+17 more)
+### Community 115 - "csv"
+Cohesion: 0.05
+Nodes (15): ambiguous_python_import_04ccc3ac090d, ambiguous_python_import_2a7c0ae16882, ambiguous_python_import_42ded66247b9, Freshness and migration contracts for native, desktop, and 3D stacks., _rows(), TestNativeDesktopStackFreshness, Canonical regression contracts for resilient UI text layouts., read_rows() (+7 more)
 
 ### Community 117 - "cip/core.py"
 Cohesion: 0.05
 Nodes (44): BM25, detect_domain(), get_cip_brief(), _load_csv(), Load CSV and return list of dicts, Core search function using BM25, Auto-detect the most relevant domain from query, Main search function with auto-domain detection (+36 more)
 
-### Community 118 - "The user's original handmade scene references"
-Cohesion: 0.33
-Nodes (5): History limits, Original art, Original rabbit animation and committed code, Retained scenes, The user's original handmade scene references
+### Community 118 - "Brand"
+Cohesion: 0.17
+Nodes (10): Brand, Brand Sync Workflow, Quick Start, References, Routing, Script Paths, Scripts, Subcommands (+2 more)
 
 ### Community 119 - "textStyle"
 Cohesion: 0.07
@@ -1507,9 +1518,9 @@ Nodes (36): combineGraphs(), extractDotBlocks(), extractGraphBody(), main(), ren
 Cohesion: 0.04
 Nodes (47): 1. Visual Theme & Atmosphere, 2. Color Palette & Roles, 3. Typography Rules, 4. Component Stylings, 5. Layout Principles, 6. Depth & Elevation, 7. Do's and Don'ts, 8. Responsive Behavior (+39 more)
 
-### Community 129 - ".claude/skills/impeccable/reference/new-work.md"
-Cohesion: 0.05
-Nodes (34): Recommended Actions, Craft (deprecated alias), Monorepo notes, Opting out of the boot check, Step 1: Run the pass, Step 3: Deprecated fields are binding, Step 4: Do not overclaim on truth drift, What this owns, and what it does not (+26 more)
+### Community 129 - ".claude/skills/impeccable/SKILL.md"
+Cohesion: 0.06
+Nodes (31): Recommended Actions, Craft (deprecated alias), Craft floor, Refuse, Verify, Monorepo notes, Opting out of the boot check, Step 1: Run the pass (+23 more)
 
 ### Community 130 - "elevation"
 Cohesion: 0.05
@@ -1539,10 +1550,6 @@ Nodes (39): 1. Take the task, 2. Work the steps, 3. The completion contract, 4. 
 Cohesion: 0.10
 Nodes (41): adjustments(), argv, assetQueries(), ASSETS_PATH, briefStop(), briefWords(), deal(), dealHero() (+33 more)
 
-### Community 137 - "test_core.py"
-Cohesion: 0.05
-Nodes (8): ambiguous_python_import_290c7db414dc, ambiguous_python_import_76edf8a6b215, Stdlib-only regression tests for core.py / design_system.py (unittest, not…, TestBm25CoreBehavior, TestDiagnosticsContracts, TestDomainDetection, TestSearchDomains, TestTokenizer
-
 ### Community 138 - "slide_search_core.py"
 Cohesion: 0.08
 Nodes (38): format_context(), format_result(), main(), Format a single search result for display, Slide Search CLI - Search slide design databases for strategies, layouts, copy,…, Format contextual recommendations for display., BM25, calculate_pattern_break() (+30 more)
@@ -1556,8 +1563,8 @@ Cohesion: 0.05
 Nodes (43): 1. Visual Theme & Atmosphere, 2. Color Palette & Roles, 3. Typography Rules, 4. Component Stylings, 5. Layout Principles, 6. Depth & Elevation, 7. Do's and Don'ts, 8. Responsive Behavior (+35 more)
 
 ### Community 141 - ".agents/skills/impeccable/reference/new-work.md"
-Cohesion: 0.06
-Nodes (32): Android platform, Color & theming, Components & motion, Layout & structure, The Android slop test, Touch targets, Typography, Verifying the build (+24 more)
+Cohesion: 0.05
+Nodes (32): Recommended Actions, Craft (deprecated alias), Impeccable Documenter, Input Contract, Output Contract, Workflow, Apply, Live-mode signature params (+24 more)
 
 ### Community 142 - "initPageChat"
 Cohesion: 0.10
@@ -1592,8 +1599,8 @@ Cohesion: 0.05
 Nodes (41): 1. Visual Theme & Atmosphere, 2. Color Palette & Roles, 3. Typography Rules, 4. Component Stylings, 5. Layout Principles, 6. Depth & Elevation, 7. Do's and Don'ts, 8. Responsive Behavior (+33 more)
 
 ### Community 150 - "Writing Skills"
-Cohesion: 0.05
-Nodes (42): Address "Spirit vs Letter" Arguments, Anti-Patterns, Build Rationalization Table, Bulletproofing Skills Against Rationalization, Close Every Loophole Explicitly, Code Examples, ❌ Code in Flowcharts, Common Rationalizations for Skipping Testing (+34 more)
+Cohesion: 0.15
+Nodes (13): Code Examples, Common Rationalizations for Skipping Testing, Directory Structure, Discovery Workflow, Flowchart Usage, Match the Form to the Failure, Overview, STOP: Before Moving to Next Skill (+5 more)
 
 ### Community 151 - "Design System Inspired by Bugatti"
 Cohesion: 0.05
@@ -1776,8 +1783,8 @@ Cohesion: 0.07
 Nodes (28): Command guidance, No-argument routing: the context-aware menu, Workflow questions, allow, appMode, args, asJson, dealtFonts (+20 more)
 
 ### Community 196 - "logo/generate.py"
-Cohesion: 0.10
-Nodes (35): _atlas_prediction_data(), _download_atlas_image(), _download_image(), _download_muapi_image(), enhance_prompt(), generate_batch(), generate_logo(), _generate_with_atlas() (+27 more)
+Cohesion: 0.09
+Nodes (36): _atlas_prediction_data(), _download_atlas_image(), _download_image(), _download_muapi_image(), enhance_prompt(), generate_batch(), generate_logo(), _generate_with_atlas() (+28 more)
 
 ### Community 197 - "Design"
 Cohesion: 0.05
@@ -1888,8 +1895,8 @@ Cohesion: 0.15
 Nodes (31): add_openai_agent_metadata_fixture(), assert_branch_absent(), assert_contains(), assert_current_branch(), assert_equals(), assert_file_equals(), assert_matches(), assert_not_contains() (+23 more)
 
 ### Community 224 - "tales-art.js"
-Cohesion: 0.13
-Nodes (31): bucket(), bucketBack(), bucketFront(), cascade(), cistern(), crackedSlab(), dryPool(), ember() (+23 more)
+Cohesion: 0.09
+Nodes (45): avalanche(), blizzard(), bucket(), bucketBack(), bucketFront(), buriedIn(), cascade(), cistern() (+37 more)
 
 ### Community 225 - "mountSvelteComponentVariant"
 Cohesion: 0.11
@@ -1943,9 +1950,9 @@ Nodes (29): Common Rationalizations, Debugging Integration, Example: Bug Fix, Fi
 Cohesion: 0.10
 Nodes (27): dependencies, ws, name, scripts, test, version, assert, assertStartedOnExpectedPort() (+19 more)
 
-### Community 238 - "html-token-validator.py"
-Cohesion: 0.11
-Nodes (25): get_context(), is_allowed_exception(), is_allowed_rgba(), is_inside_block(), load_css_variables(), main(), print_result(), print_summary() (+17 more)
+### Community 238 - "ValidationResult"
+Cohesion: 0.10
+Nodes (24): get_context(), is_allowed_exception(), is_allowed_rgba(), is_inside_block(), load_css_variables(), main(), print_result(), print_summary() (+16 more)
 
 ### Community 239 - "Atelier Zero"
 Cohesion: 0.07
@@ -1979,10 +1986,6 @@ Nodes (28): Alert, Anatomy, Anatomy, Anatomy, Anatomy, Anatomy, Badge, Button (+
 Cohesion: 0.07
 Nodes (28): Accordion, Alert, ARIA Labels, Checkbox and Radio, Color Contrast, Command Palette Navigation, Component-Specific Patterns, Dialog/Modal Navigation (+20 more)
 
-### Community 247 - "test_catalog_summary_line_endings.py"
-Cohesion: 0.08
-Nodes (11): CatalogSummaryLineEndingsTest, _load_generator(), The catalog snapshot must not depend on the checkout's line endings. Regression…, Simulate a Windows checkout: the recorded hashes must still validate., Unit tests for metric math and relevance fixture validation., TestFixtureValidation, TestMetricMath, TestThresholdGate (+3 more)
-
 ### Community 248 - "Design System Inspired by Revolut"
 Cohesion: 0.07
 Nodes (28): 1. Visual Theme & Atmosphere, 2. Color Palette & Roles, 3. Typography Rules, 4. Component Stylings, 5. Layout Principles, 6. Depth & Elevation, 7. Do's and Don'ts, 8. Responsive Behavior (+20 more)
@@ -1992,20 +1995,20 @@ Cohesion: 0.07
 Nodes (28): A1 — Per-session secret key (chosen approach), A2 — Host allowlist dropped; browser WS Origin retained, A3 — Server crashes on `null` / primitive WS payload, A4 — Frame-length bound in `decodeFrame` (adjacent), A. Server security hardening (`server.cjs`), B1 — macOS resource-fork dotfiles served as screen content, B2 — `stop-server.sh` can kill a reused PID, B3 — WebSocket client: silent reconnect, stale "Connected" (+20 more)
 
 ### Community 250 - "Testing Skills With Subagents"
-Cohesion: 0.07
-Nodes (29): 1. Explicit Negation in Rules, 2. Entry in Rationalization Table, 3. Red Flag Entry, 4. Update description, Common Mistakes (Same as TDD), Example: TDD Skill Bulletproofing, GREEN Phase: Write Minimal Skill (Make It Pass), Initial Test (Failed) (+21 more)
+Cohesion: 0.15
+Nodes (13): Common Mistakes (Same as TDD), GREEN Phase: Write Minimal Skill (Make It Pass), Meta-Testing (When GREEN Isn't Working), Overview, Quick Reference (TDD Cycle), Real-World Impact, RED Phase: Baseline Testing (Watch It Fail), TDD Mapping for Skill Testing (+5 more)
 
 ### Community 251 - "Skill structure"
-Cohesion: 0.07
-Nodes (27): [Analysis Title], Avoid deeply nested references, Avoid time-sensitive information, Common patterns, Concise is key, Content guidelines, Core principles, Executive summary (+19 more)
+Cohesion: 0.20
+Nodes (10): Avoid deeply nested references, Naming conventions, Pattern 1: High-level guide with references, Pattern 2: Domain-specific organization, Pattern 3: Conditional details, Progressive disclosure patterns, Skill structure, Structure longer reference files with table of contents (+2 more)
 
-### Community 252 - "cip/generate.py"
-Cohesion: 0.10
-Nodes (26): ambiguous_python_import_60d90a19a4c6, ambiguous_python_import_bdf66abf938a, base64, build_cip_prompt(), check_logo_required(), generate_cip_set(), generate_with_nano_banana(), load_env() (+18 more)
+### Community 252 - "generate_cip_set"
+Cohesion: 0.24
+Nodes (11): build_cip_prompt(), check_logo_required(), generate_cip_set(), generate_with_nano_banana(), load_logo_image(), main(), Build an optimized prompt for CIP mockup generation Args: deliverable: Type of…, Generate image using Gemini Nano Banana (native image generation) Supports two… (+3 more)
 
-### Community 253 - "icon/generate.py"
-Cohesion: 0.11
-Nodes (27): apply_color(), apply_viewbox_size(), extract_svgs(), _finish_reason(), generate_batch(), generate_icon(), generate_sizes(), load_env() (+19 more)
+### Community 253 - "generate_icon"
+Cohesion: 0.12
+Nodes (21): apply_color(), apply_viewbox_size(), extract_svgs(), _finish_reason(), generate_batch(), generate_icon(), generate_sizes(), main() (+13 more)
 
 ### Community 254 - "Design System Inspired by Wise"
 Cohesion: 0.07
@@ -2111,17 +2114,17 @@ Nodes (24): Create PR, Determine path based on chosen location, Get main repo ro
 Cohesion: 0.08
 Nodes (24): Adding New Tests, CI/CD Integration, Claude Code Skills Tests, Current Tests, Debugging Failed Tests, Example Test, Fast Tests (run by default), Integration Tests (use --integration flag) (+16 more)
 
-### Community 280 - "test_plugin.py"
-Cohesion: 0.14
-Nodes (10): _fire_pre_llm(), _load_plugin(), parametrize, Copy the plugin module + a minimal skills tree in the given layout., Hermes builds its skill catalogue from register_skill(description=...), which…, Re-import plugin module fresh., TestBootstrapInjection, TestLayoutResolution (+2 more)
+### Community 280 - "_load_plugin"
+Cohesion: 0.18
+Nodes (8): _fire_pre_llm(), _load_plugin(), parametrize, Hermes builds its skill catalogue from register_skill(description=...), which…, Re-import plugin module fresh., TestBootstrapInjection, TestPluginRegistration, TestSkillDescriptions
 
 ### Community 281 - ".agents/skills/impeccable/reference/adapt.md"
 Cohesion: 0.08
 Nodes (22): Assess Adaptation Challenge, Content Adaptation, Desktop Adaptation (Mobile → Desktop), Email Adaptation (Web → Email), Implement Adaptations, Layout Adaptation Techniques, Mobile Adaptation (Desktop → Mobile), Adaptation Strategies (+14 more)
 
 ### Community 282 - ".agents/skills/impeccable/SKILL.md"
-Cohesion: 0.09
-Nodes (18): Before you finish, Scope is sovereign, The amplification, The skeleton test, Why it reads flat, Craft floor, Refuse, Verify (+10 more)
+Cohesion: 0.08
+Nodes (24): Before you finish, Scope is sovereign, The amplification, The skeleton test, Why it reads flat, Craft floor, Refuse, Verify (+16 more)
 
 ### Community 283 - "handleManualEditActivity"
 Cohesion: 0.19
@@ -2131,9 +2134,9 @@ Nodes (24): clearStoredManualApplyState(), fetchPendingCount(), handleManualEdit
 Cohesion: 0.08
 Nodes (22): Assess Adaptation Challenge, Content Adaptation, Desktop Adaptation (Mobile → Desktop), Email Adaptation (Web → Email), Implement Adaptations, Layout Adaptation Techniques, Mobile Adaptation (Desktop → Mobile), Adaptation Strategies (+14 more)
 
-### Community 285 - ".claude/skills/impeccable/SKILL.md"
-Cohesion: 0.09
-Nodes (18): Before you finish, Scope is sovereign, The amplification, The skeleton test, Why it reads flat, Craft floor, Refuse, Verify (+10 more)
+### Community 285 - "Extract Flow"
+Cohesion: 0.25
+Nodes (7): Extract Flow, Step 1: Discover the Design System, Step 2: Identify Patterns, Step 3: Plan Extraction, Step 4: Extract & Enrich, Step 5: Migrate, Step 6: Document
 
 ### Community 286 - "handleManualEditActivity"
 Cohesion: 0.19
@@ -2228,12 +2231,12 @@ Cohesion: 0.13
 Nodes (22): buildInsertPlaceholderSnapshotFromDom(), buildPickedAnchorSnapshot(), captureAndEmit(), clearMountErrorCard(), cssIdent(), extractContext(), handleGo(), handleInsertCreate() (+14 more)
 
 ### Community 309 - "Design System Inspired by xAI"
-Cohesion: 0.09
-Nodes (21): ring(), 1. Visual Theme & Atmosphere, 3. Typography Rules, 5. Layout Principles, 6. Depth & Elevation, 7. Do's and Don'ts, 9. Agent Prompt Guide, Border Radius Scale (+13 more)
+Cohesion: 0.05
+Nodes (37): ring(), 1. Visual Theme & Atmosphere, 2. Color Palette & Roles, 3. Typography Rules, 4. Component Stylings, 5. Layout Principles, 6. Depth & Elevation, 7. Do's and Don'ts (+29 more)
 
-### Community 310 - "generate-slide.py"
-Cohesion: 0.13
-Nodes (21): _e(), generate_chart_slide(), generate_cta_slide(), generate_deck(), generate_metrics_slide(), generate_problem_slide(), generate_solution_slide(), generate_testimonial_slide() (+13 more)
+### Community 310 - "Night 6 plan: Tislit n Wanzar, the bride of Anzar (proposed 2026-10-20)"
+Cohesion: 0.18
+Nodes (10): Approach: the rules, Files touched, Night 6 plan: Tislit n Wanzar, the bride of Anzar (proposed 2026-10-20), Parallel work, Progress, Risks and open questions, Scope, Steps (each verified before the next) (+2 more)
 
 ### Community 311 - "Design System Inspired by Airtable"
 Cohesion: 0.09
@@ -2263,9 +2266,9 @@ Nodes (20): ALIASES, all, at(), CHECK, colors, cssValue(), emit(), emitGroup() (
 Cohesion: 0.09
 Nodes (17): NOT_INLINE, OUT, ROOT, shoot(), SHOTS, THUMB_DIR, THUMBS, args (+9 more)
 
-### Community 318 - "Night 6 plan: Tislit n Wanzar, the bride of Anzar (proposed 2026-10-20)"
-Cohesion: 0.10
-Nodes (21): Anti-Patterns (the cheap tells), Entrance reveals (on scroll / mount), Hover physics (pointer devices), Implementation notes by target, Loading, Motion Choreography, Overlay enter/exit (modal, drawer, popover, toast), Patterns (+13 more)
+### Community 318 - "Patterns"
+Cohesion: 0.15
+Nodes (12): Anti-Patterns (the cheap tells), Entrance reveals (on scroll / mount), Hover physics (pointer devices), Implementation notes by target, Loading, Motion Choreography, Overlay enter/exit (modal, drawer, popover, toast), Patterns (+4 more)
 
 ### Community 319 - "blur.json"
 Cohesion: 0.09
@@ -2283,9 +2286,9 @@ Nodes (20): Animate complex properties, Assess What "Extraordinary" Means Here, 
 Cohesion: 0.10
 Nodes (20): Animate complex properties, Assess What "Extraordinary" Means Here, For data-heavy interfaces, For functional UI, For performance-critical UI, For visual/marketing surfaces, Implement with Discipline, Interact with the device (+12 more)
 
-### Community 323 - "os"
-Cohesion: 0.13
-Nodes (15): GeminiModelIdTests, _load_module(), _build_bootstrap(), _frontmatter_value(), Return a flat ``key: value`` scalar from a SKILL.md frontmatter block. Hermes…, Locate the stock skills/ tree for either supported install layout. - git-clone…, register(), _skills_dir() (+7 more)
+### Community 323 - ".hermes-plugin/__init__.py"
+Cohesion: 0.33
+Nodes (7): _build_bootstrap(), _frontmatter_value(), Return a flat ``key: value`` scalar from a SKILL.md frontmatter block. Hermes…, Locate the stock skills/ tree for either supported install layout. - git-clone…, register(), _skills_dir(), _strip_frontmatter()
 
 ### Community 324 - "color"
 Cohesion: 0.15
@@ -2412,8 +2415,8 @@ Cohesion: 0.11
 Nodes (18): 1. Wordmark (Logotype), 2. Lettermark (Monogram), 3. Pictorial Mark (Brand Mark), 4. Abstract Mark, 5. Mascot, 6. Emblem, 7. Combination Mark, Aesthetic Styles (+10 more)
 
 ### Community 355 - "test_cip_generate.py"
-Cohesion: 0.16
-Nodes (16): cip(), _Config, _image_response(), load_cip(), fixture, parametrize, Offline regression tests for cip/generate.py (no network, stubbed genai)., Return a loader for a fresh cip/generate.py with google.genai stubbed.… (+8 more)
+Cohesion: 0.15
+Nodes (17): cip(), _Config, _image_response(), load_cip(), fixture, parametrize, Offline regression tests for cip/generate.py (no network, stubbed genai)., Return a loader for a fresh cip/generate.py with google.genai stubbed.… (+9 more)
 
 ### Community 356 - "color"
 Cohesion: 0.11
@@ -2555,9 +2558,9 @@ Nodes (6): _bootstrap(), _load(), TestBootstrapContent, TestSkillsDirResolution,
 Cohesion: 0.12
 Nodes (14): Accessibility and control, Choose material by meaning, Find the job, Implement to the runtime, Set the motion thesis, Timing and easing, Verify, Visitor mode (+6 more)
 
-### Community 391 - "document"
-Cohesion: 0.13
-Nodes (14): Monorepo notes, Opting out of the boot check, Step 1: Run the pass, Step 2: Act by severity, Step 3: Deprecated fields are binding, Step 4: Do not overclaim on truth drift, What this owns, and what it does not, Command guidance (+6 more)
+### Community 391 - "Night 7 plan: Ussan n Tamɣart, the old woman's borrowed days (proposed 2026-10-20)"
+Cohesion: 0.22
+Nodes (11): Files touched, Night 7 plan: Ussan n Tamɣart, the old woman's borrowed days (proposed 2026-10-20), Progress, Risks and open questions, Scope, Steps (each verified before the next), The tale, cornice() (+3 more)
 
 ### Community 392 - "Root Cause Tracing"
 Cohesion: 0.12
@@ -2568,8 +2571,8 @@ Cohesion: 0.12
 Nodes (15): Common Rationalizations, Overview, Phase 1: Root Cause Investigation, Phase 2: Pattern Analysis, Phase 3: Hypothesis and Testing, Phase 4: Implementation, Quick Reference, Red Flags - STOP and Follow Process (+7 more)
 
 ### Community 394 - "[Analysis Title]"
-Cohesion: 0.12
-Nodes (16): Advanced: Skills with executable code, [Analysis Title], Anti-patterns to avoid, Avoid offering too many options, Avoid Windows-style paths, Build evaluations first, Conditional workflow pattern, Develop Skills iteratively with the agent (+8 more)
+Cohesion: 0.17
+Nodes (12): Advanced: Skills with executable code, [Analysis Title], Anti-patterns to avoid, Avoid offering too many options, Avoid Windows-style paths, Conditional workflow pattern, Examples pattern, Executive summary (+4 more)
 
 ### Community 395 - "Persuasion Principles for Skill Design"
 Cohesion: 0.12
@@ -2599,9 +2602,9 @@ Nodes (9): Test ShadcnInstaller class., Test listing installed components withou
 Cohesion: 0.12
 Nodes (15): $description, fontFamily, mono, sans, serif, $description, $type, $value (+7 more)
 
-### Community 402 - "art.test.js"
-Cohesion: 0.14
-Nodes (14): Step 3 — Wire the bootstrap injection, Pi Extension and Evals Implementation Plan, Task 1: Pi package manifest and extension tests, Task 2: Pi tool mapping reference, Task 3: Drill Pi backend and session log normalization, Task 4: Documentation and full verification, art, assert (+6 more)
+### Community 402 - "Pi Extension and Evals Implementation Plan"
+Cohesion: 0.33
+Nodes (5): Pi Extension and Evals Implementation Plan, Task 1: Pi package manifest and extension tests, Task 2: Pi tool mapping reference, Task 3: Drill Pi backend and session log normalization, Task 4: Documentation and full verification
 
 ### Community 403 - "Design"
 Cohesion: 0.12
@@ -2624,8 +2627,8 @@ Cohesion: 0.12
 Nodes (15): Common Rationalizations, Overview, Phase 1: Root Cause Investigation, Phase 2: Pattern Analysis, Phase 3: Hypothesis and Testing, Phase 4: Implementation, Quick Reference, Red Flags - STOP and Follow Process (+7 more)
 
 ### Community 408 - "superpowers/skills/using-superpowers/references/codex-tools.md"
-Cohesion: 0.12
-Nodes (12): Codex App Finishing, Environment Detection, Model routing on spawns, Subagent dispatch requires multi-agent support, Waiting on children, Additional Gemini CLI tools, Gemini CLI Tool Mapping, Instructions file (+4 more)
+Cohesion: 0.22
+Nodes (5): Codex App Finishing, Environment Detection, Model routing on spawns, Subagent dispatch requires multi-agent support, Waiting on children
 
 ### Community 409 - "[Analysis Title]"
 Cohesion: 0.12
@@ -2636,8 +2639,8 @@ Cohesion: 0.12
 Nodes (15): 1. Authority, 2. Commitment, 3. Scarcity, 4. Social Proof, 5. Unity, 6. Reciprocity, 7. Liking, Ethical Use (+7 more)
 
 ### Community 411 - "vignette"
-Cohesion: 0.22
-Nodes (16): backdrop(), bigJar(), citadelRow(), cloudBank(), gorgeBack(), hearthScene(), homeScene(), kitchenBack() (+8 more)
+Cohesion: 0.25
+Nodes (14): backdrop(), bigJar(), citadelRow(), cloudBank(), gorgeBack(), homeScene(), kitchenBack(), loomBack() (+6 more)
 
 ### Community 412 - "Finishing a Development Branch"
 Cohesion: 0.13
@@ -2652,8 +2655,8 @@ Cohesion: 0.13
 Nodes (14): 1a. Native Worktree Tools (preferred), 1b. Git Worktree Fallback, Common Rationalizations, Create the Worktree, Directory Selection, Overview, Quick Reference, Report (+6 more)
 
 ### Community 415 - "Returns: "OK" or lists conflicts"
-Cohesion: 0.13
-Nodes (15): Avoid assuming tools are installed, Checklist for effective Skills, Code and scripts, Core quality, Create verifiable intermediate outputs, MCP tool references, Next steps, Package dependencies (+7 more)
+Cohesion: 0.18
+Nodes (11): Avoid assuming tools are installed, Create verifiable intermediate outputs, MCP tool references, Next steps, Package dependencies, Returns: "OK" or lists conflicts, Runtime environment, Technical notes (+3 more)
 
 ### Community 416 - "Generate Report"
 Cohesion: 0.13
@@ -2695,9 +2698,9 @@ Nodes (14): Data Fetching Patterns, Font Optimization with `next/font`, Image Op
 Cohesion: 0.13
 Nodes (14): Animation with `prefers-reduced-motion`, Button, Card, Component Patterns, Compound Components, Dark Mode, File Organization, Foundation Setup (+6 more)
 
-### Community 427 - "verify_interactive.mjs"
-Cohesion: 0.13
-Nodes (10): abs, advisory, argv, dark, dead, inert, invisible, STATE_ATTRS (+2 more)
+### Community 427 - "mqidec"
+Cohesion: 0.36
+Nodes (11): blit(), braid(), mqidec(), paintCloth(), piece(), pieceCapeBack(), pieceFlap(), pieceHoodDown() (+3 more)
 
 ### Community 428 - "badge"
 Cohesion: 0.15
@@ -2791,9 +2794,13 @@ Nodes (13): Animation Tokens, Base Layer, Button Example, Component Classes, CSS
 Cohesion: 0.14
 Nodes (13): Card Styles, Component Variants, CSS Structures, Feature Grid (3 columns), Layout Decision Flow, Layout Patterns, Layout Selection by Use Case, Metric Styles (+5 more)
 
-### Community 452 - "Design Taste — The Anti-Slop Doctrine"
-Cohesion: 0.14
-Nodes (14): Anti-AI-Pattern Tells (copy + structure), Block Coherence (iterative additions), Brief Inference — decide before you generate, Color & Surface Taste, Depth & Detail Taste, Design Taste — The Anti-Slop Doctrine, Micro-Interaction Taste, Pre-Flight Aesthetic Check (+6 more)
+### Community 451 - "Words"
+Cohesion: 0.20
+Nodes (9): 1. Write the argument first, 2. The two-line headline, 3. Headline shapes that work, 4. Supporting line, body, buttons, 5. Proof without inventing it, 6. Things that read as generated, 7. Micro-typography, Contents (+1 more)
+
+### Community 452 - "pastureScene"
+Cohesion: 0.21
+Nodes (13): cedar(), cragFace(), crags(), goat(), ground(), ledge(), pastureBack(), pastureScene() (+5 more)
 
 ### Community 453 - "width"
 Cohesion: 0.14
@@ -2844,16 +2851,16 @@ Cohesion: 0.14
 Nodes (13): 1. Identify Independent Domains, 2. Create Focused Agent Tasks, 3. Dispatch in Parallel, 4. Review and Integrate, Agent Prompt Structure, Common Mistakes, Dispatching Parallel Agents, Overview (+5 more)
 
 ### Community 465 - "sceneBody"
-Cohesion: 0.25
-Nodes (14): bread(), eyes(), frog(), heroLamp(), hunter(), ijenni(), pot(), rat() (+6 more)
+Cohesion: 0.20
+Nodes (17): Polish pass on the three nights (2026-10-19), bread(), eyes(), frog(), heroLamp(), hunter(), ijenni(), oil() (+9 more)
 
 ### Community 466 - "Writing Skills"
-Cohesion: 0.15
-Nodes (13): Code Examples, Common Rationalizations for Skipping Testing, Directory Structure, Discovery Workflow, Flowchart Usage, Match the Form to the Failure, Overview, STOP: Before Moving to Next Skill (+5 more)
+Cohesion: 0.04
+Nodes (48): 1. Rich Description Field, 2. Keyword Coverage, 3. Descriptive Naming, 4. Token Efficiency (Critical), 5. Cross-Referencing Other Skills, Address "Spirit vs Letter" Arguments, Anti-Patterns, Build Rationalization Table (+40 more)
 
 ### Community 467 - "Testing Skills With Subagents"
-Cohesion: 0.15
-Nodes (13): Common Mistakes (Same as TDD), GREEN Phase: Write Minimal Skill (Make It Pass), Meta-Testing (When GREEN Isn't Working), Overview, Quick Reference (TDD Cycle), Real-World Impact, RED Phase: Baseline Testing (Watch It Fail), TDD Mapping for Skill Testing (+5 more)
+Cohesion: 0.07
+Nodes (29): 1. Explicit Negation in Rules, 2. Entry in Rationalization Table, 3. Red Flag Entry, 4. Update description, Common Mistakes (Same as TDD), Example: TDD Skill Bulletproofing, GREEN Phase: Write Minimal Skill (Make It Pass), Initial Test (Failed) (+21 more)
 
 ### Community 468 - "Layout"
 Cohesion: 0.15
@@ -3063,9 +3070,9 @@ Nodes (11): Execution Handoff, File Structure, Overview, Plan Document Header, S
 Cohesion: 0.18
 Nodes (10): Actions and navigation, Audit the language, Errors and permissions, Forms, Help and instructional text, Loading, empty, and success states, Rewrite by function, Set the message hierarchy (+2 more)
 
-### Community 520 - "capture"
-Cohesion: 0.24
-Nodes (10): Act on the receipt, Assemble and review, Plan and asset review, Plan, capture, serve, Act on the receipt, Assemble and review, Plan and asset review, Plan, capture, serve (+2 more)
+### Community 520 - "Impeccable Asset Producer"
+Cohesion: 0.08
+Nodes (24): Act on the receipt, Assemble and review, Plan and asset review, Plan, capture, serve, Core Rule, Decision Comps, Impeccable Asset Producer, Input Contract (+16 more)
 
 ### Community 521 - "Nielsen's 10 Heuristics"
 Cohesion: 0.18
@@ -3411,9 +3418,9 @@ Nodes (10): Anti-goals, Brainstorming rebuild: intent, Decisions, Goals, How a s
 Cohesion: 0.18
 Nodes (11): Brainstorming, Code Review, Documentation, Executing Plans, Fixes, New Harness Support, New Skills, Subagent-Driven Development (+3 more)
 
-### Community 607 - "test-pi-extension.mjs"
-Cohesion: 0.18
-Nodes (6): __dirname, extensionPath, packageJsonPath, piToolsPath, repoRoot, ref_node_test
+### Community 607 - "verify_screen_economy.mjs"
+Cohesion: 0.07
+Nodes (22): argv, blocking, dark, [file], localAxe, argv, DARK, files (+14 more)
 
 ### Community 608 - "test-lint-shell.sh"
 Cohesion: 0.40
@@ -3543,10 +3550,6 @@ Nodes (9): Common Failures, Key Patterns, Overview, Rationalization Prevention, 
 Cohesion: 0.36
 Nodes (8): fail(), get_key_from_info(), get_port_from_info(), http_check(), pass(), windows-lifecycle.test.sh script, skip(), wait_for_server_info()
 
-### Community 640 - "Impeccable Asset Producer"
-Cohesion: 0.22
-Nodes (7): Core Rule, Decision Comps, Impeccable Asset Producer, Input Contract, Output Contract, Review handoff, The job
-
 ### Community 641 - "Common Cognitive Load Violations"
 Cohesion: 0.22
 Nodes (9): 1. The Wall of Options, 2. The Memory Bridge, 3. The Hidden Navigation, 4. The Jargon Barrier, 5. The Visual Noise Floor, 6. The Inconsistent Pattern, 7. The Multi-Task Demand, 8. The Context Switch (+1 more)
@@ -3568,12 +3571,12 @@ Cohesion: 0.22
 Nodes (9): collectEditableTextRows(), visit(), own(), pickable(), stopFocusOutIntoChrome(), enableInlineEdit(), layoutFlowChildren(), onInlineInput() (+1 more)
 
 ### Community 647 - ".agents/skills/using-superpowers/references/codex-tools.md"
-Cohesion: 0.22
-Nodes (5): Codex App Finishing, Environment Detection, Model routing on spawns, Subagent dispatch requires multi-agent support, Waiting on children
+Cohesion: 0.12
+Nodes (12): Codex App Finishing, Environment Detection, Model routing on spawns, Subagent dispatch requires multi-agent support, Waiting on children, Additional Gemini CLI tools, Gemini CLI Tool Mapping, Instructions file (+4 more)
 
-### Community 648 - "Impeccable Asset Producer"
+### Community 648 - "Skill authoring best practices"
 Cohesion: 0.22
-Nodes (7): Core Rule, Decision Comps, Impeccable Asset Producer, Input Contract, Output Contract, Review handoff, The job
+Nodes (9): Avoid time-sensitive information, Common patterns, Content guidelines, Implement feedback loops, Skill authoring best practices, Template pattern, Use consistent terminology, Use workflows for complex tasks (+1 more)
 
 ### Community 649 - "Common Cognitive Load Violations"
 Cohesion: 0.22
@@ -3671,9 +3674,9 @@ Nodes (7): bad(), new_server_id(), ok(), stop-server.test.sh script, track_dir()
 Cohesion: 0.39
 Nodes (7): fail(), fake_bash(), junction(), make_plugin(), pass(), run_hook(), test-run-hook-cmd-windows.sh script
 
-### Community 673 - "teryel"
-Cohesion: 0.25
-Nodes (9): The tales of Mqidec, first build (approved 2026-10-19), object(), person(), portrait(), teryel(), tislit(), trappedOverlay(), tumbleOf() (+1 more)
+### Community 673 - "dawnWindow"
+Cohesion: 0.22
+Nodes (11): dawnWindow(), hearthScene(), oldWomanRocks(), pastureLight(), peaks(), person(), portrait(), rainWindow() (+3 more)
 
 ### Community 674 - ".agents/skills/diagnosing-superpowers/templates/issue.md"
 Cohesion: 0.25
@@ -3691,9 +3694,9 @@ Nodes (8): Phase, Done, Map, Menu, StageLoad, StagePlay, StageWon, Story
 Cohesion: 0.25
 Nodes (8): Android platform, Color & theming, Components & motion, Layout & structure, The Android slop test, Touch targets, Typography, Verifying the build
 
-### Community 678 - ".claude/skills/impeccable/reference/colorize.md"
-Cohesion: 0.25
-Nodes (7): Apply at system scale, Audit before choosing, Choose a strategy, Contrast and perception, Live-mode signature params, Verify, Visitor mode
+### Community 678 - "cloakFront"
+Cohesion: 0.31
+Nodes (9): bandLozenges(), cloakBack(), cloakFront(), fold(), hemBand(), paintPanel(), tassel(), thickness() (+1 more)
 
 ### Community 679 - "Persona-Based Design Testing"
 Cohesion: 0.25
@@ -3722,10 +3725,6 @@ Nodes (7): 1. Header (App Bar), 2. Sidebar, 3. Form, 4. Data Table, 5. Modal (Di
 ### Community 685 - "contrast.py"
 Cohesion: 0.39
 Nodes (6): _lin(), luminance(), main(), parse_hex(), ratio(), WCAG 2.2 contrast-ratio checker. Usage: python3 scripts/contrast.py "#1d1d1f"…
-
-### Community 686 - "measure_render.mjs"
-Cohesion: 0.32
-Nodes (6): argv, dark, files, L(), lin(), ratio()
 
 ### Community 687 - "figma"
 Cohesion: 0.29
@@ -3843,21 +3842,21 @@ Nodes (5): impeccable script, check_download(), fetch_url(), probe_ok(), setup_h
 Cohesion: 0.52
 Nodes (6): globToRegex(), matchesScope(), normalizeIgnoreRule(), normalizeIgnoreValue(), pageCandidates(), resolveDetectIgnores()
 
-### Community 716 - "Motion — animation rules that read as premium"
-Cohesion: 0.29
-Nodes (6): Flutter / mobile, Hard rules, Motion — animation rules that read as premium, The numbers (use these, don't improvise), Web, What may animate (and nothing else)
+### Community 716 - "Android platform"
+Cohesion: 0.25
+Nodes (8): Android platform, Color & theming, Components & motion, Layout & structure, The Android slop test, Touch targets, Typography, Verifying the build
 
-### Community 717 - "Gemini CLI Tool Mapping"
-Cohesion: 0.29
-Nodes (7): Additional Gemini CLI tools, Gemini CLI Tool Mapping, Instructions file, Parallel dispatch, Personal skills directory, Prompt filling, Subagent support
+### Community 717 - "Extract Flow"
+Cohesion: 0.25
+Nodes (7): Extract Flow, Step 1: Discover the Design System, Step 2: Identify Patterns, Step 3: Plan Extraction, Step 4: Extract & Enrich, Step 5: Migrate, Step 6: Document
 
 ### Community 718 - "Hermes Agent Tool Mapping"
 Cohesion: 0.29
 Nodes (6): Hermes Agent Tool Mapping, Instructions file, Invoking a skill, Subagent dispatch, Task tracking, Tools
 
-### Community 719 - "REFACTOR Phase: Close Loopholes (Stay Green)"
+### Community 719 - "Impeccable Manual Edit Applier"
 Cohesion: 0.29
-Nodes (7): 1. Explicit Negation in Rules, 2. Entry in Rationalization Table, 3. Red Flag Entry, 4. Update description, Plugging Each Hole, Re-verify After Refactoring, REFACTOR Phase: Close Loopholes (Stay Green)
+Nodes (6): Checks, Entry Atomicity, Impeccable Manual Edit Applier, Input Contract, Output Contract, Workflow
 
 ### Community 720 - "Generate Report"
 Cohesion: 0.29
@@ -3879,9 +3878,9 @@ Nodes (5): impeccable script, check_download(), fetch_url(), probe_ok(), setup_h
 Cohesion: 0.52
 Nodes (6): globToRegex(), matchesScope(), normalizeIgnoreRule(), normalizeIgnoreValue(), pageCandidates(), resolveDetectIgnores()
 
-### Community 725 - "Motion — animation rules that read as premium"
+### Community 725 - "logo/search.py"
 Cohesion: 0.29
-Nodes (6): Flutter / mobile, Hard rules, Motion — animation rules that read as premium, The numbers (use these, don't improvise), Web, What may animate (and nothing else)
+Nodes (6): ambiguous_python_import_2e73cc314169, format_output(), generate_design_brief(), Format results for Claude consumption (token-optimized), Logo Design Search - CLI for searching logo design guidelines Usage: python…, Generate a comprehensive logo design brief based on query
 
 ### Community 726 - "tasteskill v2 (`design-taste-frontend`)"
 Cohesion: 0.29
@@ -3984,8 +3983,8 @@ Cohesion: 0.67
 Nodes (5): assert_contains(), assert_not_contains(), fail(), pass(), test-render-graphs.sh script
 
 ### Community 751 - "The Green Harvest — browser prototype on the original art"
-Cohesion: 0.29
-Nodes (6): Checks, Honest limits, Play, Regenerate the art, Stages and what they teach, The Green Harvest — browser prototype on the original art
+Cohesion: 0.20
+Nodes (9): post(), 8. As built (2026-10-18), Checks, Files, Honest limits, Play, Regenerate the art, Stages and what they teach (+1 more)
 
 ### Community 752 - "Diagnostic Scan"
 Cohesion: 0.33
@@ -4007,13 +4006,13 @@ Nodes (5): Instructions file, Muse Tool Mapping, Skill invocation, Subagent disp
 Cohesion: 0.33
 Nodes (5): Platform Adaptation, Red Flags, Skill Priority, The Rule, User Instructions
 
-### Community 757 - "Skill Discovery Optimization (SDO)"
-Cohesion: 0.33
-Nodes (6): 1. Rich Description Field, 2. Keyword Coverage, 3. Descriptive Naming, 4. Token Efficiency (Critical), 5. Cross-Referencing Other Skills, Skill Discovery Optimization (SDO)
+### Community 757 - "_run"
+Cohesion: 0.29
+Nodes (7): CompletedProcess, Path, A hardcoded hex on the same line as a var() token is still a violation., A line that references only tokens produces no false positives., _run(), test_flags_hardcoded_hex_sharing_line_with_token(), test_token_only_line_reports_no_violation()
 
-### Community 758 - "Bulletproofing Skills Against Rationalization"
-Cohesion: 0.33
-Nodes (6): Address "Spirit vs Letter" Arguments, Build Rationalization Table, Bulletproofing Skills Against Rationalization, Close Every Loophole Explicitly, Create Red Flags List, Update SDO for Violation Symptoms
+### Community 758 - "validate_tokens.py"
+Cohesion: 0.38
+Nodes (6): collect_aliases(), flatten(), main(), Validate DTCG token files. Checks: 1. Every token file parses as valid JSON. 2.…, Yield dotted token paths that have a $value (DTCG leaf tokens)., Find all {ref} strings inside a value (which may be nested).
 
 ### Community 759 - "Diagnostic Scan"
 Cohesion: 0.33
@@ -4039,9 +4038,9 @@ Nodes (5): Operable, Perceivable, Understandable, Verification, WCAG 2.2 AAA —
 Cohesion: 0.33
 Nodes (5): 1. Dashboard Template, 2. Auth Template, 3. Settings Template, 4. List/Detail Template, Templates
 
-### Community 765 - "4. Component Stylings"
-Cohesion: 0.33
-Nodes (6): 4. Component Stylings, Badges / Tags, Buttons, Cards & Containers, Inputs & Forms, Navigation
+### Community 765 - "Gemini CLI Tool Mapping"
+Cohesion: 0.29
+Nodes (7): Additional Gemini CLI tools, Gemini CLI Tool Mapping, Instructions file, Parallel dispatch, Personal skills directory, Prompt filling, Subagent support
 
 ### Community 766 - "The Contract — 5 things every adapter resolves"
 Cohesion: 0.33
@@ -4159,13 +4158,9 @@ Nodes (4): fail(), main(), pass(), test-executing-plans-scripts.sh script
 Cohesion: 0.33
 Nodes (5): Anti-slop list (instant fails), Rule zero: the project's design system wins, The baseline criteria (self-audit before presenting ANY UI), The self-review loop (always, silently), UI Quality — the premium baseline, applied without being asked
 
-### Community 795 - "Impeccable Documenter"
-Cohesion: 0.40
-Nodes (4): Impeccable Documenter, Input Contract, Output Contract, Workflow
-
-### Community 796 - "Region map"
-Cohesion: 0.40
-Nodes (4): Containment, Painted material, Region map, What varies independently
+### Community 795 - "REFACTOR Phase: Close Loopholes (Stay Green)"
+Cohesion: 0.29
+Nodes (7): 1. Explicit Negation in Rules, 2. Entry in Rationalization Table, 3. Red Flag Entry, 4. Update description, Plugging Each Hole, Re-verify After Refactoring, REFACTOR Phase: Close Loopholes (Stay Green)
 
 ### Community 797 - "Pressure Test 1: Emergency Production Fix"
 Cohesion: 0.40
@@ -4179,21 +4174,17 @@ Nodes (4): Choose A, B, or C, Pressure Test 2: Sunk Cost + Exhaustion, Scenario,
 Cohesion: 0.40
 Nodes (4): Choose A, B, or C, Pressure Test 3: Authority + Social Pressure, Scenario, Your Options
 
-### Community 800 - "Anti-Patterns"
-Cohesion: 0.40
-Nodes (5): Anti-Patterns, ❌ Code in Flowcharts, ❌ Generic Labels, ❌ Multi-Language Dilution, ❌ Narrative Example
+### Community 800 - ".claude/skills/impeccable/reference/bolder.md"
+Cohesion: 0.33
+Nodes (5): Before you finish, Scope is sovereign, The amplification, The skeleton test, Why it reads flat
 
-### Community 801 - "Testing All Skill Types"
+### Community 801 - "CatalogSummaryLineEndingsTest"
 Cohesion: 0.40
-Nodes (5): Discipline-Enforcing Skills (rules/requirements), Pattern Skills (mental models), Reference Skills (documentation/APIs), Technique Skills (how-to guides), Testing All Skill Types
+Nodes (3): CatalogSummaryLineEndingsTest, _load_generator(), Simulate a Windows checkout: the recorded hashes must still validate.
 
-### Community 802 - "RED-GREEN-REFACTOR for Skills"
-Cohesion: 0.40
-Nodes (5): GREEN: Write Minimal Skill, Micro-Test Wording Before Full Scenarios, RED-GREEN-REFACTOR for Skills, RED: Write Failing Test (Baseline), REFACTOR: Close Loopholes
-
-### Community 803 - "VERIFY GREEN: Pressure Testing"
-Cohesion: 0.40
-Nodes (5): Key Elements of Good Scenarios, Pressure Types, Testing Setup, VERIFY GREEN: Pressure Testing, Writing Pressure Scenarios
+### Community 803 - "Bulletproofing Skills Against Rationalization"
+Cohesion: 0.33
+Nodes (6): Address "Spirit vs Letter" Arguments, Build Rationalization Table, Bulletproofing Skills Against Rationalization, Close Every Loophole Explicitly, Create Red Flags List, Update SDO for Violation Symptoms
 
 ### Community 804 - "Impeccable Documenter"
 Cohesion: 0.40
@@ -4235,13 +4226,13 @@ Nodes (5): radius, radius, radius, $type, $value
 Cohesion: 0.40
 Nodes (4): 1. Popover, 2. Command Palette, 3. Divider / Separator, Overlay & Utility Components
 
-### Community 815 - "2. Color Palette & Roles"
+### Community 815 - ".agents/skills/writing-skills/anthropic-best-practices.md"
 Cohesion: 0.40
-Nodes (5): 2. Color Palette & Roles, Functional, Interactive, Primary, Surface & Borders
+Nodes (4): [Analysis Title], Executive summary, Key findings, Recommendations
 
-### Community 816 - "8. Responsive Behavior"
+### Community 816 - "Region map"
 Cohesion: 0.40
-Nodes (5): 8. Responsive Behavior, Breakpoints, Collapsing Strategy, Image Behavior, Touch Targets
+Nodes (4): Containment, Painted material, Region map, What varies independently
 
 ### Community 817 - "Golden Examples — the quality bar, demonstrated"
 Cohesion: 0.40
@@ -4343,17 +4334,9 @@ Nodes (4): Heuristics Scoring Guide, Issue Severity (P0–P3), Reference Materia
 Cohesion: 0.50
 Nodes (3): Pi Tool Mapping, Subagents, Task lists
 
-### Community 842 - "File Organization"
-Cohesion: 0.50
-Nodes (4): File Organization, Self-Contained Skill, Skill with Heavy Reference, Skill with Reusable Tool
-
-### Community 843 - "Skill Types"
-Cohesion: 0.50
-Nodes (4): Pattern, Reference, Skill Types, Technique
-
-### Community 844 - "Example: TDD Skill Bulletproofing"
-Cohesion: 0.50
-Nodes (4): Example: TDD Skill Bulletproofing, Initial Test (Failed), Iteration 1 - Add Counter, Iteration 2 - Add Foundational Principle
+### Community 844 - "Anti-Patterns"
+Cohesion: 0.40
+Nodes (5): Anti-Patterns, ❌ Code in Flowcharts, ❌ Generic Labels, ❌ Multi-Language Dilution, ❌ Narrative Example
 
 ### Community 845 - "Heuristics Scoring Guide"
 Cohesion: 0.50
@@ -4727,24 +4710,68 @@ Nodes (3): Files Changed, Improvements, v3.2.2 (2025-10-21)
 Cohesion: 0.67
 Nodes (3): GitHub Copilot CLI Support, OpenCode Fixes, v5.0.7 (2026-03-31)
 
+### Community 1040 - "Testing All Skill Types"
+Cohesion: 0.40
+Nodes (5): Discipline-Enforcing Skills (rules/requirements), Pattern Skills (mental models), Reference Skills (documentation/APIs), Technique Skills (how-to guides), Testing All Skill Types
+
+### Community 1041 - "RED-GREEN-REFACTOR for Skills"
+Cohesion: 0.40
+Nodes (5): GREEN: Write Minimal Skill, Micro-Test Wording Before Full Scenarios, RED-GREEN-REFACTOR for Skills, RED: Write Failing Test (Baseline), REFACTOR: Close Loopholes
+
+### Community 1042 - "VERIFY GREEN: Pressure Testing"
+Cohesion: 0.40
+Nodes (5): Key Elements of Good Scenarios, Pressure Types, Testing Setup, VERIFY GREEN: Pressure Testing, Writing Pressure Scenarios
+
+### Community 1043 - "Evaluation and iteration"
+Cohesion: 0.50
+Nodes (4): Build evaluations first, Develop Skills iteratively with the agent, Evaluation and iteration, Observe how agents navigate Skills
+
+### Community 1044 - "Checklist for effective Skills"
+Cohesion: 0.50
+Nodes (4): Checklist for effective Skills, Code and scripts, Core quality, Testing
+
+### Community 1045 - "Core principles"
+Cohesion: 0.50
+Nodes (4): Concise is key, Core principles, Set appropriate degrees of freedom, Test with all models you plan to use
+
+### Community 1046 - "Operate"
+Cohesion: 0.50
+Nodes (3): Comps, Directions, Operate
+
+### Community 1047 - "Read"
+Cohesion: 0.50
+Nodes (3): Comps, Directions, Read
+
+### Community 1050 - "File Organization"
+Cohesion: 0.50
+Nodes (4): File Organization, Self-Contained Skill, Skill with Heavy Reference, Skill with Reusable Tool
+
+### Community 1051 - "Skill Types"
+Cohesion: 0.50
+Nodes (4): Pattern, Reference, Skill Types, Technique
+
+### Community 1052 - "Example: TDD Skill Bulletproofing"
+Cohesion: 0.50
+Nodes (4): Example: TDD Skill Bulletproofing, Initial Test (Failed), Iteration 1 - Add Counter, Iteration 2 - Add Foundational Principle
+
 ## Knowledge Gaps
-- **8565 isolated node(s):** `crypto`, `http`, `fs`, `path`, `OPCODES` (+8560 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 9799 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **121 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **8576 isolated node(s):** `crypto`, `http`, `fs`, `path`, `OPCODES` (+8571 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 9816 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **133 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `document()` connect `document` to `.claude/skills/impeccable/reference/new-work.md`, `.agents/skills/impeccable/scripts/live-browser.js`, `inspect.mjs`, `.claude/skills/impeccable/scripts/live-browser.js`, `render_framework_source.mjs`?**
-  _High betweenness centrality (0.091) - this node is a cross-community bridge._
-- **Why does `Design Taste — The Anti-Slop Doctrine` connect `Design Taste — The Anti-Slop Doctrine` to `aesthetic-systems.md`, `assets.mjs`?**
-  _High betweenness centrality (0.089) - this node is a cross-community bridge._
+- **Why does `document()` connect `.agents/skills/impeccable/SKILL.md` to `.claude/skills/impeccable/SKILL.md`, `.agents/skills/impeccable/scripts/live-browser.js`, `inspect.mjs`, `.claude/skills/impeccable/scripts/live-browser.js`, `render_framework_source.mjs`?**
+  _High betweenness centrality (0.092) - this node is a cross-community bridge._
+- **Why does `Design Taste — The Anti-Slop Doctrine` connect `assets.mjs` to `aesthetic-systems.md`?**
+  _High betweenness centrality (0.090) - this node is a cross-community bridge._
 - **Are the 4 inferred relationships involving `Hero` (e.g. with `Flutter / mobile` and `3. Folder map`) actually correct?**
   _`Hero` has 4 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `crypto`, `http`, `fs` to the rest of the system?**
-  _8565 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _8576 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.038461538461538464 - nodes in this community are weakly interconnected._
 - **Should `manifest.json` be split into smaller, more focused modules?**
