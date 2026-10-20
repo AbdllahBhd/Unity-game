@@ -1,228 +1,35 @@
-# Hollow Night — AI project guide
+# Agent Instructions
 
-> **For Codex, Cursor and other AGENTS.md readers:** project rules, commands and constraints
-> live in [CLAUDE.md](CLAUDE.md) and `.claude/rules/*.md` (code-style, pr, workflow). Read those
-> too and follow them as if written here. Skills are in `.agents/skills/` (generated from
-> `.claude/` by `scripts/sync-codex.sh`; never edit them directly). Save lessons into those
-> repo files, never into tool-private memory.
+> This file is read automatically by Codex, Cursor, Gemini CLI, and other tools
+> that support the AGENTS.md standard. Claude Code reads CLAUDE.md instead.
+> To avoid maintaining two copies, this file is a pointer:
 
-This file is the single source of truth for any AI assistant working on this project.
-Read it **instead of** re-reading all the code. `CLAUDE.md` imports this file.
+**All project instructions live in [CLAUDE.md](CLAUDE.md). Read that file now, and follow it as if its content were written here.**
 
-## 1. What this project is
+Also read the convention files it references:
 
-**Hollow Night: Izan and the Moon Lantern** — a 2D Halloween physics puzzle game for mobile (portrait).
-The player drags to aim and releases to launch a hero, collects candy embers and reaches the door.
-It has a story, 4 playable heroes, 10 stages in 3 chapters and a boss fight.
+- [.claude/rules/code-style.md](.claude/rules/code-style.md)
+- [.claude/rules/pr.md](.claude/rules/pr.md)
+- [.claude/rules/workflow.md](.claude/rules/workflow.md)
+- [.claude/rules/delivery.md](.claude/rules/delivery.md)
+- [.claude/rules/reporting.md](.claude/rules/reporting.md)
 
-The project contains two generations of code:
+On-demand knowledge and workflows are available to you natively as skills in
+`.agents/skills/` — list that folder to see what exists (project skills,
+workflow commands like `$deploy`/`$install`/`$retro`, and the superpowers
+discipline skills such as `$test-driven-development` and
+`$systematic-debugging`). These are generated copies of `.claude/skills/` and
+`.claude/commands/` — when updating a skill, edit the source under `.claude/`
+and run `bash scripts/sync-codex.sh` (Windows: `scripts\sync-codex.cmd`);
+never edit `.agents/skills/` directly.
 
-| Part | Location | Status |
-|---|---|---|
-| **Hollow Night** (the game) | `Assets/Scripts/HollowNight/`, `Assets/Scenes/HollowNight/`, `Assets/Resources/HN/` | Active, in the build |
-| First prototype | `Assets/*.cs`, `Assets/Scripts/*.cs`, `Assets/Scenes/*.unity` | Legacy, bugs fixed, **disabled in the build** |
+**Where to save lessons and new rules:** when the user corrects you or states a
+rule, write it into the matching file — coding conventions →
+`.claude/rules/code-style.md`, git/PR habits → `.claude/rules/pr.md`,
+process → `.claude/rules/workflow.md`, API design →
+`.claude/skills/api-conventions/SKILL.md`, project facts → `CLAUDE.md`.
+Do NOT store project knowledge in tool-private memory (e.g. /memories) — other
+tools and machines read only these repo files.
 
-| Item | Value |
-|---|---|
-| Unity version | **6000.6.5f1** (Unity 6, upgraded 2026-10-12). Code stays in plain C# 7.3 style |
-| Render pipeline | **Built-in** (URP assets removed at upgrade). All sprites use the unlit `Sprites/Default` material |
-| Input | Legacy `Input` class (mouse = first touch) |
-| Physics | Physics2D, gravity (0, -9.81), hero gravity scale 1.5 |
-| UI | `UnityEngine.UI` built from code. TextMeshPro is **not** used |
-| Target | Android/iOS portrait. Product name `Hollow Night` |
-| Version control | git repository in `game1/`; generated folders are ignored |
-| Verification | Unity 6 is installed; the user play-tests. See §9 |
-
-## 2. Key design decision: everything is built from code
-
-Each Hollow Night scene contains **one GameObject** with one component, `GameBoot`, whose `screen`
-field selects what to build. Camera, UI, levels, audio and effects are created at runtime.
-
-Consequences:
-- Never wire things in the Inspector for the new game; there is nothing to wire.
-- Sprites and fonts are loaded by name with `Art.Get("name")` from `Assets/Resources/HN/`.
-- Any `MonoBehaviour` is attached with `AddComponent<T>()`. Several classes share one file
-  (for example `Elements.cs`); that is fine because they are never attached in the Editor.
-  Only `GameBoot` must stay in a file with its own name, and its `.meta` GUID must not change.
-
-## 3. Folder map
-
-| Path | Content |
-|---|---|
-| `Assets/Scripts/HollowNight/Core/` | `GameBoot`, `Art`, `Flow`, `Progress`, `Heroes`, `Sfx`, `Juice` |
-| `Assets/Scripts/HollowNight/UI/` | `UIKit`, `MainMenuScreen`, `WorldMapScreen` |
-| `Assets/Scripts/HollowNight/Story/` | `Story` (all dialogue), `StoryScreen` |
-| `Assets/Scripts/HollowNight/Stage/` | `StageController`, `StageHud`, `Hero`, `CameraRig` (+`Trajectory`), `LevelData`, `LevelBuilder`, `LevelLibrary` |
-| `Assets/Scripts/HollowNight/Elements/` | `Elements.cs` (all level objects), `WitchBoss.cs` |
-| `Assets/Scenes/HollowNight/` | `HN_MainMenu`, `HN_WorldMap`, `HN_Story`, `HN_Stage` |
-| `Assets/Resources/HN/` | 100 sprites + `Fonts/` (Creepster, Luckiest Guy, with licences) |
-| `Tools/generate_art.py` | Regenerates the sprites (Pillow). Keeps existing `.meta` GUIDs |
-| `Tools/check_levels.py` | Simulates the stages to test that they can be finished |
-| `Assets/AlienTileSet/`, `Assets/2D Halloween Decoration/`, `Assets/QS/` | Third-party art packs, no logic |
-| `Library/`, `Temp/`, `Logs/`, `obj/`, `*.csproj`, `*.sln` | Generated by Unity. **Never read or edit** |
-| `graphify-out/` | Code knowledge graph (§10) |
-
-## 4. Scene flow
-
-Build order: `HN_MainMenu` (0), `HN_WorldMap` (1), `HN_Story` (2), `HN_Stage` (3).
-Scenes are loaded **by name** through `Flow.Go(...)`, which fades the screen.
-
-```mermaid
-flowchart LR
-    Menu[HN_MainMenu] -- "Play (first time)" --> Pro[HN_Story: prologue]
-    Pro --> Map[HN_WorldMap]
-    Menu -- Continue --> Map
-    Map -- "tap a stage" --> Pre["HN_Story: pre_N (first time)"]
-    Pre --> Stage[HN_Stage: level N]
-    Map -- "story already seen" --> Stage
-    Stage -- "Next" --> Post["HN_Story: post_N (after 3, 5, 7, 10)"]
-    Post --> Pre
-    Stage -- "Map" --> Map
-    Post -- "after stage 10" --> Menu
-```
-
-State that survives a scene load is static: `Flow.Level`, `Flow.StoryId`, `Flow.AfterStory`.
-`HN_Stage` is one scene for all stages; it builds `LevelLibrary.Get(Flow.Level)`.
-
-## 5. Core classes
-
-| Class | Responsibility |
-|---|---|
-| `GameBoot` | Creates the camera and event system, then adds the screen component |
-| `Flow` / `FlowRunner` | Navigation, fade overlay, story-before-level logic |
-| `Progress` | PlayerPrefs save: `hn_done_N`, `hn_stars_N`, `hn_best_N`, `hn_story_ID`, `hn_sound` |
-| `Art` | Sprite/font cache, `Make` (fit to a world height), `MakeSliced` (9-slice), `Layer` sorting orders |
-| `Sfx` | Synthesises every sound and the music loop at runtime. `Sfx.Play(Sound.X)` |
-| `Juice.cs` | `Ease`, `Tween`, `Bob`, `Spin`, `Pulse`, `FrameLoop`, `Mote`, `Fx` (sprite particle bursts) |
-| `UIKit` | Canvas (reference 1080x1920), labels, pictures, buttons, `PointerOverUI()` |
-| `Story` | Dialogue data: `prologue`, `pre_1..10`, `post_3/5/7/10`. `Story.ChapterOf(level)` |
-| `StageController` | Singleton `StageController.I`. Input, score, win/lose, hero swap, pause |
-| `StageHud` | Score bar, hints, pause and result panels |
-| `Hero` | Hero physics, states, abilities and squash-and-stretch animation |
-| `LevelData` | Fluent level description (`.Ledge()`, `.Candy()`, `.Door()` ...) |
-| `LevelBuilder` | Turns `LevelData` into GameObjects |
-| `LevelLibrary` | The 10 stages |
-
-```mermaid
-graph TD
-    GameBoot --> MainMenuScreen & WorldMapScreen & StoryScreen & StageController
-    StageController --> LevelLibrary --> LevelData
-    StageController --> LevelBuilder --> Elements[Level objects]
-    StageController --> Hero & StageHud & CameraRig & Trajectory
-    Elements -- "StageController.I.CandyCollected / Win / Shake ..." --> StageController
-    Elements -- "hero.Die / Bounce / Hang / TryTeleport" --> Hero
-    StageController --> Progress
-    StageController & StoryScreen & WorldMapScreen & MainMenuScreen --> Flow
-    StoryScreen --> Story
-```
-
-## 6. Gameplay rules
-
-### Hero states (`HeroState`)
-`Resting` (kinematic, follows the ground it stands on, can be launched) → `Flying` (dynamic) →
-`Resting` again when grounded and slower than 0.6 for 0.12 s. Also `Cannon`, `Dead`, `Won`.
-
-### Input (`StageController.Update`)
-- Press and drag while `Resting`: aim. Drag is measured in screen space, max 4 world units.
-  Launch **velocity** is set directly (`drag / 4 * maxSpeed`), so the trajectory preview is exact.
-- Press while `Flying`: the hero's ability. A drag shorter than 0.45 units is ignored.
-- `R` restarts, `Esc` pauses.
-
-### Heroes (`Heroes.cs`)
-
-| Hero | Max launch speed | Ability | Joins after |
-|---|---|---|---|
-| Izan | 16 | Dash: speed boost, breaks crates, defeats bats (0.45 s) | start |
-| Professor Hoot | 14 | Flap twice (tap), glide (hold, 3 s) | stage 3 |
-| Webster | 15 | Sticks to any `Solid` with `sticky`; tap to zip up on a web line | stage 5 |
-| Pip | 13.5 | Smash straight down, breaks crates in a row, shockwave on landing | stage 7 |
-
-Each stage has a featured hero. The swap button cycles through unlocked heroes while resting.
-
-### Score
-Stars: 1 for finishing, +1 for all candies, +1 for `launches <= par`. A death costs one launch and
-respawns the hero at the last **stable** rest position.
-
-### Level objects (`Kind` in `LevelData.cs`, classes in `Elements.cs`)
-`Platform`, `Candy`, `Door` (locked by `Key`, or sealed until all `Minion`s are smashed when
-`SmashAll()`), `Spikes`, `Mushroom` (bounce 17), `Mover`, `Wind`, `Portal`, `Bat`, `Cauldron`
-(cannon), `Crate` (cracked block), `Ghost` (blinking platform), `Web`, `Decor`, `Boss`.
-
-The boss (`WitchBoss`) has 3 health, rises 2.2 units and speeds up after each hit, throws `Bomb`s,
-and drops the `LanternGoal` when defeated; touching the lantern wins stage 10.
-
-### World units
-x from -6 to 6 (walls at ±6), y = 0 is the ground surface. Hero radius 0.45.
-The camera always shows 12 units of width and follows the hero vertically.
-
-## 7. How to add or change a stage
-
-Edit `LevelLibrary.cs`. One call per line, plain numbers (the simulator parses this file):
-
-```csharp
-static LevelData Level11()
-{
-    return New(11, "New Stage", HeroType.Izan, 24f, 4)   // id, name, hero, height, par
-        .Hint("Shown until the first launch.")
-        .Ground()
-        .Start(-4f, 0f)
-        .Ledge(2f, 5f, 3f)        // x, surface height, width
-        .Door(2.5f, 5f)
-        .Candy(0f, 4f);
-}
-```
-
-Then: add it to `Build()`, raise `Progress.LevelCount`, update `Story.ChapterOf` and the world map
-chapter starts if needed, add a `pre_11` dialogue in `Story.cs`, and run `python3 Tools/check_levels.py 11`.
-
-To add a new kind of object: add a `Kind`, a fluent method in `LevelData`, a builder method in
-`LevelBuilder`, the behaviour class in `Elements.cs`, and teach `Tools/check_levels.py` about it.
-
-## 8. Legacy prototype
-
-Kept for reference, not part of the build. Scripts: `GameManager`, `PLayer_drag_drop`,
-`trajectory_Script`, `door_Scrip`, `pumkinkScript`, `level_Loader`, `button_Press`,
-`LegacyButton` (base of `button_menu_`, `button_next_`, `button_restart_`), `CharacterController2D`,
-`start_left/middel/right`, and unused tests `izanScript`, `carecterScript`, `player_script`, `balltest`, `bbbb`.
-
-Rules for legacy code: its connections live in `Level_1.unity` and `Menu_start.unity`, so **never rename**
-its classes, files or public fields (typos such as `desactivaterb`, `whaite`, `helth` are part of the API).
-To play it, enable the three legacy scenes in Build Settings.
-
-## 9. Verification
-
-Claude cannot drive the Unity editor, so:
-
-| Check | How | Covers |
-|---|---|---|
-| Compile | Open in Unity; check `Logs/Editor.log` for `error CS` | Syntax, types, API names |
-| Stages | `python3 Tools/check_levels.py` | A route to the goal, every candy, par |
-| Play test | **Open in Unity and play** | Everything else: scenes, sprite import, feel |
-
-`check_levels.py` is a random search over an approximation of the physics; results vary slightly with
-`--seed`. When a stage's best route is within one launch of par, test with several seeds.
-
-Never claim a change was tested in Unity unless it was.
-
-## 10. Code knowledge graph (Graphify)
-
-`graphify-out/graph.json` holds a graph of all C# code. Use it before opening files:
-
-```bash
-graphify query "how does the hero come to rest"
-graphify explain "StageController"
-graphify path "Cauldron" "Hero"
-graphify affected "LevelData"
-graphify update .        # after changing code
-```
-
-The graph covers C# only. `.graphifyignore` excludes generated folders, art packs and binary assets.
-
-## 11. Rules for AI assistants
-
-- Check this file and the graph first; open a `.cs` file only when you need its exact lines.
-- Never edit `Library/`, `Temp/`, `obj/`, `*.csproj`, `*.sln`, or existing `.meta` files.
-- Do not put non-asset files in `Assets/` (tools and docs live in `Tools/` and the root).
-- New art goes through `Tools/generate_art.py` or as a PNG in `Assets/Resources/HN/`.
-- Use Unity 6 physics names: `linearVelocity`, `linearDamping`, `angularDamping`.
-- After changing code: run the compile and stage checks, run `graphify update .`, update this file.
+> Maintainers: never put content here — edit CLAUDE.md and the rules files.
+> One source of truth; this pointer keeps every AI tool in sync.

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mqidec: character designs</title>
+    <link rel="icon" href="assets/pumpkin.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        overflow: auto;
+        background: #121216;
+      }
+      .sheet {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px 16px 40px;
+        color: var(--ink);
+      }
+      .sheet h1 {
+        font-size: 44px;
+        margin: 0 0 4px;
+      }
+      .sheet p.intro {
+        margin: 0 0 14px;
+        color: var(--muted);
+      }
+      .states {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0 0 18px;
+      }
+      .states button {
+        font-family: "Luckiest Guy", sans-serif;
+        letter-spacing: 0.05em;
+        padding: 8px 14px;
+        border-radius: 10px;
+        background: #26262c;
+        border: 1.5px solid #4a4a55;
+        color: var(--ink);
+      }
+      .states button[aria-pressed="true"] {
+        background: #3b4d36;
+        border-color: var(--green);
+        box-shadow: 0 0 12px var(--green-glow);
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 14px;
+      }
+      .card {
+        background: #1b1b21;
+        border: 1.5px solid #34343d;
+        border-radius: 18px;
+        padding: 12px 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .card.chosen {
+        border-color: var(--green);
+        box-shadow: 0 0 18px var(--green-glow);
+      }
+      .card canvas {
+        position: static;
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        border-radius: 12px;
+        background: radial-gradient(ellipse at 50% 70%, #2d2f3a, #16161b 70%);
+      }
+      .card h2 {
+        margin: 0;
+        font-family: "Luckiest Guy", sans-serif;
+        font-weight: 400;
+        font-size: 20px;
+        letter-spacing: 0.04em;
+        color: var(--green);
+      }
+      .card .num {
+        font-family: "Creepster", serif;
+        font-size: 30px;
+        color: var(--amber);
+        margin-right: 8px;
+      }
+      .card p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.4;
+        color: #cfd4e0;
+        flex: 1;
+      }
+      .card button {
+        font-family: "Luckiest Guy", sans-serif;
+        letter-spacing: 0.05em;
+        padding: 8px;
+        border-radius: 10px;
+        background: #2a3a28;
+        border: 1.5px solid #6c8f62;
+        color: var(--ink);
+      }
+      .note {
+        margin-top: 18px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="sheet">
+      <h1>Mqidec</h1>
+      <p class="intro">
+        Four designs built on your original rabbit parts. The buttons switch every card to the same
+        animation state so they can be compared. Tap a card's number to mark your choice, then tell me
+        the number.
+      </p>
+      <div class="states" id="states" role="group" aria-label="Animation state"></div>
+      <div class="cards" id="cards"></div>
+      <p class="note">
+        Everything new is drawn in code over the exported PSD parts, so the burnous and the marks can be
+        combined, and replaced later by painted PSD layers without changing the game.
+      </p>
+    </main>
+    <script src="assets/manifest.js"></script>
+    <script src="art.js"></script>
+    <script src="characters.js"></script>
+  </body>
+</html>

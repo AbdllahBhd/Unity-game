@@ -49,7 +49,7 @@ namespace HollowNight
             title.horizontalOverflow = HorizontalWrapMode.Overflow;
 
             leftPortrait = UIKit.Picture("izan_idle", root, UIKit.Bottom, new Vector2(-270f, 900f), new Vector2(520f, 520f));
-            rightPortrait = UIKit.Picture("hoot_idle", root, UIKit.Bottom, new Vector2(270f, 900f), new Vector2(520f, 520f));
+            rightPortrait = UIKit.Picture("morgra_idle", root, UIKit.Bottom, new Vector2(270f, 900f), new Vector2(520f, 520f));
             leftPortrait.gameObject.AddComponent<Pulse>().amount = 0.02f;
             rightPortrait.gameObject.AddComponent<Pulse>().amount = 0.02f;
             leftPortrait.enabled = false;

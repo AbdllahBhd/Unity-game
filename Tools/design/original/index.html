@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#120b07" />
+    <title>Timucuha n Mqidec</title>
+    <link rel="icon" href="assets/rabbit_body.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="phone" id="phone">
+      <canvas id="canvas" data-t-label="ui.title"></canvas>
+
+      <section class="screen" id="title-screen" aria-labelledby="game-title">
+        <div class="title-block">
+          <p class="kicker tifinagh">ⵎⵇⵉⴷⴻⵛ</p>
+          <h1 id="game-title" data-t="ui.title"></h1>
+          <p class="tagline" data-t="ui.tagline"></p>
+        </div>
+        <div class="title-actions">
+          <button class="play" id="play" data-t-label="ui.play"><img src="assets/btn_play.png" alt="" /></button>
+          <button class="text-button" id="open-map" data-t="ui.tales"></button>
+          <label class="lang-picker">
+            <span data-t="ui.language"></span>
+            <select class="lang-select" data-t-label="ui.language"></select>
+          </label>
+          <button class="text-button small mute" aria-pressed="false"></button>
+        </div>
+        <p class="credit">Prototype · browser physics, not Unity · Taqbaylit text is a draft</p>
+      </section>
+
+      <section class="screen" id="map-screen" hidden aria-labelledby="map-title">
+        <header class="bar">
+          <button class="icon" id="map-back" data-t-label="ui.back"><img src="assets/btn_menu.png" alt="" /></button>
+          <h2 id="map-title" data-t="ui.tales"></h2>
+          <span class="total" id="star-total"></span>
+        </header>
+        <div class="chapters" id="chapters"></div>
+      </section>
+
+      <section class="screen story" id="story-screen" hidden aria-live="polite">
+        <p class="chapter-card" id="chapter-card" hidden></p>
+        <div class="dialogue" id="dialogue">
+          <canvas class="portrait" id="portrait" width="192" height="192" aria-hidden="true"></canvas>
+          <div class="speech">
+            <p class="speaker" id="speaker"></p>
+            <p class="line" id="line"></p>
+            <p class="tap" data-t="ui.tap"></p>
+          </div>
+        </div>
+        <button class="text-button skip" id="skip" data-t="ui.skip"></button>
+      </section>
+
+      <section class="screen hud" id="stage-screen" hidden>
+        <header class="bar">
+          <button class="icon" id="pause" data-t-label="ui.paused"><img src="assets/btn_menu.png" alt="" /></button>
+          <div class="stage-title">
+            <span id="stage-number"></span>
+            <strong id="stage-name"></strong>
+          </div>
+          <div class="stars" id="hud-stars">
+            <img src="assets/star.png" alt="" /><img src="assets/star.png" alt="" /><img src="assets/star.png" alt="" />
+          </div>
+          <button class="icon" id="restart" data-t-label="ui.restart"><img src="assets/btn_reset.png" alt="" /></button>
+        </header>
+        <p class="toast" id="toast" role="status"></p>
+      </section>
+
+      <section class="overlay" id="pause-panel" hidden>
+        <div class="panel">
+          <h2 data-t="ui.paused"></h2>
+          <button class="text-button" id="resume" data-t="ui.resume"></button>
+          <button class="text-button" id="pause-restart" data-t="ui.restart"></button>
+          <button class="text-button" id="pause-map" data-t="ui.map"></button>
+          <select class="lang-select" data-t-label="ui.language"></select>
+          <button class="text-button mute" aria-pressed="false"></button>
+        </div>
+      </section>
+
+      <section class="overlay" id="result-panel" hidden aria-labelledby="result-title">
+        <div class="panel">
+          <h2 id="result-title"></h2>
+          <div class="result-stars" id="result-stars"></div>
+          <p id="result-line"></p>
+          <div class="result-buttons">
+            <button class="icon big" id="result-map" data-t-label="ui.map"><img src="assets/btn_menu.png" alt="" /></button>
+            <button class="icon big" id="result-restart" data-t-label="ui.restart"><img src="assets/btn_reset.png" alt="" /></button>
+            <button class="icon big next" id="result-next" data-t-label="ui.next"><img src="assets/btn_next.png" alt="" /></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="tip" id="tip" hidden aria-live="polite">
+        <div class="tip-card">
+          <canvas class="tip-portrait" id="tip-portrait" width="160" height="160" aria-hidden="true"></canvas>
+          <p class="tip-text" id="tip-text"></p>
+          <div class="tip-hand" id="tip-hand" hidden><img src="assets/hand.png" alt="" /></div>
+          <button class="text-button small" id="tip-ok" data-t="ui.gotit"></button>
+        </div>
+      </section>
+
+      <p class="loading" id="loading">…</p>
+    </main>
+    <script src="assets/manifest.js"></script>
+    <script src="../prototype/game.js"></script>
+    <script src="routes.js"></script>
+    <script src="levels.js"></script>
+    <script src="text.js"></script>
+    <script src="story.js"></script>
+    <script src="art.js"></script>
+    <script src="tales-art.js"></script>
+    <script src="sfx.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

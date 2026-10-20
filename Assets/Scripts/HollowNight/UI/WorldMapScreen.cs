@@ -44,15 +44,7 @@ namespace HollowNight
                 new Vector2(330f, -60f), new Vector2(300f, 80f), 50, UIKit.Cream);
             UIKit.Picture("star_full", stars.transform, UIKit.Center, new Vector2(-160f, 6f), new Vector2(80f, 80f));
 
-            // Team roster: heroes that have not joined yet are silhouettes.
-            for (int i = 0; i < Heroes.Count; i++)
-            {
-                HeroDef def = Heroes.Get((HeroType)i);
-                bool unlocked = Progress.HeroUnlocked(def.type);
-                Image face = UIKit.Picture(def.sprite + "_idle", bar.transform, UIKit.Center,
-                    new Vector2(-300f + i * 120f, -60f), new Vector2(110f, 110f));
-                face.color = unlocked ? Color.white : new Color(0.05f, 0.03f, 0.12f, 0.9f);
-            }
+            UIKit.Picture("izan_idle", bar.transform, UIKit.Center, new Vector2(-300f, -60f), new Vector2(110f, 110f));
 
             UIKit.IconButton("ico_home", root, UIKit.TopLeft, new Vector2(100f, -110f), 130f, () => Flow.Go(Flow.Menu));
         }

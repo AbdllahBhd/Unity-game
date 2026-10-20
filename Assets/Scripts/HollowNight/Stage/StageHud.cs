@@ -12,10 +12,8 @@ namespace HollowNight
 
         Text launchLabel;
         Text goalLabel;
-        Image[] candyIcons;
+        Image[] pumpkinIcons;
         Image[] bossIcons;
-        RectTransform swap;
-        Image swapFace;
         Text abilityLabel;
         RectTransform hintPanel;
         Text hintLabel;
@@ -23,30 +21,31 @@ namespace HollowNight
         RectTransform pausePanel;
         Image pauseSound;
         Coroutine hintRoutine;
-        int shownCandies = -1;
+        int shownSmashed = -1;
 
-        public void Build(StageController controller, int candyCount, bool boss)
+        public void Build(StageController controller, int hunterCount, bool boss)
         {
             stage = controller;
             Canvas canvas = UIKit.MakeCanvas("HudCanvas", 20);
             root = canvas.transform;
             LevelData level = controller.Level;
 
-            Image bar = UIKit.Picture("panel_dark", root, UIKit.Top, new Vector2(0f, -110f), new Vector2(720f, 250f), true);
+            Image bar = UIKit.Picture("panel_dark", root, UIKit.Top, new Vector2(0f, -110f), new Vector2(900f, 250f), true);
             bar.color = new Color(1f, 1f, 1f, 0.88f);
             Text title = UIKit.Label(level.id + ".  " + level.name, bar.transform, UIKit.Center, new Vector2(0f, 62f),
-                new Vector2(680f, 70f), 46, UIKit.Gold);
+                new Vector2(860f, 70f), 46, UIKit.Gold);
             title.horizontalOverflow = HorizontalWrapMode.Overflow;
-            launchLabel = UIKit.Label("", bar.transform, UIKit.Center, new Vector2(-150f, -40f), new Vector2(380f, 80f), 40,
+            launchLabel = UIKit.Label("", bar.transform, UIKit.Center, new Vector2(-230f, -40f), new Vector2(380f, 80f), 40,
                 UIKit.Cream);
             launchLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
 
-            candyIcons = new Image[candyCount];
-            for (int i = 0; i < candyCount; i++)
+            // One pumpkin icon per hunter; it lights up when that many are smashed.
+            pumpkinIcons = new Image[hunterCount];
+            for (int i = 0; i < hunterCount; i++)
             {
-                candyIcons[i] = UIKit.Picture("candy_" + (i % 5), bar.transform, UIKit.Center,
-                    new Vector2(120f + i * 86f, -40f), new Vector2(80f, 80f));
-                candyIcons[i].color = new Color(0f, 0f, 0f, 0.55f);
+                pumpkinIcons[i] = UIKit.Picture("hunter_0", bar.transform, UIKit.Center,
+                    new Vector2(10f + i * 78f, -40f), new Vector2(72f, 72f));
+                pumpkinIcons[i].color = new Color(0f, 0f, 0f, 0.55f);
             }
 
             UIKit.IconButton("ico_pause", root, UIKit.TopLeft, new Vector2(95f, -100f), 140f, stage.TogglePause);
@@ -64,10 +63,7 @@ namespace HollowNight
                 }
             }
 
-            // Hero swap button (bottom left) and ability reminder.
-            Button swapButton = UIKit.IconButton("ico_swap", root, UIKit.BottomLeft, new Vector2(120f, 130f), 170f, stage.SwapHero);
-            swap = (RectTransform)swapButton.transform;
-            swapFace = UIKit.Picture("izan_idle", swap, UIKit.Center, new Vector2(95f, 85f), new Vector2(120f, 120f));
+            // Ability reminder.
             abilityLabel = UIKit.Label("", root, UIKit.BottomRight, new Vector2(-280f, 70f), new Vector2(520f, 70f), 38,
                 UIKit.Cream, false, TextAnchor.MiddleRight);
             abilityLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -85,17 +81,17 @@ namespace HollowNight
         }
 
         // ------------------------------------------------------------------ score bar
-        public void SetScore(int launches, int par, int candies, int candyCount)
+        public void SetScore(int launches, int par, int smashed, int hunterCount)
         {
             launchLabel.text = "LAUNCHES  " + launches + " / " + par;
             launchLabel.color = launches <= par ? UIKit.Cream : new Color(1f, 0.55f, 0.45f);
-            for (int i = 0; i < candyIcons.Length; i++)
+            for (int i = 0; i < pumpkinIcons.Length; i++)
             {
-                bool got = i < candies;
-                candyIcons[i].color = got ? Color.white : new Color(0f, 0f, 0f, 0.55f);
-                if (got && i >= shownCandies && shownCandies >= 0) StartCoroutine(Tween.Pop(candyIcons[i].transform, 0.4f));
+                bool got = i < smashed;
+                pumpkinIcons[i].color = got ? Color.white : new Color(0f, 0f, 0f, 0.55f);
+                if (got && i >= shownSmashed && shownSmashed >= 0) StartCoroutine(Tween.Pop(pumpkinIcons[i].transform, 0.4f));
             }
-            shownCandies = candies;
+            shownSmashed = smashed;
         }
 
         public void SetGoal(string text)
@@ -114,16 +110,9 @@ namespace HollowNight
             }
         }
 
-        public void SetHero(HeroDef def, bool canSwap)
+        public void SetHero(HeroDef def)
         {
-            swapFace.sprite = Art.Get(def.sprite + "_idle");
             abilityLabel.text = "TAP IN AIR:  " + def.ability.ToUpper();
-            SetSwapVisible(canSwap);
-        }
-
-        public void SetSwapVisible(bool visible)
-        {
-            if (swap != null) swap.gameObject.SetActive(visible);
         }
 
         // ------------------------------------------------------------------ hints
@@ -191,10 +180,9 @@ namespace HollowNight
         }
 
         // ------------------------------------------------------------------ result
-        public void ShowResult(LevelData level, int stars, int launches, int candies, int candyCount)
+        public void ShowResult(LevelData level, int stars, int launches, int smashed, int hunterCount)
         {
             hintPanel.gameObject.SetActive(false);
-            SetSwapVisible(false);
 
             RectTransform overlay = UIKit.Stretch("Result", root);
             Image shade = UIKit.Fill(overlay, new Color(0.02f, 0.01f, 0.06f, 0f), true);
@@ -226,10 +214,10 @@ namespace HollowNight
             string[] rows =
             {
                 "Stage cleared",
-                "All candy embers   " + candies + " / " + candyCount,
+                "Pumpkins smashed   " + smashed + " / " + hunterCount,
                 "Launches   " + launches + "   (par " + level.par + ")"
             };
-            bool[] earned = { true, candies >= candyCount, launches <= level.par };
+            bool[] earned = { true, smashed >= hunterCount, launches <= level.par };
             for (int i = 0; i < rows.Length; i++)
             {
                 Text row = UIKit.Label(rows[i], panel.transform, UIKit.Center, new Vector2(40f, -90f - i * 80f),

@@ -32,6 +32,64 @@
   it as steps complete — plans must survive a restart; memory does not.
 - Trivial fixes (typo, one-liner, rename) skip planning. When unsure, plan.
 
+## Plan quality (large features & new projects)
+
+- A plan is a professional document, straight to the point: **Objective** (one
+  sentence) · **In scope / Out of scope** · **Approach** (the decision and its why,
+  not a survey of options) · **Ordered steps, each ending with how that step is
+  verified** · **Files/components touched** · **Risks & open questions**.
+- For a NEW project (or new module), the plan includes the folder structure —
+  follow the recognized best-practice layout for the stack via the
+  `project-structure` skill. Clean architecture only where it earns its weight;
+  the skill says when.
+- **Adversarial plan review before presenting:** for large features and new
+  projects, have the draft plan reviewed in a fresh context before showing it —
+  the `llm-council` skill when available, otherwise a subagent prompted as a
+  critical plan reviewer (gaps, wrong assumptions, missing verification — not
+  style). The review also checks every task's "Done when" for the two failure
+  modes: too weak (satisfiable without the real work) and wrong/too strict
+  (tests the wrong thing, fences out files the task must touch). Address the
+  findings, then present the plan noting it was reviewed and what changed.
+  Present it only when it would pass a senior engineer's bar.
+
+## Per-task goals (acceptance criteria in the plan)
+
+- Every task in `task_plan.md` carries its own `Done when:` with three clauses,
+  all checkable from files or command output:
+  1. **Proof of the new behavior** — named test/command + expected result.
+  2. **Nothing broken** — the project's standing gates (analyzer, suite).
+  3. **Scope fence** — "no files changed outside <paths>".
+- A task may be marked `[x]` ONLY when its Done-when evidence was produced and
+  shown. A checked box means "evidence existed", never "felt finished".
+- If execution reveals a Done-when is wrong (e.g. the fence excludes a file the
+  task genuinely needs), propose an amendment to the plan file and say why —
+  never silently reinterpret the goal. Plan edits are visible in git.
+- **Every presented plan ends with a ready-to-paste `/goal` line**, e.g.:
+  `/goal every task in task_plan.md is checked off per its own "Done when", and the project's quality gates pass`
+  The user sets it; the AI never invokes /goal itself (the worker must not
+  appoint its own judge).
+
+## Precedence with plugins (superpowers and others)
+
+Plugin skills supply TECHNIQUE; these rules define the REQUIRED ARTIFACTS and
+OUTCOMES. On any conflict, this file and the other `.claude/rules/` win:
+
+- A plan produced with superpowers `writing-plans` (or any other method) must
+  still land in `task_plan.md` in the Plan-quality structure above, with
+  per-task `Done when:` clauses and the closing `/goal` line. Superpowers
+  shapes the thinking; our format is the deliverable.
+- `brainstorming` serves the Interview → spec step for large/fuzzy features.
+  The trivial-fix exemption in "Plan first" OVERRIDES its "use before any
+  creative work" trigger — no brainstorming ceremony for typo-sized changes.
+- Branch integration follows `delivery.md` (gates → review → merge to
+  `develop` → propose next task), not `finishing-a-development-branch`'s own
+  menu of options.
+- **Design generators** (the vendored `impeccable`, or ui-ux-pro-max etc.)
+  propose the visual language ONLY in projects without their own design system.
+  Where a design system exists, its tokens/components win and generators serve
+  in review/critique mode only (see `ui-quality` rule zero). Never two
+  generator doctrines in one project.
+
 ## Test-driven by default
 
 - For new behavior: write the failing test FIRST, see it fail, implement, see it pass.

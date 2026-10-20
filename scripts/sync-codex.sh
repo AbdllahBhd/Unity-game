@@ -41,7 +41,18 @@ for dir in .claude/skills/*/; do
   SYNCED="$SYNCED $name"
 done
 
-# 2) Convert Claude commands into Codex skills ($<name>)
+# 2) Project skills nested inside vendored plugins (e.g. superpowers/skills/*)
+#    so Codex gets them too — the plugin folder itself is not a skill, but the
+#    skills inside it are plain SKILL.md folders Codex understands.
+for dir in .claude/skills/*/skills/*/; do
+  [ -f "$dir/SKILL.md" ] || continue
+  name=$(basename "$dir")
+  rm -rf ".agents/skills/$name"
+  cp -r "$dir" ".agents/skills/$name"
+  SYNCED="$SYNCED $name"
+done
+
+# 3) Convert Claude commands into Codex skills ($<name>)
 for cmd in .claude/commands/*.md; do
   [ -f "$cmd" ] || continue
   name=$(basename "$cmd" .md)

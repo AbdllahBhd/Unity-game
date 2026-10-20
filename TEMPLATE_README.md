@@ -56,7 +56,8 @@ instead of the quick start.
 
 1. **Copy everything** in this folder into your project's root folder.
    (If you cloned this template from git: delete the `.git` folder inside the
-   copy, so your project starts its own history.)
+   copy, so your project starts its own history. You can always re-link later
+   to receive template updates — see "Pull template updates" in section 13.)
 2. **Fill in the AI's project brief.** Open Claude Code in the project and say:
    > *Read the codebase and fill in CLAUDE.md with the real stack, commands, and architecture.*
    Skim what it wrote and fix anything wrong.
@@ -76,10 +77,23 @@ instead of the quick start.
    real deploy commands into `.claude/commands/deploy.md`. Leave skills and
    agents you don't need — they cost almost nothing while unused (explained in
    section 8).
-5. **Optionally install day-one tools** from [CATALOG.md](CATALOG.md) — typical
+5. **Activate the design setup for this project's type** (one command, once —
+   the skills ship inert in `.claude/skills-optional/`; see CATALOG's Design
+   section for what each does):
+
+   | Project type | Run |
+   |---|---|
+   | Web app / site | `bash scripts/activate-design.sh xias` (quality gates — the Impeccable generator is already active by default) |
+   | Mobile app (Flutter/native) | `bash scripts/activate-design.sh apple-design` (HIG reviewer, clone-on-activate) |
+   | Backend / CLI / library | Nothing — skip this step |
+   | Prefer a different look generator | `activate-design.sh off impeccable` then `activate-design.sh ui-ux-pro-max` (or `taste`) — one generator per project |
+
+   (Windows PowerShell: run through Git Bash —
+   `& "C:\Program Files\Git\bin\bash.exe" scripts/activate-design.sh xias`)
+6. **Optionally install day-one tools** from [CATALOG.md](CATALOG.md) — typical
    picks: `superpowers` (once per computer) and `context7` (per project). See
    section 12.
-6. **Verify it loaded:** type `/install` in Claude Code — if a menu of tools
+7. **Verify it loaded:** type `/install` in Claude Code — if a menu of tools
    appears, everything works. Using Codex too? Do the one-time steps in
    section 11.
 
@@ -108,8 +122,10 @@ destructive move — template placeholders would erase learned knowledge. Merge:
 6. **Check your tests pass BEFORE the done-gate arms.** If the suite is
    currently red, the gate will block every task until it's green — fix the
    suite first, or temporarily set `SKIP_DONE_GATE=1`.
-7. Run `bash scripts/sync-codex.sh`, do the per-computer Codex steps from
-   section 11, then verify (`/install` in Claude, `$retro` in Codex).
+7. Activate the design setup for the project's type (section 3, step 5), do the
+   per-computer Codex steps from section 11 (the Codex mirror in
+   `.agents/skills/` is already committed, no sync needed), then verify
+   (`/install` in Claude, `$retro` in Codex).
 8. **First week: run `/retro` after each session.** Everything you've been
    re-typing in prompts for months finally lands in rule files, permanently.
 
@@ -153,14 +169,16 @@ your-project/
 ├── .agents/skills/      ← Codex's copy of skills (auto-generated — don't edit)
 ├── .codex/config.toml   ← wires the safety hooks into Codex
 ├── scripts/
-│   └── sync-codex.sh    ← regenerates the Codex copies after you change things
+│   └── sync-codex.sh    ← regenerates the Codex copies (auto-run by a hook on skill edits)
 └── .claude/
     ├── settings.json        ← permissions (what the AI may/may not do) + hook wiring
     ├── settings.local.json  ← your personal overrides (not in git)
     ├── rules/               ← always-loaded conventions, one topic per file
     │   ├── code-style.md    ←   only NON-obvious style rules (the linter owns the rest)
     │   ├── pr.md            ←   branches, commit messages, PR habits
-    │   └── workflow.md      ←   plan-first, test-first, when "done" counts
+    │   ├── workflow.md      ←   plan-first (council-reviewed plans), test-first, done criteria
+    │   ├── delivery.md      ←   feature done → review → merge to develop → next task
+    │   └── reporting.md     ←   human-readable briefings, progress updates, context cleanup
     ├── commands/            ← shortcuts you type (one file = one command)
     │   ├── deploy.md        ←   /deploy — guarded deployment checklist
     │   ├── install.md       ←   /install — install tools from CATALOG.md
@@ -168,8 +186,24 @@ your-project/
     ├── skills/              ← deep knowledge loaded only when relevant
     │   ├── testing-patterns/
     │   │   └── SKILL.md     ←   how tests are written in this project
-    │   └── api-conventions/
-    │       └── SKILL.md     ←   API design rules (loads only for API work)
+    │   ├── api-conventions/
+    │   │   └── SKILL.md     ←   API design rules (loads only for API work)
+    │   ├── project-structure/
+    │   │   └── SKILL.md     ←   best-practice folder layouts per stack (loads when scaffolding)
+    │   ├── ui-quality/
+    │   │   └── SKILL.md     ←   premium UI baseline, auto-applied to any screen work
+    │   ├── motion/
+    │   │   └── SKILL.md     ←   animation rules (durations, easing, Flutter & web)
+    │   ├── impeccable/      ←   vendored design-language skill (web + native UI,
+    │   │                        auto-triggers; project design systems outrank it)
+    ├── skills-optional/     ← design skills SHIPPED but inert — activate per project
+    │   ├── xias/            ←   52 design gates + assets (web enforcer)
+    │   ├── ui-ux-pro-max/   ←   alternative generator (7 skills)
+    │   ├── taste/           ←   alternative generator (art direction)
+    │   │                        → bash scripts/activate-design.sh <name>
+    │   │                        (apple-design: same script, clone-on-activate)
+    │   └── superpowers/     ←   the superpowers PLUGIN, vendored: 15 skills (TDD,
+    │                            debugging, planning...) load from the repo itself
     ├── agents/              ← specialist reviewers the AI can hand work to
     │   ├── code-reviewer.md     ←   senior code reviewer (read-only, fresh context)
     │   └── security-auditor.md  ←   defensive security audits (read-only)
@@ -260,6 +294,35 @@ total. Deep knowledge, near-zero daily price. The description is the trigger, so
 write it precisely ("Use when writing or reviewing tests"), or the skill may
 fire at the wrong time. A skill folder can also hold extra reference files and
 scripts next to SKILL.md.
+
+### The skills shipped in this template — what each one is for
+
+You never invoke most of these — they fire on their own when the work matches.
+This table is the reminder of what's watching over each kind of work:
+
+**Always active (every project, both AIs):**
+
+| Skill | Fires when you... | What it does for you |
+|---|---|---|
+| `ui-quality` | touch any screen/component | Premium baseline: hierarchy, spacing, states, a11y — self-audited before you see it |
+| `motion` | touch any animation/transition | The timing/easing numbers, reduced-motion, Flutter & web patterns |
+| `impeccable` | do any frontend design work | The full design language: polish, critique, audit, animate modes (project design systems outrank it) |
+| `testing-patterns` | write or review tests | Your test conventions: builders, mocking rules, anti-patterns |
+| `api-conventions` | design/modify an API | Endpoints, error envelope, validation, versioning rules |
+| `project-structure` | scaffold a project/module | The recognized folder layout per stack; when clean architecture is worth it |
+| `llm-council` | say "council this" / big decisions | 5 AI advisors analyze independently, peer-review, give a verdict — plans use it automatically |
+| **superpowers** (15 skills) | ...the big ones: | `systematic-debugging` (any bug: root-cause process, no guess-loops) · `test-driven-development` (red→green discipline) · `brainstorming` (before new features) · `writing-plans`/`executing-plans` (plan workflow) · `verification-before-completion` (evidence before "done") · `dispatching-parallel-agents` (parallel work) |
+
+**Shipped inert — activate per project type** (`bash scripts/activate-design.sh <name>`, see section 3 step 5):
+
+| Skill | Activate in... | What it adds |
+|---|---|---|
+| `xias` | web projects | 52 objective design gates (WCAG, keyboard, overflow...) that fail instead of flattering |
+| `apple-design` | mobile projects | Reviews screens against Apple's real HIG, speaks Flutter (clone-on-activate) |
+| `ui-ux-pro-max` / `taste` | only if replacing impeccable | Alternative design generators — one generator per project, the script enforces it |
+
+(The typed commands — `/retro`, `/install`, `/deploy` — are in section 10; the
+optional *tools* catalog is section 12.)
 
 ### `.claude/agents/*.md` — specialist reviewers *(used when delegating)*
 Separate workers with their own instructions, their own allowed tools, and —
@@ -375,13 +438,30 @@ projections.
 | Hooks (done-gate, secrets) | `settings.json` → `.claude/hooks/` | `.codex/config.toml` → same scripts | Nothing — same scripts |
 | MCP servers | `.mcp.json` | Codex's own config | One-time registration per machine |
 
-**The one habit:** after adding or changing any skill or command, run
+**The sync command:**
 
 ```bash
 bash scripts/sync-codex.sh
 ```
 
-and commit the result. Generated files carry a "do not edit this copy" banner.
+It copies every `.claude/skills/*` folder into `.agents/skills/` and converts every
+`.claude/commands/*.md` into a Codex skill (`$deploy`, `$retro`, ...). It is
+idempotent and only ever writes inside `.agents/skills/`, so it is always safe
+to run. Run it from the repo root.
+
+**When to run it:**
+
+| Situation | Run it? |
+|---|---|
+| Fresh copy of the template into a new project | No — `.agents/skills/` is committed and already up to date |
+| Claude edited a skill or command in a session | No — the `sync-codex-on-edit.sh` hook already ran it |
+| You edited a skill or command by hand in your editor | **Yes** |
+| You copied a skill folder in from another project | **Yes** |
+| You deleted a skill or command | **Yes** (the hook only fires on edits) |
+| You only use Claude Code, never Codex | Never — you can delete `.agents/` |
+
+Then commit `.agents/skills/` together with the `.claude/` change. Generated
+files carry a "do not edit this copy" banner.
 
 **One-time steps per computer, in Codex:**
 1. Register your MCP servers (`codex mcp add ...`, matching what's in `.mcp.json`).
@@ -443,10 +523,31 @@ versus locked to one tool (🔒).
   and `tools` at the top.
 - **New hook:** script into `.claude/hooks/`, wire it in `settings.json` (and in
   `.codex/config.toml` for Codex).
-- **After any skill/command change:** `bash scripts/sync-codex.sh` + commit.
+- **After any skill/command change:** commit `.agents/skills/` too (the hook
+  regenerates it; run `bash scripts/sync-codex.sh` only for manual edits).
+- **The vendored superpowers plugin** (`.claude/skills/superpowers/`) loads from
+  the repo on every machine once the folder is trusted — no install needed. If
+  you ALSO install superpowers from its marketplace (`/plugin`), the marketplace
+  copy wins and auto-updates; the vendored one is the fallback for fresh
+  machines. To update the vendored copy, re-clone the repo and copy it over the
+  folder (excluding `.git`), then re-run the sync. The sync projects the
+  plugin's inner skills into `.agents/skills/` so Codex gets them too
+  (invoke with `$test-driven-development`, `$systematic-debugging`, ...).
 - **Prune as often as you add.** A focused 30-line rule file beats a 300-line
   manifesto the AI has to wade through every session. `/doctor` proposes cuts;
   `/context` shows what's actually loading.
+- **Pull template updates into an existing project** (works even though you
+  deleted the template's `.git` when copying — the project's own repo just
+  re-links). One-time setup per project:
+  ```bash
+  git remote add template <your-template-repo-url>
+  git fetch template
+  git merge template/main --allow-unrelated-histories -X ours
+  ```
+  `-X ours` keeps YOUR version of every shared file (your CLAUDE.md, adapted
+  hooks...) and brings in only new template files — review, run the sync,
+  commit. Every later update is just `git fetch template && git merge
+  template/main`: a normal merge where only real line-level overlaps conflict.
 
 **Committed (shared via git) vs. personal (git-ignored):**
 

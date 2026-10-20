@@ -73,3 +73,12 @@ CLAUDE.local.md
 .env
 .env.*
 !.env.example
+
+# Smoke test output (Assets/Editor/HNSmokeTest.cs)
+/Tools/smoke_report.txt
+
+# Browser test output (Playwright CLI logs and screenshots)
+/.playwright-cli/
+/output/playwright/
+.claude/skills/apple-design/
+.agents/skills/apple-design/

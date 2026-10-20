@@ -24,11 +24,10 @@ namespace HollowNight
         Trajectory trajectory;
         LevelBuilder builder;
         StageHud hud;
-        readonly List<HeroType> team = new List<HeroType>();
 
         int launches;
-        int candies;
-        int minionsLeft;
+        int smashed;
+        int huntersLeft;
         bool keyNeeded;
         bool keyFound;
         bool ended;
@@ -41,7 +40,7 @@ namespace HollowNight
         GameObject finger;
 
         public int Launches { get { return launches; } }
-        public int Candies { get { return candies; } }
+        public int Smashed { get { return smashed; } }
         public bool Ended { get { return ended; } }
 
         void Awake()
@@ -64,10 +63,9 @@ namespace HollowNight
             GameObject world = new GameObject("Level " + Level.id);
             builder = new LevelBuilder(Level, world.transform);
             builder.Build();
-            minionsLeft = builder.Minions;
+            huntersLeft = builder.Hunters;
             keyNeeded = Level.Count(Kind.Key) > 0;
 
-            BuildTeam();
             GameObject heroObject = new GameObject("Hero");
             Hero = heroObject.AddComponent<Hero>();
             Hero.Setup(Heroes.Get(Level.hero), Level.start + Vector2.up * 0.3f);
@@ -81,21 +79,11 @@ namespace HollowNight
             rig.Setup(cam, Hero.transform, Level.height, Story.ChapterBackdrops[Mathf.Clamp(Level.chapter, 0, 2)]);
 
             hud = gameObject.AddComponent<StageHud>();
-            hud.Build(this, builder.Candies, builder.Boss != null);
-            hud.SetHero(Hero.Def, team.Count > 1);
+            hud.Build(this, builder.Hunters, builder.Boss != null);
+            hud.SetHero(Hero.Def);
             Refresh();
 
             if (Level.showFinger) StartCoroutine(FingerTutorial());
-        }
-
-        void BuildTeam()
-        {
-            team.Clear();
-            for (int i = 0; i < Heroes.Count; i++)
-            {
-                HeroType type = (HeroType)i;
-                if (type == Level.hero || Progress.HeroUnlocked(type)) team.Add(type);
-            }
         }
 
         // ------------------------------------------------------------------ input
@@ -184,24 +172,12 @@ namespace HollowNight
         }
 
         // ------------------------------------------------------------------ events
-        public void HeroRested()
-        {
-            if (hud != null) hud.SetSwapVisible(team.Count > 1);
-        }
-
         public void HeroDied()
         {
             // A fall costs one launch.
             launches++;
             pressing = false;
             CancelAim();
-            Refresh();
-        }
-
-        public void CandyCollected()
-        {
-            candies++;
-            Sfx.Play(Sound.Candy, 1f, 1f + candies * 0.08f);
             Refresh();
         }
 
@@ -212,9 +188,10 @@ namespace HollowNight
             CheckDoor();
         }
 
-        public void MinionSmashed()
+        public void HunterSmashed()
         {
-            minionsLeft = Mathf.Max(0, minionsLeft - 1);
+            smashed++;
+            huntersLeft = Mathf.Max(0, huntersLeft - 1);
             Refresh();
             CheckDoor();
         }
@@ -223,7 +200,7 @@ namespace HollowNight
         {
             if (builder.Door == null) return;
             if (keyNeeded && !keyFound) return;
-            if (Level.smashAll && minionsLeft > 0) return;
+            if (huntersLeft > 0) return;
             builder.Door.Open();
         }
 
@@ -262,7 +239,7 @@ namespace HollowNight
             Hero.Win(goal);
 
             int stars = 1;
-            if (candies >= builder.Candies) stars++;
+            if (smashed >= builder.Hunters) stars++;
             if (launches <= Level.par) stars++;
             Progress.Complete(Level.id, stars, launches);
             Sfx.Play(Sound.Win);
@@ -273,30 +250,19 @@ namespace HollowNight
         IEnumerator ShowResult(int stars)
         {
             yield return new WaitForSeconds(1f);
-            hud.ShowResult(Level, stars, launches, candies, builder.Candies);
+            hud.ShowResult(Level, stars, launches, smashed, builder.Hunters);
         }
 
         void Refresh()
         {
             if (hud == null) return;
-            hud.SetScore(launches, Level.par, candies, builder.Candies);
-            if (Level.smashAll) hud.SetGoal(minionsLeft > 0 ? "Cursed pumpkins left: " + minionsLeft : "");
-            else if (keyNeeded) hud.SetGoal(keyFound ? "" : "Find the key!");
+            hud.SetScore(launches, Level.par, smashed, builder.Hunters);
+            if (huntersLeft > 0) hud.SetGoal("Pumpkins left: " + huntersLeft);
+            else if (keyNeeded && !keyFound) hud.SetGoal("Find the key!");
+            else hud.SetGoal("");
         }
 
         // ------------------------------------------------------------------ buttons
-        public void SwapHero()
-        {
-            if (ended || paused || !Hero.CanLaunch || team.Count < 2) return;
-            int index = team.IndexOf(Hero.Def.type);
-            HeroDef next = Heroes.Get(team[(index + 1) % team.Count]);
-            Hero.SetHero(next);
-            hud.SetHero(next, true);
-            hud.ShowHint(next.name + "  -  " + next.abilityHint);
-            Fx.Flash(Hero.Position, next.color, 3f);
-            Sfx.Play(Sound.Portal, 0.6f, 1.4f);
-        }
-
         public void TogglePause()
         {
             if (ended) return;

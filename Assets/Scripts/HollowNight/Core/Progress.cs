@@ -51,12 +51,6 @@ namespace HollowNight
             return first;
         }
 
-        public static bool HeroUnlocked(HeroType type)
-        {
-            int need = Heroes.Get(type).unlockLevel;
-            return need == 0 || IsDone(need);
-        }
-
         public static bool Seen(string storyId)
         {
             return PlayerPrefs.GetInt(Prefix + "story_" + storyId, 0) == 1;

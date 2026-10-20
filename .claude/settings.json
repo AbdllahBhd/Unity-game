@@ -5,6 +5,11 @@
       "Read(**)",
       "Grep(**)",
       "Glob(**)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:*)",
+      "Bash(npm test)",
+      "Bash(npm test:*)",
+      "Bash(npm run build)",
       "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
@@ -29,6 +34,10 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/validate-code.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/sync-codex-on-edit.sh"
           }
         ]
       }
