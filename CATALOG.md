@@ -73,8 +73,8 @@ Anthropic's official skill library (docx, pptx, xlsx, pdf...).
 ```
 Or clone and copy individual folders into `.claude/skills/`. https://github.com/anthropics/skills
 
-### ui-ux-pro-max — ⭐ ~132k — 📁 Skill copy
-Design intelligence: 67 UI styles, 96 palettes, 57 font pairings, UX rules. For projects with a UI.
+### ui-ux-pro-max — ⭐ ~138k — 📁 Skill copy (Generator role — see Design & Motion section)
+Design intelligence: 67 UI styles, 96 palettes, 57 font pairings, UX rules. For projects with a UI. At most one generator per project.
 ```bash
 git clone https://github.com/nextlevelbuilder/ui-ux-pro-max-skill && cp -r ui-ux-pro-max-skill/ui-ux-pro-max .claude/skills/
 ```
@@ -105,6 +105,46 @@ Anthropic's curated plugin directory — already registered in Claude Code; brow
 https://github.com/anthropics/claude-plugins-official
 
 ---
+
+## 🎨 Design & Motion — raise the UI floor (verified 2026-10-20)
+
+> The template already ships two baseline skills (`ui-quality`, `motion`) that
+> apply everywhere. The entries below are STRONGER per-project doctrines, in
+> three roles: **Generator** (how UI gets designed — install at most ONE per
+> project), **Reviewer** and **Enforcer** (judge the output — stack freely).
+> A project's own design system always outranks any generator.
+
+### impeccable — ⭐ ~83k — ✅ VENDORED in this template (Generator, web + native)
+Strict design language (spacing, type, hierarchy, motion, UX copy, a11y) the AI
+obeys automatically — already in `.claude/skills/impeccable/` (Apache-2.0,
+v4.7.0), nothing to install. Scoped by workflow.md: proposes the visual
+language only where no project design system exists; elsewhere it serves as
+critique/audit. Update: re-copy `.claude/skills/impeccable/` from a fresh clone.
+https://github.com/pbakaus/impeccable
+
+### ux-ui-agent-skills (XIAS) — ⭐ ~2.4k — ✅ SHIPPED inert in `.claude/skills-optional/xias/` (Enforcer, web)
+52 objective gates, 34 in a real browser. MIT, bundled complete (25 skills +
+the root assets they require). Inert until activated per project:
+```bash
+bash scripts/activate-design.sh xias
+```
+(Activation copies its skills into `.claude/skills/` and its asset folders —
+components/, tokens/, scripts/... — to the project root. Web projects only.)
+https://github.com/plugin87/ux-ui-agent-skills
+
+### apple-design-skill — ⭐ ~1.6k — 📁 Reviewer (mobile & cross-platform) — clone-on-activate
+Audits screens against 123 real Apple HIG pages, translating to Flutter, React
+Native, SwiftUI, Electron... Reviewer role = safe alongside any design system.
+⚠️ No license upstream, so it is NEVER committed: the activation script clones
+it fresh and `.gitignore` keeps it out of the repo. Re-run after fresh clones.
+```bash
+bash scripts/activate-design.sh apple-design
+```
+https://github.com/dickwu/apple-design-skill
+
+### Animation skills — none recommended
+Largest found is ~15⭐ and web-only (verified 2026-10-20). Use the template's
+own `motion` skill; revisit if the ecosystem matures.
 
 ## 🧠 Memory — what survives the session
 

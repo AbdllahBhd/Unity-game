@@ -80,3 +80,5 @@ CLAUDE.local.md
 # Browser test output (Playwright CLI logs and screenshots)
 /.playwright-cli/
 /output/playwright/
+.claude/skills/apple-design/
+.agents/skills/apple-design/

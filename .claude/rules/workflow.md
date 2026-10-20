@@ -84,6 +84,11 @@ OUTCOMES. On any conflict, this file and the other `.claude/rules/` win:
 - Branch integration follows `delivery.md` (gates → review → merge to
   `develop` → propose next task), not `finishing-a-development-branch`'s own
   menu of options.
+- **Design generators** (the vendored `impeccable`, or ui-ux-pro-max etc.)
+  propose the visual language ONLY in projects without their own design system.
+  Where a design system exists, its tokens/components win and generators serve
+  in review/critique mode only (see `ui-quality` rule zero). Never two
+  generator doctrines in one project.
 
 ## Test-driven by default
 
