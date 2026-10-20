@@ -25,6 +25,7 @@ pipeline); this document is about the story, the structure and the text.
 | Night 4 (2026-10-19) | The rooftops of Lqelɛa: the Yennayer bread, ravens, sliding roofs, tiles down the chimney |
 | Night 5 (2026-10-19) | The olive press: Jida's silver tabzimt, rats, spilt oil and the press wheel, the press beam |
 | Night 6 (2026-10-20) | The bride of Anzar: the rain ladle, frogs, water and the well buckets, the cistern flood |
+| Night 7 (2026-10-20) | The old woman's borrowed days: her spindle, goats, the freezing pond and snowdrifts, the avalanche |
 
 ## 2. The frame: the hearth
 
@@ -172,9 +173,30 @@ rain, and hid it in the old cistern above the spring. **Goal: the ladle bride.**
 - **Ending:** the rain comes that same night; the girl hears it on the roof, and Jida
   sings the first line of the Anzar song with the children.
 
+### Tale 7 — Ussan n tmeɣart (the old woman's borrowed days)
+
+*Why he is there:* the legend Yennayer comes from. An old woman mocked January for a
+mild winter and drove her goats up the mountain; January borrowed days from February and
+froze her and her goats into rock on the Djurdjura. Teryel, her friend, ran off with the
+old woman's spindle (izdi) and dropped it on the frozen pasture. Jida's grandmother spun
+with it; her blanket is on the girl's knees. **Goal: the spindle.**
+
+- **Place:** the high pasture in a January blizzard: the frozen pond, snowdrifts, snow
+  cornices, the rocks that were goats.
+- **Hunters:** the old woman's goats (iɣeṭṭen), half frozen. They charge along their
+  ledge when Mqidec stands still on their level.
+- **Mechanic:** the pond freezes on the wind's beat into slippery ice he can stand on,
+  and thaws back into water; snowdrifts stop him dead and catch a charging goat, which
+  then breaks at a touch.
+- **Stages:** 25 *Agris* (the ice) · 26 *Adfel* (the snow) · 27 *Iɣeṭṭen* (the goats:
+  ice, drifts and charges together) · 28 *Teryel deg wedfel*: knock the snow cornice;
+  the avalanche fills the hollow, buries Teryel and leaves a snowbank to the door.
+- **Ending:** the next morning is the first day of February and the snow stops; the
+  girl asks if the old woman is still a rock, and Jida points at the Djurdjura.
+
 ### Later tales (ideas, not planned)
 
-Tamɣart's borrowed days; the market at the gate; Teryel's seven daughters.
+The market at the gate; Teryel's seven daughters.
 
 ## 5. Text and languages
 

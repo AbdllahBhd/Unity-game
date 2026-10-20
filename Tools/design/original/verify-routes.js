@@ -52,6 +52,23 @@ for (const stage of levels.all) {
       failures++;
     }
   }
+  for (const o of stage.objects)
+    if (o.type === "water" && o.freeze && o.rise) {
+      console.log(`FAIL stage ${stage.id}: the pond at x ${o.x} both freezes and rises`);
+      failures++;
+    }
+  // Nothing may hang inside a freezing pond with water under it: he would be pinned beneath
+  // it while thawed, and the ice would close round it.
+  for (const o of stage.objects) {
+    if (o.type !== "water" || !o.freeze) continue;
+    for (const q of stage.platforms) {
+      const bottom = q.y - (q.h || 0.4);
+      if (Math.abs(q.x - o.x) < (q.w + o.w) / 2 && bottom > o.y + 0.001 && bottom < o.level) {
+        console.log(`FAIL stage ${stage.id}: the platform at (${q.x}, ${q.y}) hangs inside the pond at x ${o.x}`);
+        failures++;
+      }
+    }
+  }
   for (const k of stage.pumpkins) {
     if (!k.leap) continue;
     const q = crosses(k.x, (k.walk || 0) + 0.45, k.y - 0.35, k.y + k.leap.height + 0.45);
@@ -72,7 +89,23 @@ for (const stage of levels.all) {
   };
   // Same stepping as find-routes.js replayRoute, kept here so events can be observed.
   // `think` is the human pause before a launch, with pumpkins hunting meanwhile.
+  // Every spot he rests on before a launch (the start included) must be out of a live
+  // goat's charge, unless a drift lies between them to stop it.
+  const goatThreat = () =>
+    game.pumpkins.find((k) => {
+      if (!k.alive || !k.charge) return false;
+      const h = game.hero;
+      // It charges when he is within `range`, but its run only reaches the end of its walk.
+      const dx = Math.abs(h.x - k.homeX);
+      if (Math.abs(h.y - k.homeY) >= 1 || dx >= k.charge.range || dx >= (k.walk || 0) + R + 0.45) return false;
+      const lo = Math.min(h.x, k.homeX),
+        hi = Math.max(h.x, k.homeX);
+      return !game.platforms.some((q) => q.drift && q.x > lo && q.x < hi && Math.abs(q.y - (k.homeY - 0.4)) < 1);
+    });
+  let threatened = null;
   for (const a of level.route) {
+    const goat = goatThreat();
+    if (goat && !threatened) threatened = `a goat at (${goat.homeX}, ${goat.homeY}) can charge his rest at (${game.hero.x.toFixed(2)}, ${game.hero.y.toFixed(2)})`;
     for (let t = 0; t < (a.think || 0); t += 1 / 120) game.step(1 / 120);
     if (a.vx !== undefined) game.launch(a.vx, a.vy);
     let dashed = false;
@@ -90,7 +123,7 @@ for (const stage of levels.all) {
   }
   const check = game;
   const taught = !stage.teaches || used.has(stage.teaches);
-  const ok = check.won && check.smashed() === 3 && taught;
+  const ok = check.won && check.smashed() === 3 && taught && !threatened;
   if (!ok) failures++;
   const mechanics = [
     "dash",
@@ -118,6 +151,9 @@ for (const stage of levels.all) {
     "ride:bucket",
     "jerk",
     "flood",
+    "ride:ice",
+    "drift",
+    "stuck",
   ]
     .filter((m) => used.has(m))
     .join(", ");
@@ -125,7 +161,8 @@ for (const stage of levels.all) {
     `${ok ? "ok  " : "FAIL"} stage ${stage.id}${stage.name ? " " + stage.name : ""}: ` +
       `${check.smashed()}/3 hunters, ${check.launches} launches, ${check.deaths} deaths, human pace` +
       (mechanics ? `; uses ${mechanics}` : "") +
-      (taught ? "" : `; never uses its lesson (${stage.teaches})`),
+      (taught ? "" : `; never uses its lesson (${stage.teaches})`) +
+      (threatened ? `; ${threatened}` : ""),
   );
 }
 console.log(

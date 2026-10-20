@@ -1,7 +1,8 @@
 /* Searches for a three-star route through each stage and writes routes.js.
- * Usage: node find-routes.js [stage ids...] [--seed N] [--strip water|bucket|flood]
+ * Usage: node find-routes.js [stage ids...] [--seed N] [--strip water|bucket|flood|freeze|drift|snowbank]
  * `--strip` searches a copy of each stage without that mechanic (water removed, buckets
- * frozen where they start, no cistern) and writes nothing: finding no
+ * frozen where they start, no cistern; the pond never freezes; no drifts; the avalanche
+ * fills with plain water instead of settling snow) and writes nothing: finding no
  * three-star route there is evidence, not proof, that the stage needs the mechanic.
  * Beam search over random launches and waits from every resting state. Stored
  * actions replay exactly through replayRoute below and verify-routes.js (same
@@ -17,8 +18,8 @@ const seedIndex = args.indexOf("--seed");
 let seed = seedIndex >= 0 ? Number(args[seedIndex + 1]) : 7;
 const stripIndex = args.indexOf("--strip");
 const strip = stripIndex >= 0 ? args[stripIndex + 1] : null;
-if (stripIndex >= 0 && !["water", "bucket", "flood"].includes(strip))
-  throw new Error(`--strip takes water, bucket or flood, not ${strip}`);
+const STRIPS = ["water", "bucket", "flood", "freeze", "drift", "snowbank"];
+if (stripIndex >= 0 && !STRIPS.includes(strip)) throw new Error(`--strip takes ${STRIPS.join(", ")}, not ${strip}`);
 const ids = args
   .filter((a, i) => /^\d+$/.test(a) && !(seedIndex >= 0 && i === seedIndex + 1))
   .map(Number);
@@ -183,10 +184,14 @@ if (fs.existsSync(file)) {
 function stripped(level, kind) {
   const copy = structuredClone(level);
   if (kind === "water") copy.objects = copy.objects.filter((o) => o.type !== "water");
+  // Generated platforms (ice, snowbanks) are rebuilt from their water by the engine.
   if (kind === "bucket")
-    copy.platforms = new Game(level, OPTIONS).platforms.map((p) =>
-      p.type === "bucket" ? { x: p.x, y: p.y, w: p.w, h: p.h, type: "solid" } : structuredClone(p),
-    );
+    copy.platforms = new Game(level, OPTIONS).platforms
+      .filter((p) => !p.generated)
+      .map((p) => (p.type === "bucket" ? { x: p.x, y: p.y, w: p.w, h: p.h, type: "solid" } : structuredClone(p)));
+  if (kind === "freeze") for (const o of copy.objects) delete o.freeze;
+  if (kind === "drift") for (const p of copy.platforms) delete p.drift;
+  if (kind === "snowbank") for (const o of copy.objects) delete o.snow;
   // The cistern only ever floods, so without the flood it is not there at all.
   if (kind === "flood") copy.platforms = copy.platforms.filter((p) => p.flood === undefined);
   delete copy.teaches;

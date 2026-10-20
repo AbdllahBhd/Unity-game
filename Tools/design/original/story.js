@@ -100,6 +100,23 @@
         beat("hearth-rain", ["t6.end.4", "t6.end.5"], "rain"),
       ],
     },
+    7: {
+      intro: [
+        beat("hearth", ["t7.intro.1", "t7.intro.2", "t7.intro.3"]),
+        beat("pasture", ["t7.intro.4", "t7.intro.5", "t7.intro.6"], "wind"),
+      ],
+      stages: {
+        25: [beat("pasture", ["t7.s1", "t7.s1.child"])],
+        26: [beat("pasture", ["t7.s2", "t7.s2.child"])],
+        27: [beat("pasture", ["t7.s3", "t7.s3.child"])],
+        28: [beat("pasture-teryel", ["t7.s4", "t7.s4.child"])],
+      },
+      end: [
+        beat("pasture-trap", ["t7.end.1", "t7.end.2"], "avalanche"),
+        beat("pasture-dawn", ["t7.end.3"]),
+        beat("hearth-dawn", ["t7.end.4", "t7.end.5"]),
+      ],
+    },
   };
 
   // Teaching cards: object kind -> text id. Shown once each, the first time it appears.
@@ -130,6 +147,10 @@
     frog: "tip.frog",
     cistern: "tip.cistern",
     tied: "tip.tied",
+    ice: "tip.ice",
+    drift: "tip.drift",
+    goat: "tip.goat",
+    cornice: "tip.cornice",
   };
   // Short lines during play, by event: text ids, one picked at random.
   const remarks = {
@@ -149,6 +170,10 @@
     splash: ["r.splash"],
     jerk: ["r.jerk"],
     flood: ["r.flood"],
+    freeze: ["r.freeze"],
+    thaw: ["r.thaw"],
+    stuck: ["r.stuck"],
+    avalanche: ["r.avalanche"],
   };
   return { opening, firstNight, closing, tales, tips, remarks };
 });

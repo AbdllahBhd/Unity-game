@@ -1783,5 +1783,261 @@ globalThis.HNText = {
   "ar": "تريال عند النبع",
   "who": "",
   "mood": ""
+ },
+ "t7.intro.1": {
+  "en": "Do you know why Yennayer has borrowed days? Once an old woman laughed at January. \"Your cold is nothing,\" she said, and drove her goats up the mountain.",
+  "tq": "Tessnem acuɣer Yennayer yesɛa ussan yettwareḍlen? Yiwet n tmeɣart teḍsa ɣef Yennayer. \"Asemmiḍ-ik d ulac,\" i as-tenna, tessali iɣeṭṭen-is ɣer wedrar.",
+  "fr": "Vous savez pourquoi Yennayer a des jours empruntés ? Une vieille femme s'est un jour moquée de janvier. « Ton froid n'est rien », lui dit-elle, et elle mena ses chèvres sur la montagne.",
+  "ar": "أتعرفون لماذا ليناير أيام مستعارة؟ ذات مرة سخرت عجوز من يناير. «بردك لا شيء»، قالت له، وساقت ماعزها إلى الجبل.",
+  "who": "jida",
+  "mood": "telling"
+ },
+ "t7.intro.2": {
+  "en": "And January got angry!",
+  "tq": "U Yennayer yezɛef!",
+  "fr": "Et janvier s'est fâché !",
+  "ar": "فغضب يناير!",
+  "who": "boy",
+  "mood": ""
+ },
+ "t7.intro.3": {
+  "en": "He borrowed days from February, and on the last of them he froze her and her goats into rock. They are still up there on the Djurdjura.",
+  "tq": "Yerḍel ussan seg Furar, deg wass aneggaru yesqer-itt nettat d iɣeṭṭen-is, uɣalen d iẓra. Mazal-iten dinna deg Ǧerǧer.",
+  "fr": "Il emprunta des jours à février, et le dernier d'entre eux il la changea en rocher, elle et ses chèvres. Elles sont toujours là-haut, sur le Djurdjura.",
+  "ar": "استعار أياما من فبراير، وفي آخرها جمّدها هي وماعزها فصارت صخورا. ما زالت هناك فوق جرجرة.",
+  "who": "jida",
+  "mood": "hushed"
+ },
+ "t7.intro.4": {
+  "en": "Teryel was that old woman's friend. When the cold came, she ran off with the old woman's spindle, goat hair still wound on it, and dropped it on the frozen pasture.",
+  "tq": "Teryel tella d tamddakelt n tmeɣart-nni. Mi d-yusa usemmiḍ, terwel s yizdi n tmeɣart, mazal ccɛer n tɣaṭ fell-as, teǧǧa-t deg wegni yeqqren.",
+  "fr": "Teryel était l'amie de cette vieille femme. Quand le froid arriva, elle s'enfuit avec le fuseau de la vieille, encore garni de poil de chèvre, et le laissa tomber sur l'alpage gelé.",
+  "ar": "كانت تريال صديقة تلك العجوز. لما جاء البرد، هربت بمغزل العجوز، وما زال عليه شعر الماعز، وأسقطته في المرعى المتجمّد.",
+  "who": "jida",
+  "mood": "telling"
+ },
+ "t7.intro.5": {
+  "en": "Why does Mqidec want an old spindle?",
+  "tq": "Acuɣer i yebɣa Mqidec izdi aqdim?",
+  "fr": "Pourquoi Mqidec veut-il un vieux fuseau ?",
+  "ar": "لماذا يريد مقيدش مغزلا قديما؟",
+  "who": "girl",
+  "mood": ""
+ },
+ "t7.intro.6": {
+  "en": "Because my grandmother spun with it, and her blanket is the one on your knees.",
+  "tq": "Acku jida-w tellem yis-s, abeṭṭan-is d win yellan ɣef tgecrar-im.",
+  "fr": "Parce que ma grand-mère filait avec, et sa couverture est celle qui est sur tes genoux.",
+  "ar": "لأن جدّتي كانت تغزل به، وغطاؤها هو الذي على ركبتيك.",
+  "who": "jida",
+  "mood": "teasing"
+ },
+ "t7.s1": {
+  "en": "The pond up there breathes with the wind. When it blows, the water turns to ice you can stand on. When it stops, the ice is water again.",
+  "tq": "Tamda n dinna tettneffis d waḍu. Mi ara yeṣṣuḍ, aman ad uɣalen d agris ara k-yerfden. Mi ara yeḥbes, agris ad yuɣal d aman.",
+  "fr": "La mare là-haut respire avec le vent. Quand il souffle, l'eau devient une glace qui te porte. Quand il s'arrête, la glace redevient eau.",
+  "ar": "البركة هناك تتنفس مع الريح. حين تهب، يصير الماء جليدا يحملك. حين تسكن، يعود الجليد ماء.",
+  "who": "jida",
+  "mood": ""
+ },
+ "t7.s1.child": {
+  "en": "Quick, before it melts!",
+  "tq": "Ɣiwel, uqbel ad yefsi!",
+  "fr": "Vite, avant que ça fonde !",
+  "ar": "بسرعة، قبل أن يذوب!",
+  "who": "girl",
+  "mood": ""
+ },
+ "t7.s2": {
+  "en": "The goats charge when they see you standing still. But the snow is deep, and a goat in a drift is a goat stuck.",
+  "tq": "Iɣeṭṭen ttazzalen-d fell-ak mi ara k-walin tbeddeḍ. Maca adfel d alqayan, aɣeṭṭ deg wedfel yeqqim yeṭṭef.",
+  "fr": "Les chèvres chargent quand elles te voient immobile. Mais la neige est profonde, et une chèvre dans une congère est une chèvre coincée.",
+  "ar": "الماعز تنطح حين تراك واقفا. لكن الثلج عميق، والعنزة في كومة الثلج عنزة عالقة.",
+  "who": "jida",
+  "mood": ""
+ },
+ "t7.s2.child": {
+  "en": "Make it run into the snow!",
+  "tq": "Ǧǧ-it ad yazzel ɣer wedfel!",
+  "fr": "Fais-la foncer dans la neige !",
+  "ar": "اجعلها تركض نحو الثلج!",
+  "who": "boy",
+  "mood": ""
+ },
+ "t7.s3": {
+  "en": "Ice, snow and goats, all at once. Mqidec listened to the wind and counted, like this: one, two, now.",
+  "tq": "Agris, adfel d iɣeṭṭen, akk ɣef tikkelt. Mqidec yesla i waḍu, yeḥseb akka: yiwen, sin, tura.",
+  "fr": "La glace, la neige et les chèvres, tout à la fois. Mqidec écoutait le vent et comptait, comme ça : un, deux, maintenant.",
+  "ar": "الجليد والثلج والماعز، كلها معا. أصغى مقيدش إلى الريح وعدّ هكذا: واحد، اثنان، الآن.",
+  "who": "jida",
+  "mood": ""
+ },
+ "t7.s3.child": {
+  "en": "One, two, now!",
+  "tq": "Yiwen, sin, tura!",
+  "fr": "Un, deux, maintenant !",
+  "ar": "واحد، اثنان، الآن!",
+  "who": "girl",
+  "mood": ""
+ },
+ "t7.s4": {
+  "en": "In the hollow under the snow cornice, Teryel sat spinning with the old woman's spindle, singing to the stone goats.",
+  "tq": "Deg yiɣzer ddaw uqerru n wedfel, Teryel teqqim tellem s yizdi n tmeɣart, tcennu i yiɣeṭṭen n weẓru.",
+  "fr": "Dans le creux sous la corniche de neige, Teryel filait avec le fuseau de la vieille et chantait pour les chèvres de pierre.",
+  "ar": "في التجويف تحت حافة الثلج، كانت تريال تغزل بمغزل العجوز وتغنّي لماعز الحجر.",
+  "who": "jida",
+  "mood": "hushed"
+ },
+ "t7.s4.child": {
+  "en": "Drop the snow on her!",
+  "tq": "Ssɣli adfel fell-as!",
+  "fr": "Fais tomber la neige sur elle !",
+  "ar": "أسقط الثلج عليها!",
+  "who": "boy",
+  "mood": ""
+ },
+ "t7.end.1": {
+  "en": "He struck the cornice with all his speed. The whole lip of snow broke off, came down the slope and filled the hollow to the brim, with Teryel in it.",
+  "tq": "Yewwet aqerru n wedfel s akk zzerb-is. Yeɣli akk, yers-d seg uḍrar, yeččur yiɣzer armi d imi-s, Teryel daxel.",
+  "fr": "Il frappa la corniche de toute sa vitesse. Toute la lèvre de neige se détacha, dévala la pente et remplit le creux jusqu'au bord, avec Teryel dedans.",
+  "ar": "ضرب حافة الثلج بكل سرعته. انفصلت كلها ونزلت المنحدر وملأت التجويف حتى حافته، وتريال فيه.",
+  "who": "jida",
+  "mood": "telling"
+ },
+ "t7.end.2": {
+  "en": "Cold! Cold! Who has my nose? I can't feel my nose!",
+  "tq": "Asemmiḍ! Asemmiḍ! Anwa i yeṭṭfen tinzert-iw? Ur ḥussaɣ ara s tinzert-iw!",
+  "fr": "Froid ! Froid ! Qui a mon nez ? Je ne sens plus mon nez !",
+  "ar": "برد! برد! من أخذ أنفي؟ لا أشعر بأنفي!",
+  "who": "teryel",
+  "mood": ""
+ },
+ "t7.end.3": {
+  "en": "Mqidec walked home over the snowbank with the spindle on his shoulder. The next morning was the first day of February, and the snow stopped.",
+  "tq": "Mqidec yuɣal s axxam ɣef wedfel, izdi ɣef tayett-is. Azekka-nni d ass amezwaru n Furar, adfel yeḥbes.",
+  "fr": "Mqidec rentra à la maison par-dessus le banc de neige, le fuseau sur l'épaule. Le lendemain était le premier jour de février, et la neige s'arrêta.",
+  "ar": "عاد مقيدش إلى البيت فوق ركام الثلج، والمغزل على كتفه. وكان الصباح التالي أول يوم من فبراير، فتوقف الثلج.",
+  "who": "jida",
+  "mood": "telling"
+ },
+ "t7.end.4": {
+  "en": "And the old woman? Is she still a rock?",
+  "tq": "Tamɣart-nni? Mazal-itt d aẓru?",
+  "fr": "Et la vieille femme ? Elle est toujours un rocher ?",
+  "ar": "والعجوز؟ هل ما زالت صخرة؟",
+  "who": "girl",
+  "mood": ""
+ },
+ "t7.end.5": {
+  "en": "Look at the Djurdjura in the morning. She is the one with her goats around her. So never laugh at January.",
+  "tq": "Muqel Ǧerǧer taṣebḥit. D nettat i yellan s iɣeṭṭen-is i tt-yezzin. Ihi ur ttaḍsat ara ɣef Yennayer.",
+  "fr": "Regarde le Djurdjura au matin. C'est elle, avec ses chèvres autour. Alors ne vous moquez jamais de janvier.",
+  "ar": "انظري إلى جرجرة في الصباح. هي تلك التي حولها ماعزها. فلا تسخروا أبدا من يناير.",
+  "who": "jida",
+  "mood": "teasing"
+ },
+ "tip.ice": {
+  "en": "The pond freezes on the wind's beat. Stand on the ice while it lasts: it is slippery, and when it thaws you are in the water.",
+  "tq": "Tamda tesqar s waḍu. Bedd ɣef ugris ma yella: yeceḍḍeḍ, mi ara yefsi atan deg waman.",
+  "fr": "La mare gèle au rythme du vent. Tiens-toi sur la glace tant qu'elle dure : elle glisse, et quand elle fond tu es dans l'eau.",
+  "ar": "تتجمّد البركة مع هبوب الريح. قف على الجليد ما دام: إنه زلق، وحين يذوب تصير في الماء.",
+  "who": "",
+  "mood": ""
+ },
+ "tip.drift": {
+  "en": "A snowdrift. Land in it and you stop dead. A charging goat that runs into it gets stuck.",
+  "tq": "Adfel yettwaǧmeɛ. Ɣli deg-s ad tbeddeḍ imir. Aɣeṭṭ ara d-yazzlen ɣur-s ad yeqqim yeṭṭef.",
+  "fr": "Une congère. Pose-toi dedans et tu t'arrêtes net. Une chèvre qui fonce dedans reste coincée.",
+  "ar": "كومة ثلج. اهبط فيها فتتوقف فورا. والعنزة التي تندفع نحوها تعلق.",
+  "who": "",
+  "mood": ""
+ },
+ "tip.goat": {
+  "en": "Her goats charge when you stand still on their level. A goat stuck in snow breaks at a touch.",
+  "tq": "Iɣeṭṭen-is ttazzalen-d fell-ak mi ara tbeddeḍ ɣef uswir-nsen. Aɣeṭṭ yeṭṭfen deg wedfel ad yerreẓ s tiyita kan.",
+  "fr": "Ses chèvres chargent quand tu restes immobile à leur hauteur. Une chèvre coincée dans la neige se brise au moindre contact.",
+  "ar": "ماعزها تنطح حين تقف ساكنا في مستواها. والعنزة العالقة في الثلج تنكسر بلمسة.",
+  "who": "",
+  "mood": ""
+ },
+ "tip.cornice": {
+  "en": "A lip of snow hanging over the hollow. A hard hit or a dash breaks it off, and the snow fills everything below.",
+  "tq": "Aqerru n wedfel yettwaɛlaq nnig yiɣzer. Tiyita s zzerb neɣ tazzla ad t-tesɣli, adfel ad yeččar ayen yellan ddaw-s.",
+  "fr": "Une corniche de neige au-dessus du creux. Un choc fort ou une ruée la détache, et la neige remplit tout en dessous.",
+  "ar": "حافة ثلج معلّقة فوق التجويف. ضربة قوية أو اندفاعة تسقطها، فيملأ الثلج كل ما تحتها.",
+  "who": "",
+  "mood": ""
+ },
+ "r.freeze": {
+  "en": "It's freezing!",
+  "tq": "Yesqer!",
+  "fr": "Ça gèle !",
+  "ar": "إنه يتجمّد!",
+  "who": "girl",
+  "mood": ""
+ },
+ "r.thaw": {
+  "en": "It's melting!",
+  "tq": "Yefsi!",
+  "fr": "Ça fond !",
+  "ar": "إنه يذوب!",
+  "who": "boy",
+  "mood": ""
+ },
+ "r.stuck": {
+  "en": "Stuck in the snow!",
+  "tq": "Yeṭṭef deg wedfel!",
+  "fr": "Coincée dans la neige !",
+  "ar": "عالقة في الثلج!",
+  "who": "boy",
+  "mood": ""
+ },
+ "r.avalanche": {
+  "en": "The snow! All of it!",
+  "tq": "Adfel! Akk!",
+  "fr": "La neige ! Toute la neige !",
+  "ar": "الثلج! كله!",
+  "who": "boy",
+  "mood": ""
+ },
+ "tale.7": {
+  "en": "The old woman's borrowed days",
+  "tq": "Ussan n tmeɣart",
+  "fr": "Les jours empruntés de la vieille",
+  "ar": "أيام العجوز المستعارة",
+  "who": "",
+  "mood": ""
+ },
+ "stage.25": {
+  "en": "The ice",
+  "tq": "Agris",
+  "fr": "La glace",
+  "ar": "الجليد",
+  "who": "",
+  "mood": ""
+ },
+ "stage.26": {
+  "en": "The snow",
+  "tq": "Adfel",
+  "fr": "La neige",
+  "ar": "الثلج",
+  "who": "",
+  "mood": ""
+ },
+ "stage.27": {
+  "en": "The goats",
+  "tq": "Iɣeṭṭen",
+  "fr": "Les chèvres",
+  "ar": "الماعز",
+  "who": "",
+  "mood": ""
+ },
+ "stage.28": {
+  "en": "Teryel in the snow",
+  "tq": "Teryel deg wedfel",
+  "fr": "Teryel dans la neige",
+  "ar": "تريال في الثلج",
+  "who": "",
+  "mood": ""
  }
 };

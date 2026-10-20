@@ -1,6 +1,6 @@
-/* Art for the tales of Mqidec: the five places (Teryel's kitchen, the loom room, the
- * Iron Gates, the rooftops, the olive press), the hunters of each (pots, spiders,
- * ijenniwen, ravens, rats), Teryel herself, the
+/* Art for the tales of Mqidec: the places (Teryel's kitchen, the loom room, the Iron
+ * Gates, the rooftops, the olive press, the spring, the high pasture), the hunters of
+ * each (pots, spiders, ijenniwen, ravens, rats, frogs, goats), Teryel herself, the
  * wooden house door, and the story scenes (hearth, tale pictures) with speaker
  * portraits. Everything is drawn in code in the manner of the original art: dark
  * silhouettes, glowing eyes, soft rim light. Plugs into art.js drawStage as view.theme. */
@@ -30,6 +30,7 @@
     else if (theme === "roofs") roofsBack(c, w, h, t, S, progress);
     else if (theme === "press") pressBack(c, w, h, t, Y, S, height);
     else if (theme === "spring") springBack(c, w, h, t, Y, S, height, progress);
+    else if (theme === "pasture") pastureBack(c, w, h, t, Y, S, height, progress);
     else gorgeBack(c, w, h, t, Y, S, progress);
   }
 
@@ -313,8 +314,12 @@
   }
 
   // A pile of loose tiles, slightly askew; in the press, the great beam; at the spring,
-  // a squared stone.
+  // a squared stone; on the pasture, a block of rock under snow.
   function stack(c, x, top, w, h, t, theme) {
+    if (theme === "pasture") {
+      rockBlock(c, x, top, w, h, t);
+      return;
+    }
     if (theme === "press") {
       pressBeam(c, x, top, w, h, t);
       return;
@@ -1173,9 +1178,24 @@
       dir: breach ? Math.sign(o.x - breach.x) || 1 : 1,
     };
   }
+  // A pond that freezes on the wind's beat (freeze) shows still water under an ice sheet
+  // while frozen, the sheet cracking and dripping in its last second (iceFor < 1). A water
+  // of snow is the avalanche's hollow (see avalanche).
   function water(c, o, X, Y, S, t, g) {
+    if (o.snow) {
+      avalanche(c, o, X, Y, S, t, g);
+      return;
+    }
     const k = waterCoords(o, X, Y, g);
+    if (o.freeze && o.frozen) {
+      // Drawn deeper than the 0.3 of the ice platform so it reads as a solid sheet.
+      const th = 0.45 * S;
+      deadWater(c, k.x0, k.x1, k.ys + th * 0.8, k.yb, S);
+      iceSheet(c, k.x0, k.x1, k.ys, th, t, o.iceFor !== undefined && o.iceFor < 1 ? 1 - o.iceFor : 0, S);
+      return;
+    }
     waterBody(c, k.x0, k.x1, k.ys, k.yb, t, k.rough, k.dir, S);
+    if (o.freeze) openWater(c, k.x0, k.x1, k.ys, k.yb, t, S);
     if (k.breach) {
       const p = k.breach;
       cascade(c, X(p.x), Y(p.y - (p.h || 0.4) * 0.3), p.w * S * 0.9, k.ys, t, k.rough, k.dir);
@@ -1470,15 +1490,25 @@
     c.restore();
   }
 
-  // Drawn after the hero: bucket walls (he stands inside them) and the front of every
-  // water (so a floating hero sits half in it), with ripples round him.
+  // Drawn after the hero: bucket walls (he stands inside them), the near lip of every
+  // snowdrift (he sinks into it), the front of every water (so a floating hero sits half
+  // in it) with ripples round him, the frost and gust before a pond freezes, and the
+  // powder over a falling avalanche.
   function front(c, g, X, Y, S, t) {
-    for (const p of g.platforms)
+    for (const p of g.platforms) {
       if (p.type === "bucket" && p.alive !== false) bucketFront(c, X(p.x), Y(p.y), p.w * S, (p.h || 0.4) * S, S);
+      if (p.drift && !p.generated && p.alive !== false) driftLip(c, X(p.x - p.w / 2), X(p.x + p.w / 2), Y(p.y), S);
+    }
     for (const o of g.objects) {
       if (o.type !== "water") continue;
       const k = waterCoords(o, X, Y, g);
+      if (o.snow) {
+        if (o.flooded) powder(c, k.x0, k.x1, k.ys, t, k.rough, k.dir, S);
+        continue;
+      }
+      if (o.freeze && o.frozen) continue;
       waterVeil(c, k.x0, k.x1, k.ys, k.yb, t, k.rough, k.dir, S);
+      if (o.freeze && o.freezeIn !== undefined && o.freezeIn < 1) freezeWarning(c, k.x0, k.x1, k.ys, t, 1 - o.freezeIn, S);
       const hero = g.hero;
       if (hero.state === "float" && Math.abs(hero.x - o.x) < o.w / 2 && Math.abs(hero.y - o.surface) < 0.8) {
         c.save();
@@ -1748,12 +1778,7 @@
   function rainWindow(c, x, y, ww, wh, t) {
     c.save();
     glow(c, x, y + wh, ww * 2.2, "rgba(150,180,220,0.1)");
-    c.fillStyle = "#1a0f08";
-    c.beginPath();
-    c.roundRect(x - ww / 2 - 6, y - wh / 2 - 6, ww + 12, wh + 12, [ww * 0.55, ww * 0.55, 3, 3]);
-    c.fill();
-    c.beginPath();
-    c.roundRect(x - ww / 2, y - wh / 2, ww, wh, [ww * 0.5, ww * 0.5, 2, 2]);
+    windowOpening(c, x, y, ww, wh);
     const g = c.createLinearGradient(0, y - wh / 2, 0, y + wh / 2);
     g.addColorStop(0, "#1c2533");
     g.addColorStop(1, "#2c3644");
@@ -1774,9 +1799,7 @@
     c.restore();
     // The wooden bar across, and drops gathering on the sill and falling.
     c.save();
-    c.fillStyle = "#2a170b";
-    c.fillRect(x - 2, y - wh / 2, 4, wh);
-    c.fillRect(x - ww / 2 - 8, y + wh / 2 + 4, ww + 16, 6);
+    windowBar(c, x, y, ww, wh);
     for (let i = 0; i < 3; i++) {
       const life = (t * 0.8 + i / 3) % 1;
       c.fillStyle = `rgba(190,215,245,${0.8 * (1 - life)})`;
@@ -1785,6 +1808,1413 @@
       c.fill();
     }
     c.restore();
+  }
+
+  /* ---------------- The high pasture of the Djurdjura (agni) ---------------- */
+  const SNOW = "#e8eff7",
+    SNOW_SHADE = "#a9bbd0",
+    SNOW_DEEP = "#6b7f99",
+    ROCK = "#2b2f39",
+    ROCK_LIGHT = "#4c5363",
+    ICE = "rgba(205,230,250,",
+    GOAT = "#1c1916",
+    GOAT_HAIR = "#2e2823",
+    HORN = "#7c7466";
+
+  // The colours of the pasture by night in the blizzard, and on the first morning of
+  // February: sky, far and near ranges, the snow on them, rock, rim light, lying snow.
+  function pastureLight(dawn) {
+    return dawn
+      ? {
+          sky: ["#56709a", "#b4afc4", "#f2cda4"],
+          far: "#8a8ea8",
+          mid: "#6c7189",
+          near: "#565b70",
+          cap: "#fbf1ea",
+          rock: "#3a3e4c",
+          rim: "rgba(255,205,165,0.45)",
+          snow: "#f6f0ec",
+        }
+      : {
+          sky: ["#070b13", "#141b27", "#262e3b"],
+          far: "#1b212d",
+          mid: "#161b25",
+          near: "#11151d",
+          cap: "#8f9db2",
+          rock: "#151922",
+          rim: "rgba(180,205,240,0.22)",
+          snow: "#b9c6d6",
+        };
+  }
+
+  // The high pasture in a January blizzard: snow driving across a dark sky, the far peaks
+  // of the Djurdjura with the old woman and her goats turned to rock on a shoulder, Atlas
+  // cedars, snowy crags up both sides. weather.dawn: the first morning of February, the
+  // snow stopped, a clear pale sky and the peaks catching the sun.
+  function pastureBack(c, w, h, t, Y, S, height, progress, weather = {}) {
+    const dawn = Boolean(weather.dawn);
+    const L = pastureLight(dawn);
+    const sky = c.createLinearGradient(0, 0, 0, h);
+    sky.addColorStop(0, L.sky[0]);
+    sky.addColorStop(0.6, L.sky[1]);
+    sky.addColorStop(1, L.sky[2]);
+    c.fillStyle = sky;
+    c.fillRect(0, 0, w, h);
+    if (dawn) {
+      // The sun just under the ridge, warming the sky over it.
+      glow(c, w * 0.8, h * 0.52 + progress * 30, w * 0.75, "rgba(255,212,165,0.35)");
+    } else {
+      // The moon, a pale smudge behind the falling snow.
+      const my = h * 0.12 + progress * h * 0.04;
+      glow(c, w * 0.3, my, w * 0.3, "rgba(200,215,240,0.12)");
+      c.fillStyle = "rgba(215,225,240,0.35)";
+      c.beginPath();
+      c.arc(w * 0.3, my, w * 0.045, 0, TAU);
+      c.fill();
+    }
+    const far = h * 0.5 + progress * 40;
+    peaks(c, w, far, h * 0.22, L.far, L.cap, 51);
+    // The shoulder where the old woman crouches among her goats, turned to rock.
+    const shoulder = far + h * 0.02;
+    c.fillStyle = L.mid;
+    c.beginPath();
+    c.ellipse(w * 0.66, shoulder + h * 0.1, w * 0.34, h * 0.12, 0, Math.PI, TAU);
+    c.fill();
+    c.fillStyle = L.cap;
+    c.beginPath();
+    c.ellipse(w * 0.66, shoulder + h * 0.1, w * 0.34, h * 0.12, 0, Math.PI * 1.2, Math.PI * 1.8);
+    c.ellipse(w * 0.66, shoulder + h * 0.1 + h * 0.012, w * 0.3, h * 0.105, 0, Math.PI * 1.8, Math.PI * 1.2, true);
+    c.fill();
+    oldWomanRocks(c, w * 0.66, shoulder - h * 0.02, S * 1.1, L);
+    peaks(c, w, h * 0.66 + progress * 60, h * 0.12, L.near, L.cap, 57);
+    // Cedars far down the slope, drifting slower than the world. Kept faint and hazed by
+    // the blizzard: their flat snowy tiers must never read as ledges to land on.
+    const base = Y(0) * 0.6 + h * 0.4;
+    c.save();
+    c.globalAlpha *= 0.35;
+    cedar(c, w * 0.16, base, S * 3.4, L.near, L.far, 1);
+    cedar(c, w * 0.86, base + S * 0.3, S * 2.6, L.near, L.far, 2);
+    c.restore();
+    crags(c, w, h, Y, S, L);
+    if (!dawn) {
+      // Snow blowing low across the pasture floor, and the blizzard itself.
+      const drift = c.createLinearGradient(0, Y(0) - S * 2.5, 0, Y(0) + S);
+      drift.addColorStop(0, "rgba(200,215,235,0)");
+      drift.addColorStop(1, "rgba(200,215,235,0.2)");
+      c.fillStyle = drift;
+      c.fillRect(0, Y(0) - S * 2.5, w, S * 3.5);
+      blizzard(c, w, h, t, 90, S);
+    }
+    vignette(c, w, h, dawn ? 0.3 : 0.5);
+  }
+
+  // A range of jagged peaks with snow on their heads, filled down well past base.
+  function peaks(c, w, base, amp, color, cap, seed) {
+    const n = 10;
+    c.save();
+    c.fillStyle = color;
+    c.beginPath();
+    c.moveTo(0, base + amp * 6);
+    for (let i = 0; i <= n; i++) c.lineTo((i / n) * w, base - amp * (i % 2 ? 0.55 + rnd(seed + i) * 0.45 : 0.12 + rnd(seed + i) * 0.3));
+    c.lineTo(w, base + amp * 6);
+    c.closePath();
+    c.fill();
+    // Snow above a ragged line, kept inside the range.
+    c.clip();
+    c.fillStyle = cap;
+    c.beginPath();
+    c.moveTo(0, base - amp * 2);
+    c.lineTo(w, base - amp * 2);
+    for (let i = 2 * n; i >= 0; i--) c.lineTo((i / (2 * n)) * w, base - amp * (0.42 + (i % 2) * 0.12 + rnd(seed + i + 20) * 0.08));
+    c.closePath();
+    c.fill();
+    c.restore();
+  }
+
+  // The old woman of the legend and her goats, frozen into rock on the ridge: a bent figure
+  // under a shawl leaning on her staff, the goats crouched round her, snow on their backs
+  // and the light (moon or dawn) along one side. base: the ground under them.
+  function oldWomanRocks(c, x, base, size, L) {
+    c.save();
+    c.fillStyle = L.rock;
+    c.beginPath();
+    c.moveTo(x - size * 0.45, base);
+    c.quadraticCurveTo(x - size * 0.52, base - size * 0.7, x - size * 0.1, base - size * 0.95);
+    c.quadraticCurveTo(x + size * 0.15, base - size * 1.05, x + size * 0.28, base - size * 0.82);
+    c.quadraticCurveTo(x + size * 0.36, base - size * 0.62, x + size * 0.3, base - size * 0.46);
+    c.quadraticCurveTo(x + size * 0.4, base - size * 0.2, x + size * 0.35, base);
+    c.closePath();
+    c.fill();
+    c.strokeStyle = L.rock;
+    c.lineWidth = Math.max(1.5, size * 0.06);
+    c.beginPath();
+    c.moveTo(x + size * 0.46, base);
+    c.lineTo(x + size * 0.55, base - size * 0.78);
+    c.stroke();
+    for (const [dx, k, f] of [
+      [-1.15, 0.5, -1],
+      [-0.75, 0.38, 1],
+      [0.95, 0.46, 1],
+      [1.4, 0.36, -1],
+    ])
+      rockGoat(c, x + dx * size, base, size * k, f, L);
+    // Snow on her shawl and back; the light catching her bowed head.
+    c.strokeStyle = L.cap;
+    c.lineWidth = Math.max(1.5, size * 0.07);
+    c.beginPath();
+    c.moveTo(x - size * 0.42, base - size * 0.55);
+    c.quadraticCurveTo(x - size * 0.38, base - size * 0.88, x - size * 0.08, base - size * 0.97);
+    c.quadraticCurveTo(x + size * 0.14, base - size * 1.03, x + size * 0.26, base - size * 0.84);
+    c.stroke();
+    c.strokeStyle = L.rim;
+    c.lineWidth = Math.max(1, size * 0.03);
+    c.beginPath();
+    c.moveTo(x + size * 0.28, base - size * 0.8);
+    c.quadraticCurveTo(x + size * 0.36, base - size * 0.62, x + size * 0.3, base - size * 0.46);
+    c.stroke();
+    c.restore();
+  }
+
+  // One goat of rock in the far range: a crouched body, the head and a horn, snow on top.
+  function rockGoat(c, x, base, size, face, L) {
+    c.save();
+    c.translate(x, base);
+    c.scale(face, 1);
+    c.fillStyle = L.rock;
+    c.beginPath();
+    c.ellipse(0, -size * 0.32, size * 0.55, size * 0.34, 0, Math.PI, TAU);
+    c.lineTo(size * 0.55, 0);
+    c.lineTo(-size * 0.55, 0);
+    c.fill();
+    c.beginPath();
+    c.ellipse(size * 0.5, -size * 0.62, size * 0.2, size * 0.14, 0.5, 0, TAU);
+    c.fill();
+    c.strokeStyle = L.rock;
+    c.lineWidth = Math.max(1, size * 0.1);
+    c.lineCap = "round";
+    c.beginPath();
+    c.moveTo(size * 0.45, -size * 0.72);
+    c.quadraticCurveTo(size * 0.3, -size * 1.0, size * 0.12, -size * 0.9);
+    c.stroke();
+    c.strokeStyle = L.cap;
+    c.lineWidth = Math.max(1, size * 0.1);
+    c.beginPath();
+    c.ellipse(0, -size * 0.32, size * 0.5, size * 0.32, 0, Math.PI * 1.15, Math.PI * 1.85);
+    c.stroke();
+    c.restore();
+  }
+
+  // An Atlas cedar (idgel): a short trunk under flat tiers of needles, snow on each tier.
+  function cedar(c, x, base, size, color, snow, seed) {
+    c.save();
+    c.fillStyle = color;
+    c.fillRect(x - size * 0.035, base - size * 0.45, size * 0.07, size * 0.45);
+    for (let i = 0; i < 4; i++) {
+      const ty = base - size * (0.32 + i * 0.17),
+        tw = size * (0.55 - i * 0.11),
+        off = (rnd(seed * 13 + i) - 0.5) * size * 0.1;
+      c.fillStyle = color;
+      c.beginPath();
+      c.ellipse(x + off, ty, tw, size * 0.065, 0, 0, TAU);
+      c.fill();
+      c.fillStyle = snow;
+      c.beginPath();
+      c.ellipse(x + off, ty - size * 0.025, tw * 0.88, size * 0.04, 0, Math.PI, TAU);
+      c.fill();
+    }
+    c.restore();
+  }
+
+  // Crags up both sides of the pasture: a ragged edge of rock, no shelves (a flat step
+  // there would read as a ledge to land on). Each jag belongs to a world height, so the
+  // rock scrolls with the stage instead of changing shape; snow clings to it in faint,
+  // slanting streaks.
+  function crags(c, w, h, Y, S, L) {
+    const step = 1.1;
+    const worldAt = (sy) => (Y(0) - sy) / S;
+    const k0 = Math.floor(worldAt(h) / step) - 1,
+      k1 = Math.ceil(worldAt(0) / step) + 1;
+    // A zero-size canvas (layout not finished) would make this loop endless.
+    if (!(S > 0) || !Number.isFinite(k0) || !Number.isFinite(k1) || k1 - k0 > 500) return;
+    for (const side of [-1, 1]) {
+      const x0 = side < 0 ? 0 : w;
+      const depth = (k) => (rnd(k * 3 + (side > 0 ? 61 : 83)) * 0.5 + 0.3) * S * 1.3;
+      // A point a little off each jag's height, so no edge ever runs level.
+      const lift = (k) => (rnd(k * 7 + (side > 0 ? 17 : 29)) - 0.5) * step * 0.5;
+      c.save();
+      c.fillStyle = L.rock;
+      c.beginPath();
+      c.moveTo(x0, Y(k0 * step));
+      for (let k = k0; k <= k1; k++) c.lineTo(x0 - side * depth(k), Y(k * step + lift(k)));
+      c.lineTo(x0, Y(k1 * step));
+      c.closePath();
+      c.fill();
+      c.strokeStyle = L.rim;
+      c.lineWidth = 2;
+      c.stroke();
+      // Snow plastered on by the wind: short, faint streaks slanting down from some jags.
+      c.strokeStyle = L.snow;
+      c.lineCap = "round";
+      for (let k = k0; k <= k1; k++) {
+        if (rnd(k * 11 + (side > 0 ? 5 : 9)) < 0.45) continue;
+        const d = depth(k),
+          y = Y(k * step + lift(k));
+        c.globalAlpha = 0.25 + rnd(k * 13) * 0.2;
+        c.lineWidth = Math.max(1.5, S * 0.05);
+        c.beginPath();
+        c.moveTo(x0 - side * d * 0.92, y + S * 0.04);
+        c.quadraticCurveTo(x0 - side * d * 0.75, y + S * 0.12, x0 - side * d * (0.45 + rnd(k * 17) * 0.2), y + S * (0.3 + rnd(k * 19) * 0.25));
+        c.stroke();
+      }
+      c.restore();
+    }
+  }
+
+  // Snow driving across on the wind, in screen space: near flakes bigger and faster.
+  function blizzard(c, w, h, t, count, S) {
+    c.save();
+    c.fillStyle = "#edf2fa";
+    for (let i = 0; i < count; i++) {
+      const sp = 0.6 + rnd(i + 800) * 0.8;
+      const fall = (rnd(i + 801) + t * 0.12 * sp) % 1;
+      const across = (rnd(i + 802) + t * 0.2 * sp) % 1;
+      const x = (across * 1.4 - 0.2) * w + Math.sin(t * 2 + i) * S * 0.08;
+      const y = fall * (h + 20) - 10;
+      c.globalAlpha = 0.25 + sp * 0.4;
+      c.beginPath();
+      c.arc(x, y, Math.max(0.8, sp * S * 0.025), 0, TAU);
+      c.fill();
+    }
+    c.restore();
+  }
+
+  // A layer of snow along a walking line: a soft top, a shaded underside hanging in
+  // little lobes, glints that twinkle. thick: in pixels.
+  function snowCap(c, x0, x1, top, thick, t) {
+    if (!(x1 - x0 > 1 && thick > 0)) return;
+    const step = Math.max(6, (x1 - x0) / 300);
+    const crest = (x) => top - 1.2 - Math.sin(x * 0.05) * 1.1;
+    c.save();
+    const g = c.createLinearGradient(0, top - 2, 0, top + thick);
+    g.addColorStop(0, SNOW);
+    g.addColorStop(1, SNOW_SHADE);
+    c.fillStyle = g;
+    c.beginPath();
+    c.moveTo(x0, top);
+    for (let x = x0; x < x1; x += step) c.lineTo(x, crest(x));
+    c.lineTo(x1, top);
+    for (let x = x1; x > x0; x -= step) c.lineTo(x, top + thick * (0.55 + 0.45 * Math.abs(Math.sin(x * 0.11))));
+    c.lineTo(x0, top + thick * 0.6);
+    c.closePath();
+    c.fill();
+    c.strokeStyle = "rgba(255,255,255,0.75)";
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.moveTo(x0, top);
+    for (let x = x0; x < x1; x += step) c.lineTo(x, crest(x));
+    c.lineTo(x1, top);
+    c.stroke();
+    const n = Math.max(2, Math.min(40, Math.round((x1 - x0) / 30)));
+    for (let i = 0; i < n; i++) {
+      const a = Math.sin(t * 2 + i * 2.7);
+      if (a < 0.6) continue;
+      c.fillStyle = `rgba(255,255,255,${(a - 0.6) * 2})`;
+      c.fillRect(x0 + (x1 - x0) * rnd(i + 850) - 1, top + 1, 2, 2);
+    }
+    c.restore();
+  }
+
+  // A frost-split block of rock with snow on its top.
+  function rockBlock(c, x, top, w, h, t = 0) {
+    c.save();
+    const g = c.createLinearGradient(0, top, 0, top + h);
+    g.addColorStop(0, ROCK_LIGHT);
+    g.addColorStop(1, ROCK);
+    c.fillStyle = g;
+    c.shadowColor = "rgba(180,210,255,0.3)";
+    c.shadowBlur = 8;
+    c.beginPath();
+    c.roundRect(x - w / 2, top, w, h, Math.min(w, h) * 0.2);
+    c.fill();
+    c.shadowBlur = 0;
+    c.strokeStyle = "rgba(10,12,18,0.6)";
+    c.lineWidth = Math.max(1, Math.min(w, h) * 0.04);
+    c.beginPath();
+    c.moveTo(x - w * 0.1, top);
+    c.lineTo(x + w * 0.05, top + h * 0.4);
+    c.lineTo(x - w * 0.04, top + h * 0.7);
+    c.moveTo(x + w * 0.05, top + h * 0.4);
+    c.lineTo(x + w * 0.3, top + h * 0.55);
+    c.stroke();
+    c.restore();
+    snowCap(c, x - w / 2 - 1, x + w / 2 + 1, top, Math.max(4, h * 0.18), t);
+  }
+
+  // A snowdrift (adfel) on a platform: a soft pile in three humps, blue in its hollows,
+  // snow streaming off its crest. Its near lip is drawn again over the hero (driftLip),
+  // so whoever lands in it sinks in. Platform fields: x, y (surface), w.
+  function drift(c, p, X, Y, S, t) {
+    const x0 = X(p.x - p.w / 2),
+      x1 = X(p.x + p.w / 2),
+      top = Y(p.y);
+    const wd = x1 - x0;
+    if (!(wd > 1)) return false;
+    const hh = Math.min(S * 0.45, wd * 0.25);
+    c.save();
+    const g = c.createLinearGradient(0, top - hh, 0, top + S * 0.1);
+    g.addColorStop(0, SNOW);
+    g.addColorStop(1, SNOW_SHADE);
+    c.fillStyle = g;
+    c.shadowColor = "rgba(190,215,255,0.35)";
+    c.shadowBlur = 8;
+    c.beginPath();
+    c.moveTo(x0 - S * 0.15, top + S * 0.08);
+    c.bezierCurveTo(x0 + wd * 0.1, top - hh * 0.7, x0 + wd * 0.3, top - hh * 1.05, x0 + wd * 0.5, top - hh);
+    c.bezierCurveTo(x0 + wd * 0.7, top - hh * 0.95, x0 + wd * 0.9, top - hh * 0.6, x1 + S * 0.15, top + S * 0.08);
+    c.closePath();
+    c.fill();
+    c.shadowBlur = 0;
+    // The lee side in blue shadow, and the wind's ripples along the crest.
+    c.fillStyle = "rgba(110,135,175,0.25)";
+    c.beginPath();
+    c.ellipse(x0 + wd * 0.72, top - hh * 0.35, wd * 0.25, hh * 0.35, 0, 0, TAU);
+    c.fill();
+    c.strokeStyle = "rgba(255,255,255,0.8)";
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.moveTo(x0 + wd * 0.08, top - hh * 0.5);
+    c.bezierCurveTo(x0 + wd * 0.25, top - hh * 0.98, x0 + wd * 0.4, top - hh * 1.02, x0 + wd * 0.55, top - hh * 0.98);
+    c.stroke();
+    // Spindrift: grains blown off the crest.
+    for (let i = 0; i < 8; i++) {
+      const k = (t * 0.9 + rnd(i + 860)) % 1;
+      c.fillStyle = `rgba(240,246,255,${0.6 * (1 - k)})`;
+      c.fillRect(x0 + wd * (0.35 + rnd(i + 861) * 0.3) + k * S * 1.2, top - hh * (0.9 + rnd(i + 862) * 0.2) - k * S * 0.25, 1.6, 1.6);
+    }
+    c.restore();
+    return true;
+  }
+
+  // The near lip of a drift, drawn over the hero and the goats so their feet sink in.
+  function driftLip(c, x0, x1, top, S) {
+    if (!(x1 - x0 > 1)) return;
+    const step = Math.max(6, (x1 - x0) / 200);
+    c.save();
+    const g = c.createLinearGradient(0, top - S * 0.18, 0, top + S * 0.08);
+    g.addColorStop(0, SNOW);
+    g.addColorStop(1, SNOW_SHADE);
+    c.fillStyle = g;
+    c.beginPath();
+    c.moveTo(x0 - S * 0.1, top + S * 0.08);
+    for (let x = x0; x <= x1; x += step) c.lineTo(x, top - S * (0.12 + Math.sin(x * 0.07) * 0.03) * Math.min(1, (x - x0) / S + 0.3, (x1 - x) / S + 0.3));
+    c.lineTo(x1 + S * 0.1, top + S * 0.08);
+    c.closePath();
+    c.fill();
+    c.restore();
+  }
+
+  // The snow cornice (aqerru n wedfel) on a knock drop whose water is snow: a lip of packed,
+  // wind-carved snow on a rock knob, curling out over the hollow it will fill. False for
+  // any other drop, which is then drawn as before (the spring's cistern, a stack).
+  function cornice(c, p, X, Y, S, t, g) {
+    const o = g.objects.find((q) => q.type === "water" && q.id === p.flood);
+    if (!o || !o.snow) return false;
+    corniceShape(c, X(p.x), Y(p.y), p.w * S, (p.h || 0.4) * S, Math.sign(o.x - p.x) || 1, t, S);
+    return true;
+  }
+
+  // The cornice itself in pixels: (x, top) the middle of its top, w x h its body, dir the
+  // side it overhangs. A crack runs along its back, grains sift off its edge.
+  function corniceShape(c, x, top, w, h, dir, t, S) {
+    c.save();
+    // The rock knob it grew on, under its back half.
+    c.fillStyle = ROCK;
+    c.beginPath();
+    c.moveTo(x - dir * w * 0.5, top + h * 0.5);
+    c.quadraticCurveTo(x - dir * w * 0.58, top + h + S * 0.7, x - dir * w * 0.1, top + h + S * 0.9);
+    c.quadraticCurveTo(x + dir * w * 0.18, top + h * 0.9 + S * 0.3, x + dir * w * 0.1, top + h * 0.6);
+    c.closePath();
+    c.fill();
+    c.strokeStyle = "rgba(180,205,240,0.25)";
+    c.lineWidth = 2;
+    c.stroke();
+    // The lip: thick at the back, curling over at the front.
+    const g = c.createLinearGradient(0, top - h * 0.15, 0, top + h);
+    g.addColorStop(0, SNOW);
+    g.addColorStop(1, SNOW_SHADE);
+    c.fillStyle = g;
+    c.shadowColor = "rgba(200,225,255,0.45)";
+    c.shadowBlur = 10;
+    c.beginPath();
+    c.moveTo(x - dir * w * 0.5, top + h * 0.7);
+    c.quadraticCurveTo(x - dir * w * 0.56, top - h * 0.15, x - dir * w * 0.1, top - h * 0.1);
+    c.quadraticCurveTo(x + dir * w * 0.45, top - h * 0.05, x + dir * w * 0.62, top + h * 0.35);
+    c.quadraticCurveTo(x + dir * w * 0.6, top + h * 0.78, x + dir * w * 0.45, top + h * 0.7);
+    c.quadraticCurveTo(x + dir * w * 0.1, top + h * 1.05, x - dir * w * 0.5, top + h * 0.7);
+    c.closePath();
+    c.fill();
+    c.shadowBlur = 0;
+    // The blue shade of the undercurl, and the crack where it will break off.
+    c.fillStyle = "rgba(100,125,165,0.35)";
+    c.beginPath();
+    c.ellipse(x + dir * w * 0.35, top + h * 0.65, w * 0.22, h * 0.14, 0, 0, TAU);
+    c.fill();
+    c.strokeStyle = `rgba(70,95,135,${0.65 + Math.sin(t * 3) * 0.15})`;
+    c.lineWidth = Math.max(1.2, h * 0.06);
+    c.beginPath();
+    c.moveTo(x - dir * w * 0.18, top - h * 0.08);
+    c.lineTo(x - dir * w * 0.1, top + h * 0.25);
+    c.lineTo(x - dir * w * 0.2, top + h * 0.5);
+    c.lineTo(x - dir * w * 0.12, top + h * 0.8);
+    c.stroke();
+    c.strokeStyle = "rgba(255,255,255,0.8)";
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.moveTo(x - dir * w * 0.45, top + h * 0.05);
+    c.quadraticCurveTo(x - dir * w * 0.2, top - h * 0.12, x + dir * w * 0.3, top - h * 0.02);
+    c.stroke();
+    // Icicles under the curl, and grains sifting off its edge.
+    c.fillStyle = ICE + "0.85)";
+    for (let i = 0; i < 4; i++) {
+      const ix = x + dir * w * (0.1 + i * 0.11),
+        len = h * (0.25 + rnd(i + 940) * 0.35);
+      const iy = top + h * (0.75 + Math.sin((i / 3) * Math.PI) * 0.1);
+      c.beginPath();
+      c.moveTo(ix - h * 0.05, iy);
+      c.lineTo(ix + h * 0.05, iy);
+      c.lineTo(ix, iy + len);
+      c.closePath();
+      c.fill();
+    }
+    for (let i = 0; i < 4; i++) {
+      const k = (t * 0.7 + i / 4) % 1;
+      c.fillStyle = `rgba(240,246,255,${0.8 * (1 - k)})`;
+      c.fillRect(x + dir * w * (0.55 + rnd(i + 945) * 0.08) + Math.sin(t * 3 + i) * 2, top + h * 0.4 + k * S * 1.4, 1.6, 1.6);
+    }
+    c.restore();
+  }
+
+  // A sheet of ice on the pond, th thick (pixels) down from its surface ys: an opaque
+  // band of pale blue-white ice, snow dust on its top, white cracks and frost speckle, a
+  // slow glint. thaw (0 to 1, the last second before it melts): dark cracks open and
+  // branch through it, the ice greys and turns glassy, water pools on it and drips.
+  function iceSheet(c, x0, x1, ys, th, t, thaw, S) {
+    const wd = x1 - x0;
+    if (!(wd > 1 && th > 0)) return;
+    const solid = 1 - thaw * 0.35;
+    c.save();
+    const g = c.createLinearGradient(0, ys, 0, ys + th);
+    g.addColorStop(0, `rgba(240,247,252,${solid})`);
+    g.addColorStop(0.35, `rgba(208,228,244,${solid})`);
+    g.addColorStop(1, `rgba(165,195,222,${solid})`);
+    c.fillStyle = g;
+    c.shadowColor = "rgba(200,230,255,0.6)";
+    c.shadowBlur = 12;
+    c.beginPath();
+    c.roundRect(x0, ys - S * 0.04, wd, th + S * 0.04, Math.min(6, th * 0.25));
+    c.fill();
+    c.shadowBlur = 0;
+    c.save();
+    c.beginPath();
+    c.rect(x0, ys - S * 0.04, wd, th + S * 0.04);
+    c.clip();
+    // Frost speckle all over, thicker toward the top.
+    const n = Math.max(6, Math.min(80, Math.round(wd / (S * 0.15))));
+    c.fillStyle = `rgba(255,255,255,${0.75 * (1 - thaw * 0.6)})`;
+    for (let i = 0; i < n; i++) c.fillRect(x0 + wd * rnd(i + 870), ys + th * Math.pow(rnd(i + 871), 1.6), 1.5, 1.5);
+    // A glint sliding slowly along.
+    const k = (t * 0.15) % 1;
+    const sheen = c.createLinearGradient(x0, 0, x1, 0);
+    sheen.addColorStop(0, "rgba(255,255,255,0)");
+    sheen.addColorStop(Math.max(0, k - 0.1), "rgba(255,255,255,0)");
+    sheen.addColorStop(k, "rgba(255,255,255,0.7)");
+    sheen.addColorStop(Math.min(1, k + 0.1), "rgba(255,255,255,0)");
+    sheen.addColorStop(1, "rgba(255,255,255,0)");
+    c.fillStyle = sheen;
+    c.fillRect(x0, ys, wd, th * 0.35);
+    // Old white cracks in the ice, each with a blue shadow line beside it.
+    const cracks = Math.max(2, Math.round(wd / (S * 1.1)));
+    const crackPath = (i, steps, dx) => {
+      let cx = x0 + wd * ((i + 0.5) / cracks) + (rnd(i + 880) - 0.5) * S * 0.5 + dx;
+      const pts = [[cx, ys]];
+      for (let j = 1; j <= steps; j++) {
+        cx += (rnd(i * 9 + j + 890) - 0.5) * S * 0.7;
+        pts.push([cx, ys + th * Math.min(1, j / 5)]);
+      }
+      c.beginPath();
+      pts.forEach(([px, py], j) => (j ? c.lineTo(px, py) : c.moveTo(px, py)));
+      c.stroke();
+      return pts;
+    };
+    c.lineWidth = 1;
+    c.strokeStyle = "rgba(120,160,200,0.6)";
+    for (let i = 0; i < cracks; i++) crackPath(i, 3, 1);
+    c.strokeStyle = "rgba(255,255,255,0.95)";
+    c.lineWidth = 1.3;
+    for (let i = 0; i < cracks; i++) crackPath(i, 3, 0);
+    // Thawing: dark water showing through cracks that run deeper and branch.
+    if (thaw > 0) {
+      c.strokeStyle = `rgba(25,60,100,${0.45 + thaw * 0.5})`;
+      c.lineWidth = 1 + thaw * 1.6;
+      for (let i = 0; i < cracks; i++) {
+        const pts = crackPath(i, 2 + Math.round(thaw * 4), 0);
+        if (thaw > 0.3 && pts[2]) {
+          c.beginPath();
+          c.moveTo(pts[2][0], pts[2][1]);
+          c.lineTo(pts[2][0] + (rnd(i + 895) - 0.5) * S * 0.9 * thaw, pts[2][1] + th * 0.45);
+          c.stroke();
+        }
+      }
+    }
+    c.restore();
+    // Snow dust lying along the top, and the hard white edge.
+    c.fillStyle = `rgba(250,252,255,${0.9 * (1 - thaw * 0.7)})`;
+    for (let i = 0; i < Math.max(2, Math.round(wd / (S * 0.6))); i++) {
+      c.beginPath();
+      c.ellipse(x0 + wd * rnd(i + 875), ys - S * 0.03, S * (0.15 + rnd(i + 876) * 0.25), S * 0.03, 0, Math.PI, TAU);
+      c.fill();
+    }
+    c.strokeStyle = `rgba(255,255,255,${0.95 - thaw * 0.35})`;
+    c.lineWidth = 2;
+    c.beginPath();
+    c.moveTo(x0 + 2, ys - S * 0.04);
+    c.lineTo(x1 - 2, ys - S * 0.04);
+    c.stroke();
+    c.strokeStyle = "rgba(90,125,165,0.7)";
+    c.lineWidth = 1.2;
+    c.beginPath();
+    c.moveTo(x0 + 2, ys + th);
+    c.lineTo(x1 - 2, ys + th);
+    c.stroke();
+    if (thaw > 0) {
+      // Meltwater pooling on top, and drops falling from the underside.
+      c.fillStyle = `rgba(80,130,180,${0.55 * thaw})`;
+      for (let i = 0; i < 4; i++) {
+        c.beginPath();
+        c.ellipse(x0 + wd * (0.15 + i * 0.23), ys - S * 0.02, wd * 0.08 * thaw, 2, 0, 0, TAU);
+        c.fill();
+      }
+      for (let i = 0; i < 3 + Math.round(thaw * 5); i++) {
+        const life = (t * (1.2 + rnd(i + 900)) + rnd(i + 901)) % 1;
+        c.fillStyle = `rgba(190,225,250,${0.85 * (1 - life) * thaw})`;
+        c.beginPath();
+        c.ellipse(x0 + wd * rnd(i + 902), ys + th + life * S * 0.5, 1.6, 2.4, 0, 0, TAU);
+        c.fill();
+      }
+    }
+    c.restore();
+  }
+
+  // The water under the ice: flat, frosted grey, dead still, a few bubbles caught in it.
+  function deadWater(c, x0, x1, ys, yb, S) {
+    if (ys >= yb - 0.5 || !(x1 - x0 > 1)) return;
+    c.save();
+    const g = c.createLinearGradient(0, ys, 0, yb);
+    g.addColorStop(0, "rgba(140,160,182,0.95)");
+    g.addColorStop(1, "rgba(28,36,50,0.97)");
+    c.fillStyle = g;
+    c.fillRect(x0, ys, x1 - x0, yb - ys);
+    c.fillStyle = "rgba(235,245,255,0.35)";
+    const deep = Math.min(yb - ys, S * 2);
+    for (let i = 0; i < 8; i++) {
+      c.beginPath();
+      c.arc(x0 + (x1 - x0) * rnd(i + 1010), ys + deep * rnd(i + 1011), Math.max(1, S * 0.03 * (0.5 + rnd(i + 1012))), 0, TAU);
+      c.fill();
+    }
+    c.restore();
+  }
+
+  // A pond that freezes, while it is open water: darker and alive, rings spreading on it
+  // and glints running along the swell, so it never looks like the ice.
+  function openWater(c, x0, x1, ys, yb, t, S) {
+    if (ys >= yb - 0.5 || !(x1 - x0 > 1)) return;
+    c.save();
+    c.beginPath();
+    surfacePath(c, x0, x1, ys, t, 0);
+    c.lineTo(x1, yb);
+    c.lineTo(x0, yb);
+    c.closePath();
+    c.fillStyle = "rgba(6,18,34,0.35)";
+    c.fill();
+    c.clip();
+    for (let i = 0; i < 4; i++) {
+      const r = (t * 0.5 + i / 4) % 1;
+      const rx = x0 + (x1 - x0) * (0.15 + rnd(i + 1020) * 0.7);
+      c.strokeStyle = `rgba(180,215,245,${0.5 * (1 - r)})`;
+      c.lineWidth = 1.2;
+      c.beginPath();
+      c.ellipse(rx, waveAt(rx, ys, t, 0) + S * 0.08, S * (0.15 + r * 0.6), S * (0.03 + r * 0.06), 0, 0, TAU);
+      c.stroke();
+    }
+    c.restore();
+    c.save();
+    c.strokeStyle = "rgba(235,245,255,0.8)";
+    c.lineWidth = 2;
+    for (let i = 0; i < 4; i++) {
+      const gx = x0 + (x1 - x0) * (((t * 0.08 + rnd(i + 1025)) % 1) * 0.9 + 0.05);
+      const a = Math.max(0, Math.sin(t * 2.5 + i * 1.7));
+      c.globalAlpha = a;
+      c.beginPath();
+      c.moveTo(gx - S * 0.12, waveAt(gx, ys, t, 0) + 1);
+      c.lineTo(gx + S * 0.12, waveAt(gx, ys, t, 0) + 1);
+      c.stroke();
+    }
+    c.restore();
+  }
+
+  // The pond about to freeze (k: 0 to 1 over its last second of water), drawn over the
+  // water's front: frost creeping in from both banks along the surface, and the wind's
+  // gust lines racing across above it.
+  function freezeWarning(c, x0, x1, ys, t, k, S) {
+    const wd = x1 - x0;
+    if (!(wd > 1) || k <= 0) return;
+    c.save();
+    for (const side of [-1, 1]) {
+      const edge = side < 0 ? x0 : x1,
+        reach = wd * 0.5 * k,
+        tip = edge - side * reach;
+      if (reach > 1) {
+        const g = c.createLinearGradient(edge, 0, tip, 0);
+        g.addColorStop(0, `rgba(230,242,255,${0.5 + 0.4 * k})`);
+        g.addColorStop(1, "rgba(230,242,255,0)");
+        c.fillStyle = g;
+        c.fillRect(Math.min(edge, tip), ys - S * 0.06, reach, S * 0.14);
+      }
+      // Needles of frost reaching out ahead of it.
+      c.strokeStyle = `rgba(240,248,255,${0.75 * k})`;
+      c.lineWidth = 1;
+      for (let i = 0; i < 5; i++) {
+        const sx = edge - side * reach * (0.4 + rnd(i + 910) * 0.6);
+        const a = (rnd(i + 911) - 0.5) * 1.6;
+        c.beginPath();
+        c.moveTo(sx, ys);
+        c.lineTo(sx - side * Math.cos(a) * S * 0.18, ys + Math.sin(a) * S * 0.12);
+        c.stroke();
+      }
+    }
+    // The gust that brings the ice.
+    c.strokeStyle = `rgba(220,235,255,${0.55 * k})`;
+    c.lineWidth = 1.5;
+    c.lineCap = "round";
+    for (let i = 0; i < 7; i++) {
+      const ph = (t * 1.6 + rnd(i + 920)) % 1;
+      const sx = x0 - S + ph * (wd + S * 2),
+        sy = ys - S * (0.15 + rnd(i + 921) * 1.2),
+        len = S * (0.5 + rnd(i + 922) * 0.7);
+      c.beginPath();
+      c.moveTo(sx, sy);
+      c.quadraticCurveTo(sx + len * 0.5, sy - S * 0.06, sx + len, sy);
+      c.stroke();
+    }
+    c.restore();
+  }
+
+  // The top of a mass of snow at screen x: lumps rolling along (dir) while it pours in,
+  // smoothing out as it settles (rough 1 to 0).
+  function snowTop(x, ys, t, rough, dir, S) {
+    return ys + (Math.sin((x - dir * t * S * 2.5) * 0.045) * 0.12 + Math.sin(x * 0.16 + t * 5) * 0.05) * S * rough;
+  }
+  function snowTopPath(c, x0, x1, ys, t, rough, dir, S) {
+    const step = Math.max(6, (x1 - x0) / 300);
+    c.moveTo(x0, snowTop(x0, ys, t, rough, dir, S));
+    for (let x = x0 + step; x < x1; x += step) c.lineTo(x, snowTop(x, ys, t, rough, dir, S));
+    c.lineTo(x1, snowTop(x1, ys, t, rough, dir, S));
+  }
+
+  // A mass of snow from its top ys down to yb: tumbling and lumpy while it pours in
+  // (rough), packed and layered once settled (rough 0), with a crisp top and glints.
+  function snowMass(c, x0, x1, ys, yb, t, rough, dir, S) {
+    if (ys >= yb - 0.5 || !(x1 - x0 > 1)) return;
+    c.save();
+    c.beginPath();
+    snowTopPath(c, x0, x1, ys, t, rough, dir, S);
+    c.lineTo(x1, yb);
+    c.lineTo(x0, yb);
+    c.closePath();
+    const g = c.createLinearGradient(0, ys - S * 0.15, 0, Math.max(yb, ys + S));
+    g.addColorStop(0, SNOW);
+    g.addColorStop(1, SNOW_DEEP);
+    c.fillStyle = g;
+    c.fill();
+    c.save();
+    c.clip();
+    if (rough > 0) {
+      // Chunks rolling over and over inside the slide.
+      const band = Math.min(yb - ys, S * 2.5);
+      for (let i = 0; i < 12; i++) {
+        const k = (t * 1.1 * (0.6 + rnd(i + 930)) + rnd(i + 931)) % 1;
+        const cx = dir > 0 ? x0 + k * (x1 - x0) : x1 - k * (x1 - x0),
+          cy = ys + S * 0.1 + band * rnd(i + 932) * 0.8,
+          r = S * (0.12 + rnd(i + 933) * 0.18),
+          spin = t * 4 * dir + i;
+        c.fillStyle = `rgba(245,249,255,${0.7 * rough})`;
+        c.beginPath();
+        c.arc(cx, cy, r, 0, TAU);
+        c.fill();
+        c.strokeStyle = `rgba(110,135,170,${0.55 * rough})`;
+        c.lineWidth = 1.2;
+        c.beginPath();
+        c.arc(cx, cy, r, spin, spin + 2);
+        c.stroke();
+      }
+    }
+    // Layers of packed snow, faint, deepening to blue.
+    c.strokeStyle = `rgba(110,130,160,${0.28 * (1 - rough)})`;
+    c.lineWidth = 1;
+    for (let i = 1; i <= 8; i++) {
+      const yy = ys + S * 0.35 * i;
+      if (yy >= yb) break;
+      c.beginPath();
+      for (let x = x0; x <= x1; x += Math.max(8, (x1 - x0) / 60)) c.lineTo(x, yy + Math.sin(x * 0.04 + i) * 1.5);
+      c.stroke();
+    }
+    c.restore();
+    c.strokeStyle = "rgba(255,255,255,0.8)";
+    c.lineWidth = 1.5;
+    c.beginPath();
+    snowTopPath(c, x0, x1, ys, t, rough, dir, S);
+    c.stroke();
+    if (rough < 1) {
+      const n = Math.max(2, Math.min(30, Math.round((x1 - x0) / 25)));
+      for (let i = 0; i < n; i++) {
+        const a = Math.sin(t * 2.2 + i * 2.3);
+        if (a < 0.6) continue;
+        c.fillStyle = `rgba(255,255,255,${(a - 0.6) * 2 * (1 - rough)})`;
+        c.fillRect(x0 + (x1 - x0) * rnd(i + 935) - 1, ys + 1 + rnd(i + 936) * Math.min(yb - ys, S) * 0.8, 2, 2);
+      }
+    }
+    c.restore();
+  }
+
+  // Snow pouring off the broken cornice at (bx, by) down to the rising top ys: a white
+  // stream thick with tumbling chunks. k: how hard it still pours (0 to 1).
+  function snowFall(c, bx, by, bw, ys, t, k, dir, S) {
+    if (by >= ys || k <= 0) return;
+    c.save();
+    const g = c.createLinearGradient(0, by, 0, ys);
+    g.addColorStop(0, `rgba(240,246,255,${0.9 * k})`);
+    g.addColorStop(1, `rgba(170,190,215,${0.75 * k})`);
+    c.fillStyle = g;
+    c.beginPath();
+    c.moveTo(bx - bw / 2, by);
+    c.quadraticCurveTo(bx - bw * 0.6 + dir * bw * 0.3, (by + ys) / 2, bx - bw * 0.8 + dir * bw, ys);
+    c.lineTo(bx + bw * 0.8 + dir * bw, ys);
+    c.quadraticCurveTo(bx + bw * 0.6 + dir * bw * 0.3, (by + ys) / 2, bx + bw / 2, by);
+    c.closePath();
+    c.fill();
+    for (let i = 0; i < 10; i++) {
+      const kk = (t * 1.8 + rnd(i + 950)) % 1;
+      c.fillStyle = `rgba(250,252,255,${0.9 * k})`;
+      c.strokeStyle = `rgba(120,140,170,${0.5 * k})`;
+      c.lineWidth = 1;
+      c.beginPath();
+      c.arc(bx + (rnd(i + 951) - 0.5) * bw + dir * bw * kk * 0.8, by + (ys - by) * kk, S * (0.08 + rnd(i + 952) * 0.1), 0, TAU);
+      c.fill();
+      c.stroke();
+    }
+    glow(c, bx + dir * bw * 0.8, ys, bw * 1.4, `rgba(235,242,252,${0.4 * k})`);
+    c.restore();
+  }
+
+  // Powder thrown up off a slide of snow (rough 0 to 1), drawn over the hero.
+  function powder(c, x0, x1, ys, t, rough, dir, S) {
+    if (rough <= 0 || !(x1 - x0 > 1)) return;
+    c.save();
+    for (let i = 0; i < 14; i++) {
+      const k = (t * 0.8 * (0.7 + rnd(i + 960)) + rnd(i + 961)) % 1;
+      const px = dir > 0 ? x0 + k * (x1 - x0) : x1 - k * (x1 - x0),
+        py = ys - S * (0.1 + Math.sin(k * Math.PI) * (0.4 + rnd(i + 962) * 0.6)),
+        r = S * (0.25 + rnd(i + 963) * 0.35) * (0.6 + k * 0.6);
+      c.fillStyle = `rgba(238,244,252,${0.35 * rough * Math.sin(k * Math.PI)})`;
+      c.beginPath();
+      c.arc(px, py, r, 0, TAU);
+      c.fill();
+    }
+    c.restore();
+  }
+
+  // A water of snow (engine: water with snow true): the hollow under the cornice. Before
+  // the fall it holds only what snow it had; then the avalanche pours in from the broken
+  // cornice and rises to `to`; settled, it is the packed snowbank (the engine's generated
+  // snowbank platform is this same block). Teryel buried in it is drawn after it.
+  function avalanche(c, o, X, Y, S, t, g) {
+    const k = waterCoords(o, X, Y, g);
+    if (!o.flooded) {
+      snowMass(c, k.x0, k.x1, k.ys, k.yb, t, 0, 1, S);
+      return;
+    }
+    if (k.breach) {
+      const p = k.breach;
+      snowFall(c, X(p.x), Y(p.y - (p.h || 0.4) * 0.3), p.w * S * 0.9, k.ys, t, k.rough, k.dir, S);
+    }
+    snowMass(c, k.x0, k.x1, k.ys, k.yb, t, k.rough, k.dir, S);
+    for (const q of g.objects) if (q.type === "teryel" && q.trapped && Math.abs(q.x - o.x) < o.w / 2) teryelObject(c, q, X, Y, S, t, g);
+  }
+
+  // The flooded snow water Teryel sits in, if any: she is drawn after its snow.
+  function buriedIn(o, g) {
+    return g.objects.find((q) => q.type === "water" && q.snow && q.flooded && Math.abs(o.x - q.x) < q.w / 2) || null;
+  }
+
+  // Teryel's goats (iɣeṭṭen), the old woman's goats, half frozen: long black hair, frost
+  // along the back and on the horns, a beard of icicles, eyes glowing faintly. extra.goat
+  // {state, timer} (art.js goatPose) sets the pose: idle grazes and breathes out puffs;
+  // lower (the 0.5 s warning) drops the horns and paws the snow; charge gallops, kicking
+  // snow up behind; stuck sinks into the drift and struggles, harder as it is about to
+  // break free; return trots home. A goat that never charges (mood "sleep", no extra.goat)
+  // lies in the snow asleep, frozen half white. extra.stone: one the cold turned to rock.
+  // Facing extra.face (or its run). Its hooves stand size * 0.38 under y.
+  function goat(c, x, y, size, t, mood, extra = {}) {
+    const stone = Boolean(extra.stone);
+    const asleep = !stone && !extra.goat && mood === "sleep";
+    const pose = extra.goat || { state: asleep ? "sleep" : mood === "return" ? "return" : "idle", timer: 0 };
+    const st = pose.state;
+    const face = extra.face || ((extra.vx || 0) < -0.05 ? -1 : 1);
+    const s = size;
+    const feet = s * 0.38;
+    const run = st === "charge" ? t * 17 : st === "return" ? t * 10 : 0;
+    const bob = st === "charge" ? -Math.abs(Math.sin(run)) * s * 0.07 : st === "return" ? -Math.abs(Math.sin(run)) * s * 0.025 : 0;
+    const tense = st === "lower" ? Math.min(1, Math.max(0, 1 - (pose.timer || 0) / 0.5)) : 0;
+    const urgent = st === "stuck" && (pose.timer || 0) < 0.6 ? 2 : 1;
+    const shake = st === "stuck" ? Math.sin(t * 32) * s * 0.025 * urgent : st === "lower" ? Math.sin(t * 45) * s * 0.01 * tense : 0;
+    const sink = st === "stuck" ? s * 0.3 : asleep ? s * 0.15 : 0;
+    // How low the head is: 0 up and looking out, 1.25 horns forward, 1.6 grazing.
+    let headDown;
+    if (stone) headDown = 0.5;
+    else if (asleep) headDown = 1.0 + Math.sin(t * 0.8 + x) * 0.03;
+    else if (st === "lower" || st === "charge") headDown = 1.25;
+    else if (st === "stuck") headDown = 0.2 + Math.sin(t * 7) * 0.45;
+    else if (st === "return") headDown = 0.25 + Math.sin(run) * 0.05;
+    else headDown = 0.15 + 1.45 * Math.pow(Math.max(0, Math.sin(t * 0.6 + x * 0.013)), 2);
+    const body = stone ? "#555a63" : GOAT,
+      hair = stone ? "#484c54" : GOAT_HAIR;
+    c.save();
+    c.translate(x + shake, y + bob + sink);
+    c.scale(face, 1);
+    // Weight forward onto the forelegs before the charge.
+    if (st === "lower") c.rotate(0.07 * tense);
+    if (!stone) glow(c, 0, 0, s * 0.85, st === "charge" || st === "lower" ? "rgba(190,225,255,0.2)" : "rgba(170,200,240,0.1)");
+    c.fillStyle = body;
+    c.strokeStyle = body;
+    c.lineCap = "round";
+    if (!stone) {
+      c.shadowColor = "rgba(190,215,255,0.45)";
+      c.shadowBlur = s * 0.14;
+    }
+    // Legs: hip at the belly, a slight knee, a dark hoof. Galloping, the hind pair and the
+    // fore pair swing together; lowering, the foremost leg paws the snow.
+    const hipY = s * 0.1,
+      len = feet - hipY;
+    c.lineWidth = Math.max(1.5, s * 0.05);
+    // Asleep, the legs are folded under the body.
+    for (const lx of asleep ? [-0.2, 0.18] : []) {
+      c.beginPath();
+      c.ellipse(lx * s, s * 0.13, s * 0.13, s * 0.05, 0, 0, TAU);
+      c.fill();
+    }
+    const legs = asleep
+      ? []
+      : [
+          [-0.27, 0],
+          [-0.2, 0.4],
+          [0.2, Math.PI],
+          [0.26, Math.PI + 0.4],
+        ];
+    legs.forEach(([lx, ph], i) => {
+      let swing = 0,
+        lift = 0;
+      if (st === "charge") {
+        swing = Math.sin(run + ph) * 0.65;
+        lift = Math.max(0, Math.sin(run + ph)) * s * 0.05;
+      } else if (st === "return") swing = Math.sin(run + ph) * 0.35;
+      else if (st === "lower" && i === 3) {
+        swing = -0.35 + Math.sin(t * 16) * 0.4;
+        lift = Math.max(0, Math.sin(t * 16)) * s * 0.07;
+      } else if (st === "stuck") swing = Math.sin(t * 20 + ph) * 0.3;
+      const hx = lx * s,
+        fx = hx + Math.sin(swing) * len,
+        fy = hipY + Math.cos(swing) * len - lift;
+      c.beginPath();
+      c.moveTo(hx, hipY);
+      c.quadraticCurveTo(hx + Math.sin(swing) * len * 0.5 + (lx > 0 ? -1 : 1) * s * 0.025, hipY + len * 0.5, fx, fy);
+      c.stroke();
+      c.fillStyle = "#0a0908";
+      c.beginPath();
+      c.ellipse(fx + s * 0.01, fy, s * 0.03, s * 0.018, 0, 0, TAU);
+      c.fill();
+      c.fillStyle = body;
+    });
+    // Body: a barrel, its long hair hanging below the belly and blown back at a run.
+    c.beginPath();
+    c.ellipse(0, 0, s * 0.34, s * 0.16, 0, 0, TAU);
+    c.fill();
+    if (!stone) {
+      c.strokeStyle = hair;
+      c.lineWidth = Math.max(1, s * 0.03);
+      for (let i = 0; i < 10; i++) {
+        const hx = -s * 0.3 + (i * s * 0.6) / 9;
+        const sway = Math.sin(t * (st === "charge" ? 12 : 2) + i) * s * 0.02 - (st === "charge" ? s * 0.05 : 0);
+        c.beginPath();
+        c.moveTo(hx, s * 0.08);
+        c.quadraticCurveTo(hx + sway * 0.5, s * 0.16, hx + sway, s * (0.2 + rnd(i + 970) * 0.06));
+        c.stroke();
+      }
+    }
+    // Tail: a short tuft flicked up.
+    c.strokeStyle = body;
+    c.lineWidth = Math.max(1.5, s * 0.04);
+    c.beginPath();
+    c.moveTo(-s * 0.32, -s * 0.06);
+    c.quadraticCurveTo(-s * 0.42, -s * 0.14, -s * 0.38, -s * 0.2 + Math.sin(t * 6) * s * 0.02);
+    c.stroke();
+    // Neck from the shoulder to the head.
+    const a = -0.9 + headDown * 1.3;
+    const px = s * 0.26,
+      py = -s * 0.06,
+      reach = s * 0.26;
+    const hx = px + Math.cos(a) * reach,
+      hy = py + Math.sin(a) * reach;
+    c.lineWidth = s * 0.13;
+    c.beginPath();
+    c.moveTo(px - s * 0.04, py + s * 0.02);
+    c.lineTo(hx, hy);
+    c.stroke();
+    // Frost along the back (on a stone goat, the snow lying there).
+    c.shadowBlur = 0;
+    c.strokeStyle = stone || asleep ? SNOW : "rgba(225,238,252,0.7)";
+    c.lineWidth = Math.max(1, s * (stone || asleep ? 0.06 : 0.035));
+    c.beginPath();
+    c.ellipse(0, 0, s * 0.33, s * 0.15, 0, Math.PI + 0.35, TAU - 0.25);
+    c.stroke();
+    // Head: turned down further than the neck, so lowered the forehead leads.
+    const rot = a * 0.7 + 0.6;
+    c.save();
+    c.translate(hx, hy);
+    c.rotate(rot);
+    // Horns: two ridged scimitars sweeping back, rimed with frost.
+    c.lineWidth = Math.max(1.5, s * 0.045);
+    for (const off of [s * 0.03, 0]) {
+      c.strokeStyle = off ? "#5d564b" : stone ? "#6a6e76" : HORN;
+      c.beginPath();
+      c.moveTo(-s * 0.02 + off, -s * 0.05);
+      c.quadraticCurveTo(-s * 0.16 + off, -s * 0.21, -s * 0.29 + off, -s * 0.1);
+      c.stroke();
+    }
+    c.strokeStyle = stone ? SNOW : "rgba(228,242,255,0.75)";
+    c.lineWidth = Math.max(1, s * 0.015);
+    c.beginPath();
+    c.moveTo(-s * 0.03, -s * 0.07);
+    c.quadraticCurveTo(-s * 0.16, -s * 0.23, -s * 0.28, -s * 0.13);
+    c.stroke();
+    // A long muzzle and a drooping ear.
+    c.fillStyle = body;
+    c.beginPath();
+    c.ellipse(s * 0.04, 0, s * 0.13, s * 0.065, 0, 0, TAU);
+    c.fill();
+    c.beginPath();
+    c.ellipse(-s * 0.07, s * 0.035, s * 0.06, s * 0.02, 0.9, 0, TAU);
+    c.fill();
+    // The beard, its tips frozen into icicles.
+    c.strokeStyle = hair;
+    c.lineWidth = Math.max(1, s * 0.022);
+    for (let i = 0; i < 3; i++) {
+      c.beginPath();
+      c.moveTo(s * (0.06 + i * 0.025), s * 0.05);
+      c.lineTo(s * (0.05 + i * 0.025), s * 0.13);
+      c.stroke();
+    }
+    if (!stone) {
+      c.fillStyle = ICE + "0.85)";
+      for (let i = 0; i < 3; i++) {
+        c.beginPath();
+        c.moveTo(s * (0.04 + i * 0.025), s * 0.125);
+        c.lineTo(s * (0.06 + i * 0.025), s * 0.125);
+        c.lineTo(s * (0.05 + i * 0.025), s * 0.17);
+        c.closePath();
+        c.fill();
+      }
+      // The eye: a faint cold glow, brighter when it means to charge; shut in sleep.
+      const hot = st === "lower" || st === "charge";
+      if (asleep) {
+        c.strokeStyle = "rgba(200,230,255,0.6)";
+        c.lineWidth = Math.max(1, s * 0.015);
+        c.beginPath();
+        c.arc(-s * 0.01, -s * 0.03, s * 0.025, 0.3, Math.PI - 0.3);
+        c.stroke();
+      } else {
+      glow(c, -s * 0.01, -s * 0.02, s * (hot ? 0.14 : 0.09), hot ? "rgba(190,230,255,0.8)" : "rgba(170,215,255,0.45)");
+      c.fillStyle = hot ? "#e4f4ff" : "rgba(200,232,255,0.85)";
+      c.beginPath();
+      c.ellipse(-s * 0.01, -s * 0.02, s * 0.022, s * (st === "return" ? 0.008 : 0.016), 0, 0, TAU);
+      c.fill();
+      }
+    }
+    c.fillStyle = "#050505";
+    c.beginPath();
+    c.arc(s * 0.155, s * 0.01, s * 0.012, 0, TAU);
+    c.fill();
+    c.restore();
+    // Breath smoking from the muzzle: while it stands, and in snorts before the charge.
+    const mx = hx + Math.cos(rot) * s * 0.17,
+      my = hy + Math.sin(rot) * s * 0.17;
+    const breath = stone ? 0 : st === "lower" ? 1 : st === "idle" ? 1 - Math.min(1, headDown / 0.8) : st === "return" || asleep ? 0.5 : 0;
+    for (let i = 0; i < 3 && breath > 0; i++) {
+      const k = ((st === "lower" ? t * 1.6 : t * 0.5) + i / 3) % 1;
+      c.fillStyle = `rgba(230,240,252,${0.4 * (1 - k) * breath})`;
+      c.beginPath();
+      c.arc(mx + k * s * 0.22, my - k * s * 0.12, s * (0.025 + k * 0.06), 0, TAU);
+      c.fill();
+    }
+    // Snow kicked up behind the gallop.
+    if (st === "charge") {
+      for (let i = 0; i < 7; i++) {
+        const k = (t * 3 + i / 7) % 1;
+        c.fillStyle = `rgba(240,246,255,${0.8 * (1 - k)})`;
+        c.beginPath();
+        c.arc(-s * 0.25 - k * s * 0.55, feet - bob - Math.sin(k * Math.PI) * s * 0.28, s * 0.035 * (1 - k * 0.4), 0, TAU);
+        c.fill();
+      }
+    }
+    c.restore();
+    if (st === "stuck") {
+      // Half buried in the drift: snow heaped round it, thrown up as it heaves.
+      const top = y + feet - s * 0.28;
+      c.save();
+      const g = c.createLinearGradient(0, top - s * 0.06, 0, y + feet + s * 0.05);
+      g.addColorStop(0, SNOW);
+      g.addColorStop(1, SNOW_SHADE);
+      c.fillStyle = g;
+      c.beginPath();
+      c.moveTo(x - s * 0.6, y + feet + s * 0.05);
+      c.quadraticCurveTo(x - s * 0.45, top, x - s * 0.15, top + s * 0.02);
+      c.quadraticCurveTo(x + s * 0.05, top - s * 0.05, x + s * 0.25, top + s * 0.03);
+      c.quadraticCurveTo(x + s * 0.5, top, x + s * 0.6, y + feet + s * 0.05);
+      c.closePath();
+      c.fill();
+      c.strokeStyle = "rgba(255,255,255,0.8)";
+      c.lineWidth = 1.5;
+      c.beginPath();
+      c.moveTo(x - s * 0.4, top + s * 0.05);
+      c.quadraticCurveTo(x, top - s * 0.06, x + s * 0.35, top + s * 0.04);
+      c.stroke();
+      for (let i = 0; i < 3 * urgent; i++) {
+        const k = (t * 1.8 + i / (3 * urgent)) % 1;
+        c.fillStyle = `rgba(240,246,255,${0.85 * (1 - k)})`;
+        c.beginPath();
+        c.arc(x + (rnd(i + 975) - 0.5) * s * 0.8, top - Math.sin(k * Math.PI) * s * 0.3, s * 0.03, 0, TAU);
+        c.fill();
+      }
+      c.restore();
+    }
+  }
+
+  // The old woman's spindle (izdi): a turned wooden shaft, a whorl near its foot, a cop of
+  // grey-brown goat hair wound above it, a loose strand from the top. size: its length,
+  // centred on (x, y). opts.tilt: radians; opts.spin: turns, moving the whorl's marks and
+  // the yarn's wraps while it spins; opts.strand === false leaves the loose end off.
+  function izdi(c, x, y, size, t, opts = {}) {
+    const s = size;
+    const spin = opts.spin || 0;
+    c.save();
+    c.translate(x, y);
+    c.rotate(opts.tilt || 0);
+    glow(c, 0, 0, s * 0.7, "rgba(255,215,160,0.14)");
+    // The shaft, thickest just above the whorl.
+    const sg = c.createLinearGradient(-s * 0.035, 0, s * 0.035, 0);
+    sg.addColorStop(0, "#5a3a1e");
+    sg.addColorStop(0.5, "#b0814c");
+    sg.addColorStop(1, "#4a2e16");
+    c.fillStyle = sg;
+    c.beginPath();
+    c.moveTo(0, -s * 0.5);
+    c.quadraticCurveTo(s * 0.035, -s * 0.1, s * 0.012, s * 0.5);
+    c.lineTo(-s * 0.012, s * 0.5);
+    c.quadraticCurveTo(-s * 0.035, -s * 0.1, 0, -s * 0.5);
+    c.closePath();
+    c.fill();
+    // The cop of goat hair, its wraps slanting across.
+    c.save();
+    c.beginPath();
+    c.moveTo(0, -s * 0.36);
+    c.quadraticCurveTo(s * 0.13, -s * 0.12, s * 0.07, s * 0.12);
+    c.lineTo(-s * 0.07, s * 0.12);
+    c.quadraticCurveTo(-s * 0.13, -s * 0.12, 0, -s * 0.36);
+    c.closePath();
+    const cg = c.createRadialGradient(-s * 0.03, -s * 0.12, s * 0.01, 0, -s * 0.08, s * 0.16);
+    cg.addColorStop(0, "#b9ab96");
+    cg.addColorStop(1, "#5e5244");
+    c.fillStyle = cg;
+    c.fill();
+    c.clip();
+    c.strokeStyle = "rgba(40,32,24,0.45)";
+    c.lineWidth = Math.max(0.8, s * 0.008);
+    const shift = (((spin % 1) + 1) % 1) * s * 0.035;
+    for (let i = -7; i <= 6; i++) {
+      const yy = -s * 0.1 + i * s * 0.035 + shift;
+      c.beginPath();
+      c.moveTo(-s * 0.14, yy + s * 0.02);
+      c.lineTo(s * 0.14, yy - s * 0.02);
+      c.stroke();
+    }
+    c.restore();
+    // The whorl: a flattened round of wood, two painted marks turning with it.
+    c.fillStyle = "#6b4426";
+    c.beginPath();
+    c.ellipse(0, s * 0.24, s * 0.12, s * 0.045, 0, 0, TAU);
+    c.fill();
+    c.fillStyle = "#8a5c34";
+    c.beginPath();
+    c.ellipse(0, s * 0.225, s * 0.12, s * 0.035, 0, 0, TAU);
+    c.fill();
+    c.fillStyle = RED;
+    for (const m of [0, Math.PI]) {
+      const an = spin * TAU + m;
+      if (Math.sin(an) < 0) continue;
+      c.fillRect(Math.cos(an) * s * 0.09 - s * 0.012, s * 0.235, s * 0.024, s * 0.025);
+    }
+    if (opts.strand !== false) {
+      c.strokeStyle = "#c9bba5";
+      c.lineWidth = Math.max(0.8, s * 0.01);
+      c.beginPath();
+      c.moveTo(0, -s * 0.5);
+      c.quadraticCurveTo(s * 0.12 + Math.sin(t * 2) * s * 0.04, -s * 0.62, s * 0.06 + Math.sin(t * 1.5) * s * 0.05, -s * 0.75);
+      c.stroke();
+    }
+    c.restore();
+  }
+
+  // A sung note drifting up (Teryel's song to the stone goats).
+  function songNote(c, x, y, size, alpha) {
+    c.save();
+    c.globalAlpha *= alpha;
+    c.fillStyle = "rgba(255,220,170,0.9)";
+    c.strokeStyle = "rgba(255,220,170,0.9)";
+    c.lineWidth = Math.max(1, size * 0.1);
+    c.beginPath();
+    c.ellipse(x, y, size * 0.3, size * 0.22, -0.4, 0, TAU);
+    c.fill();
+    c.beginPath();
+    c.moveTo(x + size * 0.27, y);
+    c.lineTo(x + size * 0.27, y - size);
+    c.quadraticCurveTo(x + size * 0.6, y - size * 0.8, x + size * 0.55, y - size * 0.5);
+    c.stroke();
+    c.restore();
+  }
+
+  // The house window (arched frame, its opening left as the current path to fill and
+  // clip), and the wooden bar and sill drawn over it.
+  function windowOpening(c, x, y, ww, wh) {
+    c.fillStyle = "#1a0f08";
+    c.beginPath();
+    c.roundRect(x - ww / 2 - 6, y - wh / 2 - 6, ww + 12, wh + 12, [ww * 0.55, ww * 0.55, 3, 3]);
+    c.fill();
+    c.beginPath();
+    c.roundRect(x - ww / 2, y - wh / 2, ww, wh, [ww * 0.5, ww * 0.5, 2, 2]);
+  }
+  function windowBar(c, x, y, ww, wh) {
+    c.fillStyle = "#2a170b";
+    c.fillRect(x - 2, y - wh / 2, 4, wh);
+    c.fillRect(x - ww / 2 - 8, y + wh / 2 + 4, ww + 16, 6);
+  }
+
+  // The window at first light: a clear pale sky, the Djurdjura white under it with the
+  // old woman and her goats on the ridge, morning light spilling in over snow on the sill.
+  function dawnWindow(c, x, y, ww, wh, t) {
+    c.save();
+    glow(c, x, y + wh, ww * 2.4, "rgba(255,222,185,0.14)");
+    windowOpening(c, x, y, ww, wh);
+    const g = c.createLinearGradient(0, y - wh / 2, 0, y + wh / 2);
+    g.addColorStop(0, "#6f8ab0");
+    g.addColorStop(0.7, "#d9c2c0");
+    g.addColorStop(1, "#f4d2a8");
+    c.fillStyle = g;
+    c.fill();
+    c.clip();
+    const L = pastureLight(true);
+    c.save();
+    c.translate(x - ww * 0.6, 0);
+    peaks(c, ww * 1.2, y + wh * 0.25, wh * 0.35, L.far, L.cap, 71);
+    oldWomanRocks(c, ww * 0.6, y + wh * 0.22, ww * 0.12, L);
+    c.restore();
+    c.fillStyle = L.snow;
+    c.fillRect(x - ww / 2, y + wh * 0.36, ww, wh * 0.2);
+    c.restore();
+    c.save();
+    windowBar(c, x, y, ww, wh);
+    c.fillStyle = SNOW;
+    c.beginPath();
+    c.ellipse(x, y + wh / 2 + 4, ww * 0.55, 3.5, 0, Math.PI, TAU);
+    c.fill();
+    // Light glinting on a drip of thaw at the sill.
+    const life = (t * 0.5) % 1;
+    c.fillStyle = `rgba(255,240,220,${0.8 * (1 - life)})`;
+    c.beginPath();
+    c.ellipse(x + ww * 0.3, y + wh / 2 + 12 + life * wh * 0.3, 1.6, 2.4, 0, 0, TAU);
+    c.fill();
+    c.restore();
+  }
+
+  // The tale of the old woman's borrowed days, night 7. Positions are in S (w / 9) from
+  // the left, heights in S above the floor.
+  function pastureScene(c, name, w, h, t, S, floor, Yw, talk) {
+    const dawn = name === "pasture-dawn";
+    pastureBack(c, w, h, t, Yw, S, 8, 0.3, { dawn });
+    ground(c, 0, w, floor, h, "pasture", t);
+    const Xs = (x) => x * S;
+    // Mqidec stands with his feet on y (size 1.05 S unless given).
+    const mqidec = (hx, y, size, look) => Art.rabbit(c, hx, y - size * 0.52, size, { time: t, state: "resting", look });
+    if (dawn) {
+      // The first morning of February: the snow has stopped, and Mqidec walks home over
+      // the snowbank with the spindle on his shoulder, his tracks behind him.
+      const x0 = Xs(1.4),
+        x1 = Xs(8.2),
+        top = floor - S * 1.1;
+      c.save();
+      const g = c.createLinearGradient(0, top, 0, floor + S * 0.3);
+      g.addColorStop(0, "#fbf3ee");
+      g.addColorStop(1, "#b8b4c8");
+      c.fillStyle = g;
+      c.beginPath();
+      c.moveTo(x0 - S * 1.2, floor + S * 0.3);
+      c.bezierCurveTo(x0 - S * 0.4, top, x0, top, x0 + S * 0.8, top);
+      c.lineTo(x1 - S * 0.8, top);
+      c.bezierCurveTo(x1, top, x1 + S * 0.4, top, x1 + S * 1.2, floor + S * 0.3);
+      c.closePath();
+      c.fill();
+      c.strokeStyle = "rgba(255,225,195,0.9)";
+      c.lineWidth = 2;
+      c.beginPath();
+      c.moveTo(x0, top + 1);
+      c.lineTo(x1 - S * 0.4, top + 1);
+      c.stroke();
+      c.restore();
+      const hx = Xs(4.6),
+        hop = Math.abs(Math.sin(t * 4)) * S * 0.12;
+      c.fillStyle = "rgba(120,120,150,0.35)";
+      for (let i = 1; i <= 8; i++) {
+        const fx = hx - i * S * 0.45;
+        if (fx < x0) break;
+        c.beginPath();
+        c.ellipse(fx, top + S * 0.06, S * 0.1, S * 0.03, 0, 0, TAU);
+        c.fill();
+      }
+      izdi(c, hx - S * 0.3, top - S * 0.75 - hop, S * 1.0, t, { tilt: -1.0 });
+      mqidec(hx, top - hop, S * 1.05, { x: 1, y: -0.3 });
+      cedar(c, Xs(0.4), floor + S * 0.2, S * 3.4, "#3d4152", "#fbf1ea", 5);
+      return;
+    }
+    if (name === "pasture") {
+      // The frozen pond between drifts, a goat grazing, another on the rock ledge; Mqidec
+      // small in the snow.
+      const x0 = Xs(3.6),
+        x1 = Xs(6.4);
+      c.save();
+      c.fillStyle = "#0b1420";
+      c.beginPath();
+      c.ellipse((x0 + x1) / 2, floor + S * 0.12, (x1 - x0) / 2 + S * 0.15, S * 0.32, 0, 0, TAU);
+      c.fill();
+      c.beginPath();
+      c.ellipse((x0 + x1) / 2, floor + S * 0.1, (x1 - x0) / 2, S * 0.26, 0, 0, TAU);
+      c.clip();
+      iceSheet(c, x0, x1, floor - S * 0.16, S * 0.6, t, 0, S);
+      c.restore();
+      drift(c, { x: 1.6, y: 0, w: 1.8 }, Xs, Yw, S, t);
+      drift(c, { x: 7.0, y: 0, w: 1.4 }, Xs, Yw, S, t);
+      ledge(c, Xs(7.9), Yw(1.6), S * 2.0, 1, 0, "pasture");
+      goat(c, Xs(7.9), Yw(1.6) - S * 0.85 * 0.38, S * 0.85, t, "hunt", { face: -1, goat: { state: "idle", timer: 0 } });
+      goat(c, Xs(2.3), floor - S * 0.8 * 0.38, S * 0.8, t + 2, "hunt", { face: 1, goat: { state: "idle", timer: 0 } });
+      mqidec(Xs(3.0), floor, S * 0.75, { x: 1, y: -0.4 });
+      driftLip(c, Xs(0.7), Xs(2.5), floor, S);
+      cedar(c, Xs(8.6), floor + S * 0.2, S * 3.2, "#0b0e14", SNOW_SHADE, 3);
+    } else if (name === "pasture-teryel") {
+      // Teryel in the hollow under the cornice, spinning with the old woman's spindle and
+      // singing to the stone goats round her; Mqidec peers over a drift.
+      cragFace(c, Xs(6.6), w + 4, floor - S * 4.4, floor, S, t);
+      corniceShape(c, Xs(6.3), floor - S * 4.6, S * 2.2, S * 0.7, -1, t, S);
+      const tx = Xs(4.6),
+        r = S * 1.3 * talk("teryel");
+      teryel(c, tx, floor - S * 1.3, r, t, { theme: "pasture", asleep: false });
+      // Her arm up, the yarn running from her fingers down to the spinning spindle.
+      const handX = tx + S * 1.45,
+        handY = floor - S * 2.35 + Math.sin(t * 2) * S * 0.05;
+      c.save();
+      c.strokeStyle = "#120c0a";
+      c.lineWidth = S * 0.12;
+      c.lineCap = "round";
+      c.beginPath();
+      c.moveTo(tx + S * 0.9, floor - S * 1.5);
+      c.quadraticCurveTo(tx + S * 1.5, floor - S * 1.7, handX, handY);
+      c.stroke();
+      const sx = handX + S * 0.1,
+        sy = floor - S * 1.1;
+      c.strokeStyle = "#c9bba5";
+      c.lineWidth = Math.max(1, S * 0.012);
+      c.beginPath();
+      c.moveTo(handX, handY);
+      c.lineTo(sx, sy - S * 0.45);
+      c.stroke();
+      c.restore();
+      izdi(c, sx, sy, S * 0.9, t, { spin: t * 1.5, strand: false });
+      for (let i = 0; i < 3; i++) {
+        const k = (t * 0.3 + i / 3) % 1;
+        songNote(c, tx - S * 0.2 - k * S * 1.4 + Math.sin(t * 2 + i) * S * 0.1, floor - S * 3.0 - k * S * 1.2, S * 0.28, Math.sin(k * Math.PI));
+      }
+      goat(c, Xs(2.4), floor - S * 0.95 * 0.38, S * 0.95, t, "sleep", { stone: true, face: 1 });
+      goat(c, Xs(3.3), floor - S * 0.75 * 0.38, S * 0.75, t, "sleep", { stone: true, face: -1 });
+      drift(c, { x: 1.0, y: 0, w: 1.6 }, Xs, Yw, S, t);
+      mqidec(Xs(0.9), floor - S * 0.2, S * 0.9, { x: 1, y: -0.3 });
+      driftLip(c, Xs(0.2), Xs(1.8), floor, S);
+    } else if (name === "pasture-trap") {
+      // The cornice breaks: snow pours down the crag and fills the hollow over Teryel to
+      // her neck; Mqidec watches from a rock, holding the spindle.
+      cragFace(c, Xs(6.8), w + 4, floor - S * 4.4, floor, S, t);
+      corniceShape(c, Xs(7.2), floor - S * 4.5, S * 0.9, S * 0.5, -1, t, S);
+      for (let i = 0; i < 4; i++) {
+        const k = (t * 0.45 + i / 4) % 1;
+        const bx = Xs(6.4) - k * S * 2.2 - i * S * 0.2,
+          by = floor - S * (4.3 - k * 3.2) - Math.sin(k * Math.PI) * S * 0.5;
+        c.save();
+        c.translate(bx, by);
+        c.rotate(-k * 4 - i);
+        c.fillStyle = SNOW;
+        c.strokeStyle = SNOW_SHADE;
+        c.lineWidth = 1.5;
+        c.beginPath();
+        c.roundRect(-S * 0.25, -S * 0.18, S * 0.5, S * 0.36, S * 0.12);
+        c.fill();
+        c.stroke();
+        c.restore();
+      }
+      const surface = floor - S * 0.9;
+      snowFall(c, Xs(6.5), floor - S * 4.0, S * 1.4, surface, t, 1, -1, S);
+      snowMass(c, -2, w + 2, surface, h + 2, t, 1, -1, S);
+      teryel(c, Xs(4.4), surface + S * 0.45, S * 1.15 * talk("teryel"), t, { trapped: true, theme: "pasture", spindle: false });
+      powder(c, -2, w + 2, surface, t, 1, -1, S);
+      rockBlock(c, Xs(1.2), floor - S * 1.9, S * 1.5, S * 1.9 + 2, t);
+      mqidec(Xs(1.05), floor - S * 1.9, S * 1.05, { x: 1, y: 0 });
+      izdi(c, Xs(1.7), floor - S * 1.9 - S * 0.55, S * 0.9, t, { tilt: 0.25 });
+    }
+  }
+
+  // A crag face for the scenes: jagged on its open (left) side, snow on its ledges.
+  function cragFace(c, x0, x1, top, bottom, S, t) {
+    const pts = [];
+    for (let i = 0; i <= 6; i++) pts.push([x0 + (rnd(i + 980) - 0.3) * S * 0.7, top + ((bottom - top) * i) / 6]);
+    c.save();
+    c.fillStyle = ROCK;
+    c.beginPath();
+    c.moveTo(x1, bottom);
+    c.lineTo(x1, top);
+    pts.forEach(([px, py]) => c.lineTo(px, py));
+    c.closePath();
+    c.fill();
+    c.strokeStyle = "rgba(180,205,240,0.25)";
+    c.lineWidth = 2;
+    c.beginPath();
+    pts.forEach(([px, py], i) => (i ? c.lineTo(px, py) : c.moveTo(px, py)));
+    c.stroke();
+    c.restore();
+    for (let i = 1; i < 6; i += 2) snowCap(c, pts[i][0], pts[i][0] + S * 0.9, pts[i][1], S * 0.12, t);
   }
 
   /* ---------------- Ground and ledges ---------------- */
@@ -1843,6 +3273,22 @@
       c.moveTo(x0, top);
       c.lineTo(x1, top);
       c.stroke();
+    } else if (theme === "pasture") {
+      // Frozen earth under the snow, stones showing through, the snow's top wind-carved.
+      const g = c.createLinearGradient(0, top, 0, bottom);
+      g.addColorStop(0, "#262a34");
+      g.addColorStop(1, "#090b10");
+      c.fillStyle = g;
+      c.fillRect(x0, top, x1 - x0, bottom - top);
+      const span = x1 - x0;
+      const n = Math.max(3, Math.min(60, Math.round(span / 50)));
+      c.fillStyle = "rgba(90,100,120,0.45)";
+      for (let i = 0; i < n; i++) {
+        c.beginPath();
+        c.ellipse(x0 + span * rnd(i + 990), top + 14 + rnd(i + 991) * 18, 5 + rnd(i + 992) * 8, 3 + rnd(i + 993) * 3, 0, 0, TAU);
+        c.fill();
+      }
+      snowCap(c, x0, x1, top, 11, t);
     } else {
       const g = c.createLinearGradient(0, top, 0, bottom);
       g.addColorStop(0, theme === "loom" ? "#3a2618" : theme === "press" ? "#2e261c" : "#4a2e1b");
@@ -1865,7 +3311,7 @@
   }
 
   // Kitchen shelves and loom beams are wood; the gorge keeps the original stone.
-  function ledge(c, x, top, w, alpha, shake, theme) {
+  function ledge(c, x, top, w, alpha, shake, theme, t = 0) {
     if (theme === "gorge") return false;
     if (theme === "spring") {
       // A dry-stone terrace: flat stones laid without mortar, a pale capstone on top.
@@ -1906,6 +3352,53 @@
       c.moveTo(x - w / 2, top - h * 0.2);
       c.lineTo(x + w / 2, top - h * 0.2);
       c.stroke();
+      c.restore();
+      return true;
+    }
+    if (theme === "pasture") {
+      // A slab of mountain rock: frost-split, icicles under its lip, snow along its top.
+      const h = Math.max(10, w * 0.11);
+      c.save();
+      c.globalAlpha *= alpha;
+      c.translate(shake, 0);
+      const g = c.createLinearGradient(0, top, 0, top + h * 1.5);
+      g.addColorStop(0, ROCK_LIGHT);
+      g.addColorStop(1, ROCK);
+      c.fillStyle = g;
+      c.shadowColor = "rgba(180,210,255,0.25)";
+      c.shadowBlur = 8;
+      c.beginPath();
+      c.roundRect(x - w / 2, top - h * 0.1, w, h * 1.5, h * 0.3);
+      c.fill();
+      c.shadowBlur = 0;
+      c.strokeStyle = "rgba(10,12,18,0.55)";
+      c.lineWidth = 1;
+      const seed = Math.round(w);
+      for (let i = 0; i < 3; i++) {
+        const cx = x - w * 0.35 + rnd(seed + i) * w * 0.7;
+        c.beginPath();
+        c.moveTo(cx, top + h * 0.3);
+        c.lineTo(cx + h * 0.2, top + h * 0.8);
+        c.lineTo(cx + h * 0.05, top + h * 1.3);
+        c.stroke();
+      }
+      c.fillStyle = ICE + "0.8)";
+      const n = Math.max(2, Math.round(w / (h * 1.3)));
+      for (let i = 0; i < n; i++) {
+        const ix = x - w / 2 + ((i + 0.5) * w) / n,
+          len = h * (0.35 + rnd(seed + i + 7) * 0.55);
+        c.beginPath();
+        c.moveTo(ix - h * 0.09, top + h * 1.35);
+        c.lineTo(ix + h * 0.09, top + h * 1.35);
+        c.lineTo(ix, top + h * 1.35 + len);
+        c.closePath();
+        c.fill();
+      }
+      c.restore();
+      c.save();
+      c.globalAlpha *= alpha;
+      c.translate(shake, 0);
+      snowCap(c, x - w / 2 - 2, x + w / 2 + 2, top, h * 0.5, t);
       c.restore();
       return true;
     }
@@ -1972,6 +3465,7 @@
     else if (kind === "raven") raven(c, x, y, size, t, mood, extra);
     else if (kind === "rat") rat(c, x, y, size, t, mood, extra);
     else if (kind === "frog") frog(c, x, y, size, t, mood, extra);
+    else if (kind === "goat") goat(c, x, y, size, t, mood, extra);
     else ijenni(c, x, y, size, t, mood, extra);
     if (extra.ring) {
       c.save();
@@ -2113,14 +3607,8 @@
   /* ---------------- Objects: Teryel, updrafts ---------------- */
   function object(c, o, X, Y, S, t, g) {
     if (o.type === "teryel") {
-      teryel(c, X(o.x), Y(o.y), o.r * S, t, {
-        asleep: !o.dx && !o.dy && !o.trapped,
-        trapped: o.trapped,
-        theme: g.level.theme,
-        moving: Boolean(o.dx || o.dy),
-        look: Math.max(-1, Math.min(1, (g.hero.x - o.x) / 4)),
-        near: Math.hypot(g.hero.x - o.x, g.hero.y - o.y) < (o.r || 1) + 3,
-      });
+      // Buried by an avalanche she is drawn after its snow, by the snow's water.
+      if (!(o.trapped && buriedIn(o, g))) teryelObject(c, o, X, Y, S, t, g);
       return true;
     }
     if (o.type === "wind") {
@@ -2132,6 +3620,17 @@
       return true;
     }
     return false;
+  }
+
+  function teryelObject(c, o, X, Y, S, t, g) {
+    teryel(c, X(o.x), Y(o.y), o.r * S, t, {
+      asleep: !o.dx && !o.dy && !o.trapped,
+      trapped: o.trapped,
+      theme: g.level.theme,
+      moving: Boolean(o.dx || o.dy),
+      look: Math.max(-1, Math.min(1, (g.hero.x - o.x) / 4)),
+      near: Math.hypot(g.hero.x - o.x, g.hero.y - o.y) < (o.r || 1) + 3,
+    });
   }
 
   function updraft(c, x, top, w, h, t) {
@@ -2310,6 +3809,59 @@
       }
       c.restore();
       if (st.bride !== false) tislit(c, W * 0.6 + Math.sin(t * 1.5) * r * 0.1, -H * 1.0 + Math.sin(t * 2) * r * 0.1, r * 0.9, t, { tilt: Math.sin(t * 1.3) * 0.4 });
+    } else if (theme === "pasture") {
+      // Buried to the neck in the avalanche, snow on her head, her nose white with frost and
+      // an icicle under it; the spindle stands free in the snow beside her (st.spindle ===
+      // false when a scene shows it elsewhere).
+      c.save();
+      const g = c.createLinearGradient(0, -H * 0.66, 0, r * 0.2);
+      g.addColorStop(0, SNOW);
+      g.addColorStop(1, SNOW_SHADE);
+      c.fillStyle = g;
+      c.beginPath();
+      c.moveTo(-W * 0.95, r * 0.15);
+      c.quadraticCurveTo(-W * 0.8, -H * 0.5, -W * 0.3, -H * 0.58);
+      c.quadraticCurveTo(0, -H * 0.62, W * 0.3, -H * 0.58);
+      c.quadraticCurveTo(W * 0.8, -H * 0.5, W * 0.95, r * 0.15);
+      c.closePath();
+      c.fill();
+      c.strokeStyle = "rgba(255,255,255,0.8)";
+      c.lineWidth = Math.max(1.5, r * 0.03);
+      c.beginPath();
+      c.moveTo(-W * 0.6, -H * 0.53);
+      c.quadraticCurveTo(0, -H * 0.64, W * 0.6, -H * 0.53);
+      c.stroke();
+      c.fillStyle = SNOW;
+      c.beginPath();
+      c.ellipse(0, -H * 0.93, W * 0.17, r * 0.07, 0, Math.PI, TAU);
+      c.fill();
+      // The nose, hooked and frozen at its tip.
+      c.fillStyle = "#3a201a";
+      c.beginPath();
+      c.moveTo(-r * 0.04, -H * 0.67);
+      c.quadraticCurveTo(r * 0.06, -H * 0.66, r * 0.1, -H * 0.605);
+      c.lineTo(-r * 0.03, -H * 0.6);
+      c.closePath();
+      c.fill();
+      c.fillStyle = "rgba(230,242,255,0.9)";
+      c.beginPath();
+      c.arc(r * 0.08, -H * 0.61, r * 0.035, 0, TAU);
+      c.fill();
+      c.fillStyle = ICE + "0.9)";
+      c.beginPath();
+      c.moveTo(r * 0.06, -H * 0.6);
+      c.lineTo(r * 0.11, -H * 0.6);
+      c.lineTo(r * 0.085, -H * 0.6 + r * 0.14);
+      c.closePath();
+      c.fill();
+      // Her breath smoking in the cold.
+      const k = (t * 0.6) % 1;
+      c.fillStyle = `rgba(230,240,252,${0.45 * (1 - k)})`;
+      c.beginPath();
+      c.arc(r * (0.15 + k * 0.4), -H * (0.62 + k * 0.08), r * (0.04 + k * 0.1), 0, TAU);
+      c.fill();
+      c.restore();
+      if (st.spindle !== false) izdi(c, W * 0.75, -H * 0.35 - r * 0.3, r * 0.9, t, { tilt: 0.35 });
     } else if (theme === "roofs") {
       // Halfway down the chimney: the bricks hold her lower half.
       c.save();
@@ -2407,6 +3959,17 @@
       c.fill();
     }
     c.restore();
+    if (g.level.theme === "pasture") {
+      // Snow lying on the arch of the frame.
+      c.save();
+      c.fillStyle = SNOW;
+      c.beginPath();
+      c.moveTo(x - dw / 2 - 8, bottom - dh * 0.78 + 2);
+      c.quadraticCurveTo(x, bottom - dh - 10, x + dw / 2 + 8, bottom - dh * 0.78 + 2);
+      c.quadraticCurveTo(x, bottom - dh - 10 - S * 0.22, x - dw / 2 - 8, bottom - dh * 0.78 + 2);
+      c.fill();
+      c.restore();
+    }
     if (g.sealed) {
       // Barred until Teryel is trapped.
       c.save();
@@ -2470,7 +4033,7 @@
   }
   // Embers rise from fires, dust hangs in the rooms, mist drifts in the gorge.
   function particles(c, name, w, h, t) {
-    const hearth = name === "hearth" || name === "hearth-rain";
+    const hearth = name === "hearth" || name === "hearth-rain" || name === "hearth-dawn";
     if (hearth || name.startsWith("kitchen")) {
       const sprite = ember();
       c.save();
@@ -2529,6 +4092,26 @@
       }
     }
     if (name === "spring-rain") rainfall(c, w, h, t, 80, h * 0.7);
+    if (name === "pasture" || name === "pasture-teryel" || name === "pasture-trap") blizzard(c, w, h, t, 80, w / 9);
+    if (name === "pasture-trap") {
+      // Powder thrown up off the avalanche.
+      for (let i = 0; i < 24; i++) {
+        const k = (t * (0.6 + rnd(i + 995) * 0.5) + rnd(i + 996)) % 1;
+        c.fillStyle = `rgba(240,246,255,${0.5 * Math.sin(k * Math.PI)})`;
+        c.beginPath();
+        c.arc(w * (0.2 + rnd(i + 997) * 0.6) - k * w * 0.15, h * 0.58 - Math.sin(k * Math.PI) * h * (0.08 + rnd(i + 998) * 0.12), w * (0.01 + rnd(i + 999) * 0.02), 0, TAU);
+        c.fill();
+      }
+    }
+    if (name === "pasture-dawn") {
+      // Frost glittering in the still morning air.
+      for (let i = 0; i < 26; i++) {
+        const a = Math.sin(t * 1.8 + i * 2.1);
+        if (a < 0.5) continue;
+        c.fillStyle = `rgba(255,248,235,${(a - 0.5) * 1.6})`;
+        c.fillRect(w * rnd(i + 1000), h * (0.2 + rnd(i + 1001) * 0.6) + Math.sin(t * 0.4 + i) * 6, 1.6, 1.6);
+      }
+    }
   }
 
   // Rain streaks slanting down, and little splashes where they meet the ground.
@@ -2566,7 +4149,9 @@
       view.speaker === who ? 1 + Math.max(0, 0.06 - (view.lineAge || 9) * 0.08) + Math.sin(t * 14) * 0.015 * Math.max(0, 1 - (view.lineAge || 9)) : 1;
     const Yw = (yy) => floor - yy * S;
     if (name === "hearth") hearthScene(c, w, h, t, S, floor, view, talk);
-    else if (name === "hearth-rain") hearthScene(c, w, h, t, S, floor, view, talk, true);
+    else if (name === "hearth-rain") hearthScene(c, w, h, t, S, floor, view, talk, "rain");
+    else if (name === "hearth-dawn") hearthScene(c, w, h, t, S, floor, view, talk, "dawn");
+    else if (name.startsWith("pasture")) pastureScene(c, name, w, h, t, S, floor, Yw, talk);
     else if (name.startsWith("spring")) springScene(c, name, w, h, t, S, floor, Yw, talk);
     else if (name === "home") homeScene(c, w, h, t, S, floor);
     else if (name.startsWith("kitchen")) {
@@ -2661,10 +4246,16 @@
     }
   }
 
-  // rain: the window shows the first rain, and the children turn toward it.
-  function hearthScene(c, w, h, t, S, floor, view, talk, rain = false) {
+  // win: "rain", the window shows the first rain; "dawn", the morning and the mountain.
+  // Either way the children turn toward it.
+  function hearthScene(c, w, h, t, S, floor, view, talk, win = null) {
     plaster(c, w, h, "#2c1a10", "#0c0705");
-    if (rain) rainWindow(c, w * 0.5, h * 0.2, S * 1.3, S * 1.6, t);
+    if (win === "rain") rainWindow(c, w * 0.5, h * 0.2, S * 1.3, S * 1.6, t);
+    else if (win === "dawn") {
+      dawnWindow(c, w * 0.5, h * 0.2, S * 1.3, S * 1.6, t);
+      // Morning light falling across the room from the window.
+      glow(c, w * 0.5, h * 0.45, w * 0.55, "rgba(255,225,190,0.09)");
+    }
     // The wall niche with the lamp, top right.
     c.fillStyle = "#0a0604";
     c.beginPath();
@@ -2721,8 +4312,8 @@
     c.save();
     c.translate(0, -flinch);
     // The children on the right.
-    person(c, w * 0.7, floor + S * 0.2, S * 1.5 * talk("boy") * talk("children"), "boy", t, rain ? -0.16 : -0.05 + (view.mood === "hushed" ? 0.06 : 0), -1);
-    person(c, w * 0.84, floor + S * 0.2, S * 1.4 * talk("girl") * talk("children"), "girl", t, rain ? -0.22 : view.mood === "hushed" ? -0.12 : 0, -1);
+    person(c, w * 0.7, floor + S * 0.2, S * 1.5 * talk("boy") * talk("children"), "boy", t, win ? -0.16 : -0.05 + (view.mood === "hushed" ? 0.06 : 0), -1);
+    person(c, w * 0.84, floor + S * 0.2, S * 1.4 * talk("girl") * talk("children"), "girl", t, win ? -0.22 : view.mood === "hushed" ? -0.12 : 0, -1);
     c.restore();
     vignette(c, w, h, 0.5);
   }
@@ -3007,5 +4598,10 @@
     bucketBack,
     bucketFront,
     front,
+    // Night 7, the high pasture.
+    goat,
+    izdi,
+    drift,
+    cornice,
   };
 })(globalThis);
