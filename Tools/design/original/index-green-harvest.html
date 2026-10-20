@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#111114" />
+    <title>The Green Harvest</title>
+    <link rel="icon" href="assets/pumpkin.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="phone" id="phone">
+      <canvas id="canvas" aria-label="Game view"></canvas>
+
+      <section class="screen" id="title-screen" aria-labelledby="game-title">
+        <div class="title-block">
+          <p class="kicker">Hollow Night</p>
+          <h1 id="game-title">The Green<br />Harvest</h1>
+          <p class="tagline">They were plotting. He heard. Now they hunt him.</p>
+        </div>
+        <div class="title-actions">
+          <button class="play" id="play" aria-label="Play"><img src="assets/btn_play.png" alt="" /></button>
+          <button class="text-button" id="open-map">Stages</button>
+          <button class="text-button" id="replay-prologue">Prologue</button>
+          <button class="text-button small mute" aria-pressed="false">Sound on</button>
+        </div>
+        <p class="credit">Prototype on the original handmade art. Browser physics, not Unity.</p>
+      </section>
+
+      <section class="screen" id="map-screen" hidden aria-labelledby="map-title">
+        <header class="bar">
+          <button class="icon" id="map-back" aria-label="Back to title"><img src="assets/btn_menu.png" alt="" /></button>
+          <h2 id="map-title">The way home</h2>
+          <span class="total" id="star-total"></span>
+        </header>
+        <div class="chapters" id="chapters"></div>
+      </section>
+
+      <section class="screen story" id="story-screen" hidden aria-live="polite">
+        <p class="chapter-card" id="chapter-card" hidden></p>
+        <div class="dialogue" id="dialogue">
+          <img class="owl" id="owl" src="assets/owl_open.png" alt="" />
+          <div class="speech">
+            <p class="speaker" id="speaker"></p>
+            <p class="line" id="line"></p>
+            <p class="tap">Tap to continue</p>
+          </div>
+        </div>
+        <button class="text-button skip" id="skip">Skip</button>
+      </section>
+
+      <section class="screen hud" id="stage-screen" hidden>
+        <header class="bar">
+          <button class="icon" id="pause" aria-label="Pause"><img src="assets/btn_menu.png" alt="" /></button>
+          <div class="stage-title">
+            <span id="stage-number"></span>
+            <strong id="stage-name"></strong>
+          </div>
+          <div class="stars" id="hud-stars" aria-label="Pumpkins smashed">
+            <img src="assets/star.png" alt="" /><img src="assets/star.png" alt="" /><img src="assets/star.png" alt="" />
+          </div>
+          <button class="icon" id="restart" aria-label="Restart stage"><img src="assets/btn_reset.png" alt="" /></button>
+        </header>
+        <p class="lesson" id="lesson"></p>
+        <p class="toast" id="toast" role="status"></p>
+      </section>
+
+      <section class="overlay" id="pause-panel" hidden aria-label="Paused">
+        <div class="panel">
+          <h2>Paused</h2>
+          <button class="text-button" id="resume">Resume</button>
+          <button class="text-button" id="pause-restart">Restart stage</button>
+          <button class="text-button" id="pause-map">Stage map</button>
+          <button class="text-button mute" aria-pressed="false">Sound on</button>
+        </div>
+      </section>
+
+      <section class="overlay" id="result-panel" hidden aria-labelledby="result-title">
+        <div class="panel">
+          <h2 id="result-title">The door opens</h2>
+          <div class="result-stars" id="result-stars"></div>
+          <p id="result-line"></p>
+          <div class="result-buttons">
+            <button class="icon big" id="result-map" aria-label="Stage map"><img src="assets/btn_menu.png" alt="" /></button>
+            <button class="icon big" id="result-restart" aria-label="Play again"><img src="assets/btn_reset.png" alt="" /></button>
+            <button class="icon big next" id="result-next" aria-label="Next"><img src="assets/btn_next.png" alt="" /></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="tip" id="tip" hidden aria-live="polite">
+        <div class="tip-card">
+          <img class="tip-owl" src="assets/owl_open.png" alt="" />
+          <div class="tip-lines" id="tip-lines"></div>
+          <div class="tip-hand" id="tip-hand" hidden><img src="assets/hand.png" alt="" /></div>
+          <button class="text-button small" id="tip-ok">Got it</button>
+        </div>
+      </section>
+
+      <p class="loading" id="loading">Lighting the windows…</p>
+    </main>
+    <script src="assets/manifest.js"></script>
+    <script src="../prototype/game.js"></script>
+    <script src="routes.js"></script>
+    <script src="levels.js"></script>
+    <script src="story.js"></script>
+    <script src="art.js"></script>
+    <script src="sfx.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
