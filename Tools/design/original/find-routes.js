@@ -1,17 +1,24 @@
 /* Searches for a three-star route through each stage and writes routes.js.
- * Usage: node find-routes.js [stage ids...] [--seed N]
+ * Usage: node find-routes.js [stage ids...] [--seed N] [--strip water|bucket|flood]
+ * `--strip` searches a copy of each stage without that mechanic (water removed, buckets
+ * frozen where they start, no cistern) and writes nothing: finding no
+ * three-star route there is evidence, not proof, that the stage needs the mechanic.
  * Beam search over random launches and waits from every resting state. Stored
  * actions replay exactly through replayRoute below and verify-routes.js (same
  * 1/120 s stepping, same thinking pauses, at most one dash per action). */
 "use strict";
 const fs = require("node:fs");
 const path = require("node:path");
-const { Game } = require("../prototype/game.js");
+const { Game, atRest } = require("../prototype/game.js");
 const levels = require("./levels.js");
 
 const args = process.argv.slice(2);
 const seedIndex = args.indexOf("--seed");
 let seed = seedIndex >= 0 ? Number(args[seedIndex + 1]) : 7;
+const stripIndex = args.indexOf("--strip");
+const strip = stripIndex >= 0 ? args[stripIndex + 1] : null;
+if (stripIndex >= 0 && !["water", "bucket", "flood"].includes(strip))
+  throw new Error(`--strip takes water, bucket or flood, not ${strip}`);
 const ids = args
   .filter((a, i) => /^\d+$/.test(a) && !(seedIndex >= 0 && i === seedIndex + 1))
   .map(Number);
@@ -38,12 +45,12 @@ function tryAction(base, action) {
   const since = g.time;
   if (action.dashAt !== undefined && action.dashAt < REACTION) return null;
   // Thinking time first: Izan rests while the pumpkins close in.
-  if (action.hold === undefined && g.hero.state === "resting") {
+  if (action.hold === undefined && atRest(g.hero.state)) {
     for (let t = 0; t < THINK; t += STEP) {
       g.step(STEP);
       if (g.deaths > deaths) return null;
     }
-    if (g.hero.state !== "resting") return null;
+    if (!atRest(g.hero.state)) return null;
   }
   // A wait action launches nothing; Izan stays put for at least `hold` seconds.
   if (action.hold === undefined && !g.launch(action.vx, action.vy)) return null;
@@ -60,7 +67,7 @@ function tryAction(base, action) {
     g.step(STEP);
     n++;
     if (g.deaths > deaths) return null;
-    if (g.won || (!holding && g.hero.state === "resting")) {
+    if (g.won || (!holding && atRest(g.hero.state))) {
       const used = new Set(
         g.events
           .filter((e) => e.time > since)
@@ -172,9 +179,33 @@ if (fs.existsSync(file)) {
   require(file);
   Object.assign(existing, globalThis.HNOriginalRoutes || {});
 }
+// A copy of the stage without one mechanic, for --strip.
+function stripped(level, kind) {
+  const copy = structuredClone(level);
+  if (kind === "water") copy.objects = copy.objects.filter((o) => o.type !== "water");
+  if (kind === "bucket")
+    copy.platforms = new Game(level, OPTIONS).platforms.map((p) =>
+      p.type === "bucket" ? { x: p.x, y: p.y, w: p.w, h: p.h, type: "solid" } : structuredClone(p),
+    );
+  // The cistern only ever floods, so without the flood it is not there at all.
+  if (kind === "flood") copy.platforms = copy.platforms.filter((p) => p.flood === undefined);
+  delete copy.teaches;
+  return copy;
+}
 function main() {
 const targets = ids.length ? ids : levels.all.map((s) => s.id);
 let failed = 0;
+if (strip) {
+  for (const id of targets) {
+    const { best, anyWin } = search(stripped(levels.get(id), strip));
+    console.log(
+      `stage ${id} without ${strip}: ` +
+        (best ? `three stars in ${best.length} actions` : "no three-star route") +
+        (anyWin ? `; door reachable in ${anyWin.length}` : "; door not reached"),
+    );
+  }
+  return;
+}
 for (const id of targets) {
   const level = levels.get(id);
   const { best, anyWin } = search(level);

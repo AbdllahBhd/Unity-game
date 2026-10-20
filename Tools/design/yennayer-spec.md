@@ -24,6 +24,7 @@ pipeline); this document is about the story, the structure and the text.
 | Tale start | Mqidec **goes in on purpose** each night to take something back; each tale has a goal object |
 | Night 4 (2026-10-19) | The rooftops of Lqelɛa: the Yennayer bread, ravens, sliding roofs, tiles down the chimney |
 | Night 5 (2026-10-19) | The olive press: Jida's silver tabzimt, rats, spilt oil and the press wheel, the press beam |
+| Night 6 (2026-10-20) | The bride of Anzar: the rain ladle, frogs, water and the well buckets, the cistern flood |
 
 ## 2. The frame: the hearth
 
@@ -151,10 +152,29 @@ press. **Goal: the tabzimt.** The tale opens with Jida remembering her wedding d
 - **Ending:** Mqidec carries the tabzimt home in his mouth like a cat with her kitten; the
   girl asks to wear it, and Jida says: on your wedding day.
 
+### Tale 6 — Tislit n Wanzar (the bride of Anzar)
+
+*Why he is there:* the spring of Ath Abbas is dry. Teryel stole *Tislit n Wanzar*, the
+ladle (aɣenja) the village dresses as a bride and carries from door to door to call the
+rain, and hid it in the old cistern above the spring. **Goal: the ladle bride.**
+
+- **Place:** the spring in a dry ravine at night: the fig tree, the stone cistern with
+  its cracked wall, the well and its pulley.
+- **Hunters:** her frogs (imqerqar). They crouch on their stone and leap at Mqidec once
+  they have noticed him.
+- **Mechanic:** water (he falls in, is held up, floats at the surface and launches again
+  from it; a basin that rises and falls carries him) and two well buckets on one rope
+  (his weight takes his bucket down and the other up; a stone landing hard in one throws
+  whatever rests in the other).
+- **Stages:** 21 *Tala* (the spring) · 22 *Asiṭel* (the bucket) · 23 *Lbir* (the well:
+  buckets and water together) · 24 *Teryel deg tala*: break the cracked cistern wall; the
+  flood carries Teryel down the ravine.
+- **Ending:** the rain comes that same night; the girl hears it on the roof, and Jida
+  sings the first line of the Anzar song with the children.
+
 ### Later tales (ideas, not planned)
 
-The dry spring and the bride of Anzar; Tamɣart's borrowed days; the market at the gate;
-Teryel's seven daughters.
+Tamɣart's borrowed days; the market at the gate; Teryel's seven daughters.
 
 ## 5. Text and languages
 

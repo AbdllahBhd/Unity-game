@@ -353,3 +353,65 @@ wheel, "asalas" for the great beam, "igejdan" for beams, "tafelwit" for a plank.
 | stage.18 | | The wheel | Tasirt | La roue | العجلة |
 | stage.19 | | The olives | Azemmur | Les olives | الزيتون |
 | stage.20 | | Teryel in the press | Teryel deg tmɛeṣert | Teryel au pressoir | تريال في المعصرة |
+
+## Night 6 — Tislit n Wanzar (the bride of Anzar)
+
+Goal object: Tislit n Wanzar, the ladle (aɣenja) the village dresses as a bride and
+carries from door to door to call the rain. Hunters: Teryel's frogs (imqerqar), which
+leap when Mqidec comes near. New: water he floats on, and two well buckets on one rope.
+Trap: he breaks the cracked cistern wall; the flood carries Teryel down the ravine.
+Words to check: "aɣenja" (ladle), "imqerqar" (frogs), "asiṭel/isiṭlen" (bucket),
+"lbir" (well), "lǧeb" (cistern), "tneqlet" (fig tree), "aɣrab" (wall), "amrar" (rope),
+and the Anzar song line in `t6.end.5`.
+
+### Before stage 21
+
+| id | speaker | EN | TQ | FR | AR |
+|---|---|---|---|---|---|
+| t6.intro.1 | Jida (telling) | One summer the rain forgot us. The spring under the fig tree gave one drop, then none. | Yiwen unebdu, ageffur yettu-yaɣ. Tala ddaw tneqlet tefka-d yiwet n tqit, syin ulac. | Un été, la pluie nous oublia. La source sous le figuier donna une goutte, puis plus rien. | في صيف ما، نسينا المطر. أعطى النبع تحت شجرة التين قطرة واحدة، ثم لا شيء. |
+| t6.intro.2 | Boy | So you called Anzar! | Ihi tsawlem i Wanzar! | Alors vous avez appelé Anzar ! | فناديتم أنزار! |
+| t6.intro.3 | Jida (telling) | We dressed the ladle as a bride, Tislit n Wanzar, and carried her from door to door. Every house poured a little water on her. | Nlures aɣenja am tislit, Tislit n Wanzar, nebbwi-tt seg tewwurt ɣer tayeḍ. Yal axxam yessenɣel fell-as ciṭ n waman. | Nous avons habillé la louche en mariée, Tislit n Wanzar, et l'avons portée de porte en porte. Chaque maison versait sur elle un peu d'eau. | ألبسنا المغرفة ثوب عروس، تسليت ن ونزار، وحملناها من باب إلى باب. كل بيت كان يسكب عليها قليلا من الماء. |
+| t6.intro.4 | Jida (hushed) | But the night before, Teryel stole her. "A bride with no rain," she laughed, "is a bride for me." She hid her in the old cistern above the spring. | Maca deg yiḍ uqbel, Teryel tukker-itt. "Tislit war ageffur," i tenna s taḍsa, "d tislit-iw." Teffer-itt deg lǧeb aqdim nnig tala. | Mais la nuit d'avant, Teryel l'a volée. « Une mariée sans pluie, ricana-t-elle, c'est une mariée pour moi. » Elle l'a cachée dans la vieille citerne au-dessus de la source. | لكن في الليلة السابقة، سرقتها تريال. «عروس بلا مطر»، قالت ضاحكة، «هي عروس لي». خبّأتها في الصهريج القديم فوق النبع. |
+| t6.intro.5 | Girl | And the frogs? There are always frogs at a spring. | Imqerqar? Llan yal tikkelt imqerqar di tala. | Et les grenouilles ? Il y a toujours des grenouilles à la source. | والضفادع؟ هناك دائما ضفادع عند النبع. |
+| t6.intro.6 | Jida (teasing) | Hers, every one. Thirsty, and in a very bad mood. | D ayla-s, akk. Ffuden, u zeɛfen aṭas. | Les siennes, toutes. Assoiffées, et de très mauvaise humeur. | ضفادعها، كلها. عطشى، ومزاجها سيّئ جدا. |
+
+### Stage lines
+
+| id | stage | speaker | EN | TQ | FR | AR |
+|---|---|---|---|---|---|---|
+| t6.s1 | 21 Tala | Jida | One last pool was left under the fig tree. Fall in and it holds you up, like a hand. Jump again from the surface. | Yeqqim-d yiwen n umdun ddaw tneqlet. Ɣli deg-s ad k-yeṭṭef am ufus. Neggez seg ufella n waman. | Il restait une dernière mare sous le figuier. Tombe dedans, elle te porte comme une main. Ressaute depuis la surface. | بقيت بركة أخيرة تحت شجرة التين. اسقط فيها فتحملك كاليد. اقفز من جديد من سطح الماء. |
+| t6.s1.child | 21 | Girl | He can swim? | Yessen ad iɛum? | Il sait nager ? | هل يعرف السباحة؟ |
+| t6.s2 | 22 Asiṭel | Jida | Two buckets on one rope over the well. When one goes down, the other comes up. Drop a stone in one, and see who flies. | Sin isiṭlen ɣef yiwen wemrar nnig lbir. Mi ara yader yiwen, wayeḍ ad yali. Ḍeqqer azru deg yiwen, ad twaliḍ anwa ara yafgen. | Deux seaux sur une seule corde au-dessus du puits. Quand l'un descend, l'autre monte. Laisse tomber une pierre dans l'un, et regarde qui s'envole. | دلوان على حبل واحد فوق البئر. حين ينزل أحدهما يصعد الآخر. ألق حجرا في أحدهما وانظر من يطير. |
+| t6.s2.child | 22 | Boy | I want a go! | Bɣiɣ ad ɛerḍeɣ! | Je veux essayer ! | أريد أن أجرّب! |
+| t6.s3 | 23 Lbir | Jida | The well was deep and dark, with a little water still at the bottom. Down with one bucket, up with the other. | Lbir d alqayan u yeḍles, yella ciṭ n waman deg wadda-s. Ader s yiwen usiṭel, ali s wayeḍ. | Le puits était profond et noir, avec encore un peu d'eau au fond. Descends avec un seau, remonte avec l'autre. | كانت البئر عميقة ومظلمة، وفي قاعها قليل من الماء. انزل بدلو، واصعد بالآخر. |
+| t6.s3.child | 23 | Girl | I don't like wells. | Ur ḥemmleɣ ara lbir. | Je n'aime pas les puits. | لا أحب الآبار. |
+| t6.s4 | 24 Teryel deg tala | Jida (hushed) | And in the dry bed below the cistern sat Teryel, the ladle bride in her hands, and all the water of the village behind one cracked wall. | Deg wasif aqqur ddaw lǧeb teqqim Teryel, Tislit n Wanzar deg yifassen-is, u akk aman n taddart deffir yiwen uɣrab yeqqersen. | Et dans le lit asséché sous la citerne était assise Teryel, la mariée d'Anzar entre les mains, et toute l'eau du village derrière un seul mur fendu. | وفي المجرى الجاف تحت الصهريج جلست تريال، وعروس أنزار بين يديها، وكل ماء القرية خلف جدار واحد متصدّع. |
+| t6.s4.child | 24 | Boy | Break the wall! Let the water out! | Ṛẓ aɣrab! Ssuffeɣ aman! | Casse le mur ! Fais sortir l'eau ! | اكسر الجدار! أطلق الماء! |
+
+### After stage 24
+
+| id | speaker | EN | TQ | FR | AR |
+|---|---|---|---|---|---|
+| t6.end.1 | Jida (telling) | He struck the cracked wall with all his speed. The stones gave, the water came down the ravine like a white horse, and Teryel went with it. | Yewwet aɣrab s akk zzerb-is. Izra ɣlin, aman ṛuḥen deg uɣzer am uyis amellal, u Teryel tedda yid-sen. | Il frappa le mur fendu de toute sa vitesse. Les pierres cédèrent, l'eau dévala le ravin comme un cheval blanc, et Teryel partit avec elle. | ضرب الجدار المتصدّع بكل سرعته. انهارت الحجارة، ونزل الماء في الوادي كحصان أبيض، وذهبت تريال معه. |
+| t6.end.2 | Teryel | Water! Water in my ears! Who taught that little thing to break walls?! | Aman! Aman deg yimeẓẓuɣen-iw! Anwa i yesselmden ayen-nni ameẓẓyan ad yerreẓ iɣraben?! | De l'eau ! De l'eau dans mes oreilles ! Qui a appris à ce petit machin à casser les murs ?! | ماء! ماء في أذنيّ! من علّم هذا الصغير كسر الجدران؟! |
+| t6.end.3 | Jida (telling) | Mqidec carried the ladle bride back to the village on his back. That same night the clouds came down from the Bibans. | Mqidec yerra-d Tislit n Wanzar ɣer taddart ɣef tuyat-is. Deg yiḍ-nni kan, isigna d-ḥedren seg Lbiban. | Mqidec rapporta la mariée d'Anzar au village sur son dos. La nuit même, les nuages descendirent des Bibans. | حمل مقيدش عروس أنزار إلى القرية على ظهره. وفي الليلة نفسها، نزلت الغيوم من البيبان. |
+| t6.end.4 | Girl | Listen! It's raining, Jida! It's really raining! | Sell! Ageffur, a Jida! Ageffur s tidet! | Écoute ! Il pleut, Jida ! Il pleut pour de vrai ! | اسمعي! إنها تمطر يا جدّة! تمطر حقا! |
+| t6.end.5 | Jida (teasing) | Then sing with me, the way we sang that summer. Anzar, Anzar, O God, water it down to the roots! | Ihi cnut yid-i, akken i ncennu anebdu-nni. Anzar, Anzar, a Rebbi sew-it ar iẓuran! | Alors chantez avec moi, comme nous chantions cet été-là. Anzar, Anzar, ô Dieu, abreuve-la jusqu'aux racines ! | إذن غنّوا معي، كما غنّينا ذلك الصيف. أنزار، أنزار، يا ربّ اسقها حتى الجذور! |
+
+### Night 6 cards, remarks and names
+
+| id | speaker | EN | TQ | FR | AR |
+|---|---|---|---|---|---|
+| tip.water | | Water. Fall in and it holds you up. Launch again from the surface once you are still. | Aman. Ɣli deg-sen ad k-ṭṭfen. Neggez seg ufella mi ara tersiḍ. | De l'eau. Tombe dedans, elle te porte. Relance-toi depuis la surface une fois immobile. | ماء. اسقط فيه فيحملك. انطلق من السطح من جديد حين تهدأ. |
+| tip.bucket | | Two buckets on one rope. Your weight takes yours down and the other up. A stone dropped in one throws whatever stands in the other. | Sin isiṭlen ɣef yiwen wemrar. Taẓayt-ik ad tesder asiṭel-ik, wayeḍ ad yali. Azru yeɣlin deg yiwen ad yeḍeqqer ayen yellan deg wayeḍ. | Deux seaux sur une seule corde. Ton poids fait descendre le tien et monter l'autre. Une pierre tombée dans l'un projette ce qui se tient dans l'autre. | دلوان على حبل واحد. وزنك ينزل دلوك ويرفع الآخر. حجر يسقط في أحدهما يقذف ما يقف في الآخر. |
+| tip.frog | | Her frogs leap when you come near. Hit them fast, or they bite. | Imqerqar-is ttneggizen mi ara d-tqerbeḍ. Wwet-iten s zzerb, neɣ ad k-qqesen. | Ses grenouilles bondissent quand tu approches. Frappe-les vite, ou elles mordent. | ضفادعها تقفز حين تقترب. اضربها بسرعة، وإلا عضّتك. |
+| tip.cistern | | A cracked wall holding back water. A hard hit or a dash breaks it, and the water goes where it likes. | Aɣrab yeqqersen yeṭṭfen aman. Tiyita s zzerb neɣ tazzla ad t-tṛeẓ, aman ad ṛuḥen anda bɣan. | Un mur fendu qui retient l'eau. Un choc fort ou une ruée le brise, et l'eau va où elle veut. | جدار متصدّع يحبس الماء. ضربة قوية أو اندفاعة تكسره، فيذهب الماء حيث يشاء. |
+| tip.tied | | A stone tied to the well rope. Rest a moment in a bucket and the rope slips: the stone drops into the other bucket. | Azru yeqqnen ɣer wemrar n lbir. Ẓẓeg ciṭ deg usiṭel, amrar ad yerxu: azru ad yeɣli deg usiṭel wayeḍ. | Une pierre attachée à la corde du puits. Reste un instant dans un seau et la corde glisse : la pierre tombe dans l'autre seau. | حجر مربوط بحبل البئر. ابق لحظة في دلو فينزلق الحبل: يسقط الحجر في الدلو الآخر. |
+| r.splash | Girl | Splash! | Bluf! | Plouf ! | طرطش! |
+| r.jerk | Boy | He flew! | Yafeg! | Il s'envole ! | طار! |
+| r.flood | Boy | The water! The water! | Aman! Aman! | L'eau ! L'eau ! | الماء! الماء! |
+| tale.6 | | The bride of Anzar | Tislit n Wanzar | La mariée d'Anzar | عروس أنزار |
+| stage.21 | | The spring | Tala | La source | النبع |
+| stage.22 | | The bucket | Asiṭel | Le seau | الدلو |
+| stage.23 | | The well | Lbir | Le puits | البئر |
+| stage.24 | | Teryel at the spring | Teryel deg tala | Teryel à la source | تريال عند النبع |

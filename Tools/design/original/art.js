@@ -1399,10 +1399,16 @@
       const squash = Math.min(0.18, pose.aim * 0.05);
       sy = 1 - squash;
       sx = 1 + squash * 0.7;
+    } else if (pose.state === "float") {
+      // Floating: a slow bob and roll on the swell.
+      sy = 1 + Math.sin(t * 2.2) * 0.03;
+      sx = 1 - Math.sin(t * 2.2) * 0.02;
+      tilt = Math.sin(t * 1.3) * 0.08;
     } else {
       sy = 1 + Math.sin(t * 2.4) * 0.018;
       sx = 1 - Math.sin(t * 2.4) * 0.012;
     }
+    const floating = pose.state === "float";
     if (pose.landed) {
       sy *= 1 - pose.landed * 0.25;
       sx *= 1 + pose.landed * 0.2;
@@ -1414,11 +1420,13 @@
       ? Math.max(-0.6, Math.min(0.6, -vx * 0.04)) + (vy > 0 ? 0.25 : -0.1)
       : pose.aim
         ? 0.3
-        : Math.sin(t * 1.7) * 0.06;
+        : floating
+          ? -0.06 + Math.sin(t * 2.6) * 0.04
+          : Math.sin(t * 1.7) * 0.06;
     if (o.glyphs && pose.dash && !pose.ghost) glyphTrail(c, x, y, size, vx, vy, t);
     c.save();
     c.globalAlpha *= pose.alpha === undefined ? 1 : pose.alpha;
-    c.translate(x, y);
+    c.translate(x, y + (floating ? Math.sin(t * 2.2) * size * 0.035 : 0));
     c.rotate(tilt);
     c.scale(sx * k, sy * k);
     const hood = o.cloak ? Math.max(0, Math.min(1, o.hood === undefined ? (pose.hunted ? 1 : 0) : o.hood)) : 0;
@@ -1464,8 +1472,10 @@
     c.save();
     c.shadowColor = "rgba(235,245,255,0.9)";
     c.shadowBlur = 40 * k * 4;
-    draw("paw_l");
-    draw("paw_r");
+    // Floating, the paws paddle in turn under the surface.
+    const paddle = (phase) => (floating ? () => c.translate(Math.sin(t * 6 + phase) * 7, Math.cos(t * 6 + phase) * 3) : undefined);
+    draw("paw_l", paddle(0));
+    draw("paw_r", paddle(Math.PI));
     if (o.lamp) oilLamp(c, 70, 84, t);
     if (o.ticrad) ticrad(c, o.ticrad, t);
     else if (o.marks) {
@@ -1895,6 +1905,21 @@
     return Math.max(0.12, Math.min(1, (v + 0.25) * 2.2));
   }
 
+  // A frog's leap as the drawing needs it (engine: leap {height, every}, leapClock, homeY):
+  // leap {k: how high in the arc, 0 to 1, up: still rising} while in the air, and windup
+  // (0 to 1), the crouch in the last 0.3 s before the next leap.
+  function frogPose(p) {
+    if (!p.leap) return {};
+    const every = p.leap.every || 2,
+      T = 2 * Math.sqrt((2 * p.leap.height) / 14.715);
+    const clock = (p.leapClock || 0) % every;
+    const air = p.y > p.homeY + 0.05;
+    return {
+      leap: air ? { k: Math.min(1, (p.y - p.homeY) / p.leap.height), up: clock < T / 2 } : null,
+      windup: !air && p.leapClock > 0 ? Math.max(0, 1 - (every - clock) / 0.3) : 0,
+    };
+  }
+
   // view: {width, height, cameraY, chapter, time, aim, fx, hidden, doorFrame, enterFrame}
   function drawStage(c, g, view) {
     const w = view.width,
@@ -1921,6 +1946,21 @@
       th && th.ledge(c, x, top, width, alpha, shake, g.level.theme, t) ? null : stoneDisc(c, x, top, width, alpha, shake);
 
     const wheels = new Set();
+    // Well buckets first, so stones resting in them are drawn over their dark insides:
+    // the frame and rope once per rope, then the back of each bucket. The walls come
+    // after the hero (th.front), so he stands inside the bucket.
+    if (th && th.bucketBack) {
+      const ropes = new Set();
+      for (const p of g.platforms) {
+        if (p.type !== "bucket" || p.alive === false) continue;
+        if (!ropes.has(p.rope)) {
+          ropes.add(p.rope);
+          const pair = g.platforms.filter((q) => q.type === "bucket" && q.rope === p.rope);
+          if (th.well && pair.length === 2) th.well(c, pair[0], pair[1], X, Y, S, t, g);
+        }
+        th.bucketBack(c, X(p.x), Y(p.y), p.w * S, S);
+      }
+    }
     for (const p of g.platforms) {
       const top = Y(p.y);
       if (p.type === "ground") {
@@ -1945,8 +1985,18 @@
         }
         continue;
       }
+      // The cracked cistern wall: a knock drop that floods a water when it breaks.
+      if (p.type === "drop" && p.flood !== undefined && th && th.cistern) {
+        th.cistern(c, X(p.x), top, p.w * S, (p.h || 0.4) * S, t);
+        continue;
+      }
       if (p.type === "drop" && p.knock && th && th.stack) {
         th.stack(c, X(p.x), top, p.w * S, p.h * S, t, g.level.theme);
+        continue;
+      }
+      if (p.type === "bucket") {
+        // A tale theme drew it before every other platform (see above).
+        if (!(th && th.bucketBack)) disc(X(p.x), top, p.w * S, 1);
         continue;
       }
       if (p.type === "wheel") {
@@ -1982,6 +2032,8 @@
         continue;
       }
       if (p.type === "mover") thread(c, X(p.x), top, -10, 0.5);
+      // A tale theme may hang its own stones (the spring: a frayed rope, a tied stone).
+      if (p.type === "drop" && th && th.hanging && th.hanging(c, p, X, Y, S, t, g)) continue;
       if (p.type === "drop") {
         const strain = p.timer && !p.falling && !p.landed ? p.timer / (p.delay || 0.6) : 0;
         if (!p.falling && !p.landed) thread(c, X(p.x), top, -10, 0.6, strain + 0.3, t);
@@ -2095,6 +2147,7 @@
         spin: p.flung ? t * 6 : -(p.spin || 0),
         ring: mood === "notice" ? 0.55 : mood === "chase" && view.showRings ? 0.18 : 0,
         rangePx: p.range * S,
+        ...frogPose(p),
       };
       if (th) th.hunter(c, g.level.hunter, X(p.x), Y(p.y), S * 1.05, t, mood, extra);
       else pumpkin(c, X(p.x), Y(p.y), S * 1.05, t, mood, false, extra);
@@ -2140,6 +2193,8 @@
     }
 
     if (th && view.lamp && !view.hidden && g.hero.state !== "cannon") th.heroLamp(c, X(g.hero.x), Y(g.hero.y), S, t);
+    // In front of the hero: bucket walls, the near side of the water.
+    if (th && th.front) th.front(c, g, X, Y, S, t);
     if (view.fx) view.fx.draw(c, X, Y, S);
     if (view.focus) {
       // Teaching spotlight: everything dims except the object being explained.
@@ -2239,10 +2294,21 @@
           max: 0.45,
         });
     }
+    // Water entry at (x, y): drops thrown up and out, a ring spreading on the surface.
+    // strength: about 1 for a fall into a pool, 2 or more for a flood.
+    splash(x, y, strength = 1) {
+      const n = Math.round(6 + strength * 8);
+      for (let i = 0; i < n; i++) {
+        const a = Math.PI * (0.15 + (0.7 * i) / Math.max(1, n - 1));
+        const v = (2.5 + (i % 3)) * (0.6 + strength * 0.5);
+        this.items.push({ kind: "drop", x, y, vx: Math.cos(a) * v * 0.8, vy: Math.sin(a) * v + 1.5, life: 0.75, max: 0.75 });
+      }
+      this.items.push({ kind: "ring", x, y, vx: 0, vy: 0, size: 0.5 + strength * 0.4, life: 0.7, max: 0.7 });
+    }
     update(dt) {
       for (const p of this.items) {
         p.life -= dt;
-        p.vy -= (p.kind === "piece" ? 14 : 4) * dt;
+        p.vy -= (p.kind === "piece" ? 14 : p.kind === "drop" ? 12 : p.kind === "ring" ? 0 : 4) * dt;
         p.x += p.vx * dt;
         p.y += p.vy * dt;
         if (p.spin) p.angle += p.spin * dt;
@@ -2259,6 +2325,18 @@
           const pw = S * 0.38,
             ph = (pw * image.height) / image.width;
           centred(c, image, X(p.x), Y(p.y), pw, ph, p.angle);
+        } else if (p.kind === "ring") {
+          const rx = S * p.size * (0.4 + (1 - a) * 1.2);
+          c.strokeStyle = `rgba(215,235,255,${a})`;
+          c.lineWidth = 1.5;
+          c.beginPath();
+          c.ellipse(X(p.x), Y(p.y), rx, rx * 0.22, 0, 0, TAU);
+          c.stroke();
+        } else if (p.kind === "drop") {
+          c.fillStyle = `rgba(200,225,250,${a})`;
+          c.beginPath();
+          c.ellipse(X(p.x), Y(p.y), S * 0.045, S * 0.065, 0, 0, TAU);
+          c.fill();
         } else if (p.kind === "strand") {
           c.strokeStyle = "rgba(235,242,255,0.9)";
           c.lineWidth = 1.2;

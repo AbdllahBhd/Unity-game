@@ -17,8 +17,12 @@
  *     names: launch dash smash crush land web boing zip snap seesaw roll notice door
  *            death bosshit bossdown star tap page lightning
  *            snore growl clink whisper crackle creak caw squeak drip
- *   HNSfx.setPlace(place)     "hearth" | "kitchen" | "loom" | "gorge" | "roofs" | "press": changes the ambience
- *                             bed (indoor fire, creaking loom, wind and water outside).
+ *            splash croak rope flood rain
+ *            (splash scales with opts.volume like every sound; rain is a 3 s wash that
+ *            can be played again and again)
+ *   HNSfx.setPlace(place)     "hearth" | "kitchen" | "loom" | "gorge" | "roofs" | "press" | "spring" | "rain":
+ *                             changes the ambience bed (indoor fire, creaking loom, wind and
+ *                             water outside, crickets and frogs on a dry summer night, rain).
  *   Unknown names do nothing. play() is a no-op until unlock() ran, and while muted.
  *   At most 4 instances of the same sound play at once.
  */
@@ -59,13 +63,14 @@
     return noiseBuf;
   }
 
-  // Noise burst: buffer source started at t, stopped after duration.
+  // Noise burst: buffer source started at t, stopped after duration. A looping source
+  // (needed past the 2 s buffer) still stops after duration; duration 0 loops forever.
   function noise(duration, t, loop) {
     const src = ctx.createBufferSource();
     src.buffer = noiseBuffer();
     src.loop = !!loop;
     src.start(t);
-    if (!loop) src.stop(t + duration);
+    if (!loop || duration > 0) src.stop(t + duration);
     return src;
   }
 
@@ -278,6 +283,44 @@
     drip(t, p, out) {
       chain(tone("sine", [1300 * p, 380 * p], 0.09, t), env(0.16, t, 0.002, 0.04, 0.3, 0.04, 0.09), out);
     },
+    // Falling into water: a low plunge, a bright spray, a hollow bubble.
+    splash(t, p, out) {
+      chain(noise(0.45, t), filter("bandpass", 900 * p, 0.8, t, 2600 * p, 0.12), env(0.5, t, 0.004, 0.12, 0.25, 0.25, 0.45), out);
+      chain(tone("sine", [220 * p, 70 * p], 0.18, t), env(0.45, t, 0.003, 0.1, 0.2, 0.06, 0.18), out);
+      chain(tone("sine", [500 * p, 1400 * p], 0.08, t + 0.1), env(0.12, t + 0.1, 0.003, 0.04, 0.3, 0.03, 0.08), out);
+    },
+    // A frog: a rough, low, double croak.
+    croak(t, p, out) {
+      [0, 0.16].forEach((d) => {
+        const o = tone("sawtooth", [210 * p, 150 * p], 0.13, t + d);
+        lfo("square", 45, 40 * p, o.frequency, t + d, 0.13);
+        chain(o, filter("bandpass", 480 * p, 4, t + d), env(0.3, t + d, 0.008, 0.06, 0.5, 0.04, 0.13), out);
+      });
+    },
+    // The well rope over its pulley: a short dry creak and the rope's rasp.
+    rope(t, p, out) {
+      const o = tone("sawtooth", [320 * p, 260 * p], 0.3, t);
+      lfo("square", 48, 25 * p, o.frequency, t, 0.3);
+      chain(o, filter("bandpass", 900 * p, 7, t), env(0.09, t, 0.03, 0.12, 0.6, 0.1, 0.3), out);
+      chain(noise(0.3, t), filter("bandpass", 2200 * p, 3, t), env(0.05, t, 0.04, 0.1, 0.5, 0.1, 0.3), out);
+    },
+    // The cistern wall gives: a crack, then a rushing roar of water that slowly eases.
+    flood(t, p, out) {
+      chain(noise(0.12, t), filter("lowpass", 2500 * p, 1, t, 300 * p, 0.12), env(0.7, t, 0.003, 0.08, 0.3, 0.03, 0.12), out);
+      chain(tone("sine", [80 * p, 32 * p], 0.6, t), env(0.8, t, 0.005, 0.3, 0.3, 0.2, 0.6), out);
+      const roar = env(0.55, t + 0.05, 0.15, 0.6, 0.6, 0.9, 1.95);
+      lfo("sine", 3, 0.12, roar.gain, t, 2);
+      chain(noise(1.95, t + 0.05), filter("lowpass", 1800 * p, 0.7, t, 500 * p, 2), roar, out);
+      chain(noise(1.8, t + 0.15), filter("bandpass", 3200 * p, 1.5, t), env(0.15, t + 0.15, 0.2, 0.5, 0.5, 0.8, 1.8), out);
+    },
+    // A wash of rain: soft high hiss swelling in and out, with a few close drops.
+    rain(t, p, out) {
+      chain(noise(3, t, true), filter("highpass", 1400 * p, 0.6, t), filter("lowpass", 7000 * p, 0.5, t), env(0.12, t, 0.8, 0.6, 0.85, 1.2, 3), out);
+      for (let i = 0; i < 9; i++) {
+        const d = 0.2 + Math.random() * 2.5;
+        chain(tone("sine", [1800 * p * (0.8 + Math.random() * 0.5), 700 * p], 0.04, t + d), env(0.05, t + d, 0.002, 0.02, 0.3, 0.015, 0.04), out);
+      }
+    },
     lightning(t, p, out) {
       chain(noise(0.08, t), filter("highpass", 1800 * p, 1, t), env(0.9, t, 0.002, 0.05, 0.2, 0.02, 0.08), out);
       const rumble = env(0.6, t + 0.05, 0.05, 0.5, 0.5, 0.5, 1.15);
@@ -290,6 +333,7 @@
     snap: 0.1, seesaw: 0.35, roll: 0.5, notice: 0.2, door: 1.5, death: 0.6, bosshit: 0.5,
     bossdown: 1.2, star: 0.3, tap: 0.05, page: 0.15, lightning: 1.2,
     snore: 1.6, growl: 0.8, clink: 0.12, whisper: 0.9, crackle: 0.03, creak: 0.7, caw: 0.45, squeak: 0.16, drip: 0.09,
+    splash: 0.45, croak: 0.3, rope: 0.3, flood: 2, rain: 3,
   };
 
   function play(name, opts) {
@@ -322,8 +366,18 @@
     const t = ctx.currentTime;
     const len = rand(2, 4);
     const outside = amb.place === "gorge" || amb.place === "roofs";
-    amb.filter.frequency.setTargetAtTime(outside ? rand(250, 700) : rand(160, 280), t, len * 0.4);
-    amb.src.gainParam.setTargetAtTime(outside ? rand(0.03, 0.09) : rand(0.008, 0.02), t, len * 0.4);
+    if (amb.place === "rain") {
+      // The bed turns into a steady hiss of rain on the roofs.
+      amb.filter.frequency.setTargetAtTime(rand(2200, 3200), t, len * 0.4);
+      amb.src.gainParam.setTargetAtTime(rand(0.035, 0.05), t, len * 0.4);
+    } else if (amb.place === "spring") {
+      // A still, hot night: only a breath of air in the ravine.
+      amb.filter.frequency.setTargetAtTime(rand(200, 380), t, len * 0.4);
+      amb.src.gainParam.setTargetAtTime(rand(0.01, 0.025), t, len * 0.4);
+    } else {
+      amb.filter.frequency.setTargetAtTime(outside ? rand(250, 700) : rand(160, 280), t, len * 0.4);
+      amb.src.gainParam.setTargetAtTime(outside ? rand(0.03, 0.09) : rand(0.008, 0.02), t, len * 0.4);
+    }
     clearTimeout(amb.windT);
     amb.windT = setTimeout(windSwell, len * 1000);
   }
@@ -385,8 +439,47 @@
         setTimeout(() => out.disconnect(), 1100);
       }
       next = rand(6, 11);
+    } else if (amb.place === "spring") {
+      // Crickets in the dry terraces; now and then a frog, rarely a drop in the cistern.
+      if (live) {
+        const out = ctx.createGain();
+        out.connect(amb.gain);
+        const roll = Math.random();
+        if (roll < 0.15) {
+          out.gain.value = 0.18;
+          SOUNDS.croak(ctx.currentTime, rand(0.8, 1.15), out, {});
+        } else if (roll < 0.22) {
+          out.gain.value = 0.25;
+          SOUNDS.drip(ctx.currentTime, rand(0.6, 0.8), out, {});
+        } else {
+          out.gain.value = 0.12;
+          cricket(ctx.currentTime, rand(0.95, 1.05), out);
+        }
+        setTimeout(() => out.disconnect(), 800);
+      }
+      next = rand(0.8, 2.6);
+    } else if (amb.place === "rain") {
+      // Overlapping washes keep the rain going; drops ring in the gutters.
+      if (live) {
+        const out = ctx.createGain();
+        out.gain.value = 0.5;
+        out.connect(amb.gain);
+        SOUNDS.rain(ctx.currentTime, rand(0.9, 1.1), out, {});
+        setTimeout(() => out.disconnect(), 3100);
+      }
+      next = rand(2.2, 2.7);
     }
     amb.tickT = setTimeout(placeTick, next * 1000);
+  }
+
+  // A cricket: three quick trills of a high, pulsed note.
+  function cricket(t, p, out) {
+    for (let i = 0; i < 3; i++) {
+      const d = i * 0.13;
+      const g = env(0.12, t + d, 0.005, 0.03, 0.8, 0.02, 0.07);
+      lfo("square", 38, 0.1, g.gain, t + d, 0.07);
+      chain(tone("sine", 4400 * p, 0.07, t + d), g, out);
+    }
   }
 
   // The wind changes at once when the place changes, not at the next swell.

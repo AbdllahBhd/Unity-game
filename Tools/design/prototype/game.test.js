@@ -885,3 +885,302 @@ test("a rat held at the end of its beam still faces the hero", () => {
   advance(g, 3);
   assert.equal(g.pumpkins[0].face, -1);
 });
+
+/* ---------- Night 6: the bride of Anzar (water, well buckets, frogs, the flood) ---------- */
+const spring = (extra = {}) => tale({ door: { x: -5, y: 15 }, start: { x: -4.8, y: 0.45 }, ...extra });
+// A pool 4 deep over the ground, clear of the start at x = -4.8.
+const deep = { x: 0, y: 0, w: 12, h: 0.4 };
+const pool = (extra = {}) => ({ type: "water", x: 1, y: 0, w: 10, level: 4, ...extra });
+const dropIn = (g, x = 0, y = 7, vy = -8) => Object.assign(g.hero, { x, y, vx: 0, vy, state: "flying" });
+test("at rest means resting or floating", () => {
+  const { atRest } = require("./game.js");
+  assert.equal(atRest("resting"), true);
+  assert.equal(atRest("float"), true);
+  assert.equal(atRest("flying"), false);
+});
+test("falling into water slows him down and he floats at the surface", () => {
+  const g = spring({ platforms: [deep], objects: [pool()] });
+  dropIn(g);
+  let low = Infinity;
+  for (let i = 0; i < 360; i++) {
+    g.step(1 / 120);
+    low = Math.min(low, g.hero.y);
+  }
+  assert.equal(g.hero.state, "float");
+  assert.ok(g.hero.y > 3.55 && g.hero.y < 4.1, `y ${g.hero.y}`);
+  assert.ok(low > 1, `sank to ${low}`);
+  assert.ok(g.events.some((e) => e.type === "splash"));
+  assert.ok(g.events.some((e) => e.type === "float"));
+});
+test("he launches from the water and is not caught again at once", () => {
+  const g = spring({ platforms: [deep], objects: [pool()] });
+  dropIn(g);
+  advance(g, 3);
+  assert.equal(g.hero.state, "float");
+  assert.equal(g.launch(0, 10), true);
+  advance(g, 0.3);
+  assert.equal(g.hero.state, "flying");
+  assert.ok(g.hero.y > 5.5, `y ${g.hero.y}`);
+});
+test("a rising basin carries a floating hero up with it", () => {
+  const g = spring({ platforms: [deep], objects: [pool({ rise: { dy: 3, period: 8 } })] });
+  dropIn(g, 0, 5, -2);
+  advance(g, 4);
+  const surface = g.objects[0].surface;
+  assert.ok(surface > 6.9, `surface ${surface}`);
+  assert.equal(g.hero.state, "float");
+  assert.ok(Math.abs(g.hero.y - surface) < 0.45, `hero ${g.hero.y} surface ${surface}`);
+});
+test("a basin rising under a ledge holds him floating beneath it, and he can still launch", () => {
+  const ledge = { x: 0, y: 7, w: 4, h: 0.5 };
+  const g = spring({ platforms: [deep, ledge], objects: [pool({ rise: { dy: 4, period: 8 } })] });
+  dropIn(g, 0, 5, -2);
+  let floated = false;
+  for (let i = 0; i < 480; i++) {
+    g.step(1 / 120);
+    floated = floated || g.hero.state === "float";
+    assert.ok(g.hero.y + 0.45 <= ledge.y - ledge.h + 0.05, `inside the ledge at tick ${i}: ${g.hero.y}`);
+  }
+  assert.ok(floated, "never floated");
+  assert.equal(g.hero.state, "float");
+  assert.ok(Math.abs(g.hero.y - (ledge.y - ledge.h - 0.45)) < 0.02, `not held under the ledge: ${g.hero.y}`);
+  assert.equal(g.launch(6, 2), true);
+});
+test("water falling below a ledge sets him down on it", () => {
+  const ledge = { x: 0, y: 4.5, w: 4, h: 0.5 };
+  const g = spring({ platforms: [deep, ledge], objects: [pool({ level: 6, rise: { dy: -3, period: 8 } })] });
+  dropIn(g, 0, 7, -1);
+  advance(g, 1.25);
+  assert.equal(g.hero.state, "float");
+  advance(g, 2.75);
+  assert.equal(g.hero.state, "resting");
+  assert.equal(g.support, g.platforms[1]);
+  assert.ok(Math.abs(g.hero.y - 4.95) < 0.02, `y ${g.hero.y}`);
+});
+test("water rising over a resting hero lifts him off", () => {
+  const g = spring({ platforms: [deep], objects: [pool({ level: 0, rise: { dy: 4, period: 8 } })] });
+  Object.assign(g.hero, { x: 0, y: 0.45, vx: 0, vy: 0, state: "resting" });
+  g.support = g.platforms[0];
+  advance(g, 4);
+  assert.equal(g.hero.state, "float");
+  assert.ok(g.hero.y > 3, `y ${g.hero.y}`);
+});
+test("floating is never a respawn point, and a death ends it", () => {
+  const g = spring({ platforms: [deep], objects: [pool()] });
+  dropIn(g);
+  advance(g, 3);
+  assert.equal(g.hero.state, "float");
+  assert.deepEqual({ x: g.respawn.x, y: g.respawn.y }, { x: -4.8, y: 0.45 });
+  g.die();
+  assert.equal(g.hero.state, "resting");
+  assert.equal(g.hero.x, -4.8);
+});
+// Two buckets on one rope: the first sits `s` of the way down from its top.
+const well = (s = 0, order = 1) => {
+  const pair = [
+    { type: "bucket", rope: "w", x: -2, y: 0, w: 1.4, h: 0.4, top: 6, bottom: 1, s },
+    { type: "bucket", rope: "w", x: 2, y: 0, w: 1.4, h: 0.4, top: 6, bottom: 1 },
+  ];
+  return order > 0 ? pair : pair.reverse();
+};
+const pit = { x: 0, y: -3, w: 12, h: 0.4 };
+const bucketA = (g) => g.platforms.find((p) => p.type === "bucket" && p.x < 0);
+const bucketB = (g) => g.platforms.find((p) => p.type === "bucket" && p.x > 0);
+const stone = (x, y, extra = {}) => ({ x, y, w: 1, h: 0.4, type: "drop", knock: true, delay: 99, falling: true, vy: 0, ...extra });
+test("buckets start where the rope puts them, and an empty pair stays put", () => {
+  const g = spring({ platforms: [pit, ...well(0)] });
+  assert.equal(bucketA(g).y, 6);
+  assert.equal(bucketB(g).y, 1);
+  advance(g, 2);
+  assert.equal(bucketA(g).y, 6);
+  assert.equal(bucketB(g).y, 1);
+});
+test("buckets on one rope must travel the same distance", () => {
+  const bad = well(0);
+  bad[1].bottom = 2;
+  assert.throws(() => spring({ platforms: [pit, ...bad] }), /rope/);
+});
+test("his weight takes his bucket down to its end and the other up; never a respawn point", () => {
+  const g = spring({ platforms: [pit, ...well(0)] });
+  dropIn(g, -2, 6.8, -1);
+  advance(g, 3.5);
+  assert.equal(g.support, bucketA(g));
+  assert.equal(g.hero.state, "resting");
+  assert.ok(Math.abs(bucketA(g).y - 1) < 1e-9, `A ${bucketA(g).y}`);
+  assert.ok(Math.abs(bucketB(g).y - 6) < 1e-9, `B ${bucketB(g).y}`);
+  assert.ok(Math.abs(g.hero.y - 1.45) < 0.02, `hero ${g.hero.y}`);
+  assert.deepEqual({ x: g.respawn.x, y: g.respawn.y }, { x: -4.8, y: 0.45 });
+  assert.ok(g.events.some((e) => e.type === "bucket"));
+});
+test("the rope moves the same whatever the order of the platforms", () => {
+  const run = (order) => {
+    const g = spring({ platforms: [pit, ...well(0, order)] });
+    dropIn(g, -2, 6.8, -1);
+    advance(g, 1.5);
+    return { a: bucketA(g).y, b: bucketB(g).y, hero: g.hero.y, state: g.hero.state };
+  };
+  const one = run(1),
+    two = run(-1);
+  assert.deepEqual(one, two);
+  assert.ok(one.a > 1.5 && one.a < 5.5, `bucket not on its way down: ${one.a}`);
+  assert.ok(Math.abs(one.hero - (one.a + 0.45)) < 0.02, `hero ${one.hero} bucket ${one.a}`);
+});
+test("a stone outweighs him, and a stone resting in a bucket rides it", () => {
+  const g = spring({ platforms: [pit, ...well(0), stone(-2, 6.6)] });
+  advance(g, 3.5);
+  const s = g.platforms[3];
+  assert.ok(Math.abs(bucketA(g).y - 1) < 1e-9, `A ${bucketA(g).y}`);
+  assert.equal(s.falling, false);
+  assert.ok(Math.abs(s.y - (bucketA(g).y + 0.4)) < 0.02, `stone ${s.y}`);
+  // He now lands in the raised bucket: the stone still wins.
+  dropIn(g, 2, 6.8, -1);
+  advance(g, 2);
+  assert.equal(g.support, bucketB(g));
+  assert.ok(Math.abs(bucketB(g).y - 6) < 1e-9, `B ${bucketB(g).y}`);
+});
+test("a stone landing hard in one bucket flings him out of the other", () => {
+  const g = spring({ platforms: [pit, ...well(0), stone(-2, 12, { falling: false, trigger: "nope" })] });
+  dropIn(g, 2, 1.8, -1);
+  advance(g, 1);
+  assert.equal(g.support, bucketB(g));
+  Object.assign(g.platforms[3], { falling: true, vy: 0 });
+  let jerked = false,
+    high = 0;
+  for (let i = 0; i < 240; i++) {
+    g.step(1 / 120);
+    if (g.events.some((e) => e.type === "jerk")) jerked = true;
+    high = Math.max(high, g.hero.y);
+  }
+  assert.ok(jerked, "no jerk");
+  assert.ok(high > 8, `only reached ${high}`);
+});
+test("the rope jams rather than carry him into a ledge", () => {
+  const ledge = { x: 3.8, y: 5, w: 2, h: 0.4 };
+  const g = spring({ platforms: [pit, ...well(0), stone(-2, 6.6), ledge] });
+  dropIn(g, 2.6, 1.8, -1);
+  for (let i = 0; i < 480; i++) {
+    g.step(1 / 120);
+    const h = g.hero;
+    const inside = h.x + 0.45 > ledge.x - ledge.w / 2 + 0.05 && h.y + 0.45 > ledge.y - ledge.h + 0.05 && h.y - 0.45 < ledge.y - 0.05;
+    assert.equal(inside, false, `inside the ledge at tick ${i}: ${h.x}, ${h.y}`);
+  }
+  assert.equal(g.hero.state, "resting");
+  assert.equal(g.support, bucketB(g));
+  assert.ok(bucketB(g).y > 3 && bucketB(g).y < 3.75, `B ${bucketB(g).y}`);
+});
+test("a death puts the rope back where it started", () => {
+  const g = spring({ platforms: [pit, ...well(0)] });
+  dropIn(g, -2, 6.8, -1);
+  advance(g, 3.5);
+  g.die();
+  advance(g, 0.1);
+  assert.equal(bucketA(g).y, 6);
+  assert.equal(bucketB(g).y, 1);
+});
+// A frog crouches on its stone and leaps at him once it has noticed him.
+const frog = (x, surface, extra = {}) => ({ x, y: surface + 0.4, range: 3, speed: 1, walk: 0.5, leap: { height: 2, every: 2 }, ...extra });
+test("a frog leaps only once it is hunting", () => {
+  const g = spring({ platforms: [{ x: 0, y: 0, w: 12, h: 0.4 }], pumpkins: [frog(4, 0)] });
+  let high = 0;
+  for (let i = 0; i < 240; i++) {
+    g.step(1 / 120);
+    high = Math.max(high, g.pumpkins[0].y);
+  }
+  assert.ok(high < 0.41, `leapt while asleep: ${high}`);
+  Object.assign(g.hero, { x: 1.5, y: 0.45, state: "resting" });
+  for (let i = 0; i < 240; i++) {
+    g.step(1 / 120);
+    high = Math.max(high, g.pumpkins[0].y);
+  }
+  assert.ok(high > 1.9, `never leapt: ${high}`);
+});
+test("a leaping frog kills a hero who is not moving, and a death sends it home", () => {
+  const g = spring({ platforms: [{ x: 0, y: 0, w: 12, h: 0.4 }], pumpkins: [frog(2, 0, { walk: 0 })] });
+  Object.assign(g.hero, { x: 2, y: 2.4, vx: 0, vy: 0, state: "resting" });
+  advance(g, 2);
+  assert.equal(g.deaths, 1);
+  assert.equal(g.pumpkins[0].y, 0.4);
+  assert.equal(g.pumpkins[0].leapClock || 0, 0);
+});
+// The cistern: a cracked wall that floods the water it is linked to.
+const cistern = { x: 1, y: 1.5, w: 1, h: 1.5, type: "drop", knock: true, delay: 99, flood: "f" };
+const basin = { type: "water", id: "f", x: 3.5, y: 0, w: 5, level: 0, to: 3 };
+const teryelAt = (x, extra = {}) => ({ type: "teryel", x, y: 1.2, r: 1.2, ...extra });
+test("breaking the cistern floods its water and the flood traps Teryel", () => {
+  const g = spring({ platforms: [{ x: 0, y: 0, w: 12, h: 0.4 }, { ...cistern }], objects: [{ ...basin }, teryelAt(4.5)] });
+  Object.assign(g.hero, { x: -1, y: 0.8, vx: 8, vy: 0, state: "flying" });
+  advance(g, 2.5);
+  assert.ok(g.events.some((e) => e.type === "flood"));
+  assert.ok(g.objects[0].surface > 2.9, `surface ${g.objects[0].surface}`);
+  assert.equal(g.objects[1].trapped, true);
+  assert.equal(g.doorOpen(), true);
+});
+test("after a death the cistern stays broken and the flood stays up", () => {
+  const g = spring({ platforms: [{ x: 0, y: 0, w: 12, h: 0.4 }, { ...cistern }], objects: [{ ...basin }, teryelAt(-3)] });
+  Object.assign(g.hero, { x: -1, y: 0.8, vx: 8, vy: 0, state: "flying" });
+  advance(g, 2.5);
+  g.die();
+  advance(g, 0.5);
+  assert.equal(g.platforms[1].alive, false);
+  assert.ok(g.objects[0].surface > 2.9, `surface ${g.objects[0].surface}`);
+});
+test("a Teryel who walks into deep water later is trapped", () => {
+  const g = spring({ objects: [{ type: "water", x: 3.5, y: 0, w: 5, level: 3 }, teryelAt(-2, { dx: 3.6, period: 6 })] });
+  Object.assign(g.hero, { x: -5, y: 8, state: "resting" });
+  advance(g, 0.8);
+  assert.notEqual(g.objects[1].trapped, true);
+  advance(g, 1.7);
+  assert.equal(g.objects[1].trapped, true);
+});
+test("a stone tied to the well rope slips once he rests in a bucket, and throws him out of the other", () => {
+  // The left bucket waits at the bottom; the tied stone hangs high over the raised right one.
+  const g = spring({ platforms: [pit, ...well(1), stone(2, 9.4, { falling: false, tied: "w", delay: 0.5 })] });
+  advance(g, 0.5);
+  assert.equal(g.platforms[3].falling, false, "fell before he rested");
+  dropIn(g, -2, 1.8, -1);
+  let high = 0;
+  for (let i = 0; i < 360; i++) {
+    g.step(1 / 120);
+    high = Math.max(high, g.hero.y);
+  }
+  assert.ok(g.events.some((e) => e.type === "snap"));
+  assert.ok(g.events.some((e) => e.type === "jerk" && e.flung));
+  assert.ok(high > 8, `only reached ${high}`);
+  g.die();
+  assert.equal(g.platforms[3].falling, false);
+  assert.ok(Math.abs(g.platforms[3].y - 9.4) < 1e-9);
+});
+test("a hero resting in water with nothing under him floats", () => {
+  const g = spring({ start: { x: 0, y: 3.8 }, platforms: [deep], objects: [pool()] });
+  advance(g, 0.1);
+  assert.equal(g.hero.state, "float");
+});
+test("a flood rising under a ledge never pins him out of reach of a launch", () => {
+  // Stage 24's terrace over the dry bed: he waits on the bed beneath its edge as the flood comes.
+  const terrace = { x: -2.4, y: 4, w: 2.4, h: 0.5 };
+  const g = spring({ platforms: [{ x: 0, y: 0, w: 12, h: 0.4 }, terrace], objects: [{ type: "water", id: "f", x: 2.5, y: 0, w: 7, level: 0 }] });
+  Object.assign(g.hero, { x: -0.85, y: 0.45, state: "resting" });
+  g.support = g.platforms[0];
+  Object.assign(g.objects[0], { flooded: true, floodT: 0, floodFrom: 0, to: 3.4 });
+  advance(g, 5);
+  const floats = g.events.filter((e) => e.type === "float").length;
+  assert.equal(g.hero.state, "float");
+  assert.ok(floats <= 2, `float announced ${floats} times`);
+  assert.equal(g.launch(-6, 4), true);
+});
+test("every frog leap is announced", () => {
+  const g = spring({ platforms: [{ x: 0, y: 0, w: 12, h: 0.4 }], pumpkins: [frog(4, 0, 0, 1.6, 1.5)] });
+  Object.assign(g.hero, { x: 2.5, y: 2.5, state: "resting" });
+  advance(g, 6);
+  assert.equal(g.deaths, 0);
+  const leaps = g.events.filter((e) => e.type === "leap").length;
+  assert.ok(leaps >= 3, `only ${leaps} leap events`);
+});
+test("a stone falling onto a bucket rising fast lands in it instead of passing through", () => {
+  // The right bucket jerks up past a stone that is already falling toward it.
+  const g = spring({ platforms: [pit, ...well(0), stone(2, 10.3), stone(-2, 12)] });
+  advance(g, 2);
+  const s = g.platforms[3];
+  assert.equal(s.restOn, bucketB(g));
+  assert.ok(Math.abs(s.y - (bucketB(g).y + 0.4)) < 0.02, `stone ${s.y} bucket ${bucketB(g).y}`);
+});

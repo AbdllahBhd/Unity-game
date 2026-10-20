@@ -1527,5 +1527,261 @@ globalThis.HNText = {
   "ar": "تريال في المعصرة",
   "who": "",
   "mood": ""
+ },
+ "t6.intro.1": {
+  "en": "One summer the rain forgot us. The spring under the fig tree gave one drop, then none.",
+  "tq": "Yiwen unebdu, ageffur yettu-yaɣ. Tala ddaw tneqlet tefka-d yiwet n tqit, syin ulac.",
+  "fr": "Un été, la pluie nous oublia. La source sous le figuier donna une goutte, puis plus rien.",
+  "ar": "في صيف ما، نسينا المطر. أعطى النبع تحت شجرة التين قطرة واحدة، ثم لا شيء.",
+  "who": "jida",
+  "mood": "telling"
+ },
+ "t6.intro.2": {
+  "en": "So you called Anzar!",
+  "tq": "Ihi tsawlem i Wanzar!",
+  "fr": "Alors vous avez appelé Anzar !",
+  "ar": "فناديتم أنزار!",
+  "who": "boy",
+  "mood": ""
+ },
+ "t6.intro.3": {
+  "en": "We dressed the ladle as a bride, Tislit n Wanzar, and carried her from door to door. Every house poured a little water on her.",
+  "tq": "Nlures aɣenja am tislit, Tislit n Wanzar, nebbwi-tt seg tewwurt ɣer tayeḍ. Yal axxam yessenɣel fell-as ciṭ n waman.",
+  "fr": "Nous avons habillé la louche en mariée, Tislit n Wanzar, et l'avons portée de porte en porte. Chaque maison versait sur elle un peu d'eau.",
+  "ar": "ألبسنا المغرفة ثوب عروس، تسليت ن ونزار، وحملناها من باب إلى باب. كل بيت كان يسكب عليها قليلا من الماء.",
+  "who": "jida",
+  "mood": "telling"
+ },
+ "t6.intro.4": {
+  "en": "But the night before, Teryel stole her. \"A bride with no rain,\" she laughed, \"is a bride for me.\" She hid her in the old cistern above the spring.",
+  "tq": "Maca deg yiḍ uqbel, Teryel tukker-itt. \"Tislit war ageffur,\" i tenna s taḍsa, \"d tislit-iw.\" Teffer-itt deg lǧeb aqdim nnig tala.",
+  "fr": "Mais la nuit d'avant, Teryel l'a volée. « Une mariée sans pluie, ricana-t-elle, c'est une mariée pour moi. » Elle l'a cachée dans la vieille citerne au-dessus de la source.",
+  "ar": "لكن في الليلة السابقة، سرقتها تريال. «عروس بلا مطر»، قالت ضاحكة، «هي عروس لي». خبّأتها في الصهريج القديم فوق النبع.",
+  "who": "jida",
+  "mood": "hushed"
+ },
+ "t6.intro.5": {
+  "en": "And the frogs? There are always frogs at a spring.",
+  "tq": "Imqerqar? Llan yal tikkelt imqerqar di tala.",
+  "fr": "Et les grenouilles ? Il y a toujours des grenouilles à la source.",
+  "ar": "والضفادع؟ هناك دائما ضفادع عند النبع.",
+  "who": "girl",
+  "mood": ""
+ },
+ "t6.intro.6": {
+  "en": "Hers, every one. Thirsty, and in a very bad mood.",
+  "tq": "D ayla-s, akk. Ffuden, u zeɛfen aṭas.",
+  "fr": "Les siennes, toutes. Assoiffées, et de très mauvaise humeur.",
+  "ar": "ضفادعها، كلها. عطشى، ومزاجها سيّئ جدا.",
+  "who": "jida",
+  "mood": "teasing"
+ },
+ "t6.s1": {
+  "en": "One last pool was left under the fig tree. Fall in and it holds you up, like a hand. Jump again from the surface.",
+  "tq": "Yeqqim-d yiwen n umdun ddaw tneqlet. Ɣli deg-s ad k-yeṭṭef am ufus. Neggez seg ufella n waman.",
+  "fr": "Il restait une dernière mare sous le figuier. Tombe dedans, elle te porte comme une main. Ressaute depuis la surface.",
+  "ar": "بقيت بركة أخيرة تحت شجرة التين. اسقط فيها فتحملك كاليد. اقفز من جديد من سطح الماء.",
+  "who": "jida",
+  "mood": ""
+ },
+ "t6.s1.child": {
+  "en": "He can swim?",
+  "tq": "Yessen ad iɛum?",
+  "fr": "Il sait nager ?",
+  "ar": "هل يعرف السباحة؟",
+  "who": "girl",
+  "mood": ""
+ },
+ "t6.s2": {
+  "en": "Two buckets on one rope over the well. When one goes down, the other comes up. Drop a stone in one, and see who flies.",
+  "tq": "Sin isiṭlen ɣef yiwen wemrar nnig lbir. Mi ara yader yiwen, wayeḍ ad yali. Ḍeqqer azru deg yiwen, ad twaliḍ anwa ara yafgen.",
+  "fr": "Deux seaux sur une seule corde au-dessus du puits. Quand l'un descend, l'autre monte. Laisse tomber une pierre dans l'un, et regarde qui s'envole.",
+  "ar": "دلوان على حبل واحد فوق البئر. حين ينزل أحدهما يصعد الآخر. ألق حجرا في أحدهما وانظر من يطير.",
+  "who": "jida",
+  "mood": ""
+ },
+ "t6.s2.child": {
+  "en": "I want a go!",
+  "tq": "Bɣiɣ ad ɛerḍeɣ!",
+  "fr": "Je veux essayer !",
+  "ar": "أريد أن أجرّب!",
+  "who": "boy",
+  "mood": ""
+ },
+ "t6.s3": {
+  "en": "The well was deep and dark, with a little water still at the bottom. Down with one bucket, up with the other.",
+  "tq": "Lbir d alqayan u yeḍles, yella ciṭ n waman deg wadda-s. Ader s yiwen usiṭel, ali s wayeḍ.",
+  "fr": "Le puits était profond et noir, avec encore un peu d'eau au fond. Descends avec un seau, remonte avec l'autre.",
+  "ar": "كانت البئر عميقة ومظلمة، وفي قاعها قليل من الماء. انزل بدلو، واصعد بالآخر.",
+  "who": "jida",
+  "mood": ""
+ },
+ "t6.s3.child": {
+  "en": "I don't like wells.",
+  "tq": "Ur ḥemmleɣ ara lbir.",
+  "fr": "Je n'aime pas les puits.",
+  "ar": "لا أحب الآبار.",
+  "who": "girl",
+  "mood": ""
+ },
+ "t6.s4": {
+  "en": "And in the dry bed below the cistern sat Teryel, the ladle bride in her hands, and all the water of the village behind one cracked wall.",
+  "tq": "Deg wasif aqqur ddaw lǧeb teqqim Teryel, Tislit n Wanzar deg yifassen-is, u akk aman n taddart deffir yiwen uɣrab yeqqersen.",
+  "fr": "Et dans le lit asséché sous la citerne était assise Teryel, la mariée d'Anzar entre les mains, et toute l'eau du village derrière un seul mur fendu.",
+  "ar": "وفي المجرى الجاف تحت الصهريج جلست تريال، وعروس أنزار بين يديها، وكل ماء القرية خلف جدار واحد متصدّع.",
+  "who": "jida",
+  "mood": "hushed"
+ },
+ "t6.s4.child": {
+  "en": "Break the wall! Let the water out!",
+  "tq": "Ṛẓ aɣrab! Ssuffeɣ aman!",
+  "fr": "Casse le mur ! Fais sortir l'eau !",
+  "ar": "اكسر الجدار! أطلق الماء!",
+  "who": "boy",
+  "mood": ""
+ },
+ "t6.end.1": {
+  "en": "He struck the cracked wall with all his speed. The stones gave, the water came down the ravine like a white horse, and Teryel went with it.",
+  "tq": "Yewwet aɣrab s akk zzerb-is. Izra ɣlin, aman ṛuḥen deg uɣzer am uyis amellal, u Teryel tedda yid-sen.",
+  "fr": "Il frappa le mur fendu de toute sa vitesse. Les pierres cédèrent, l'eau dévala le ravin comme un cheval blanc, et Teryel partit avec elle.",
+  "ar": "ضرب الجدار المتصدّع بكل سرعته. انهارت الحجارة، ونزل الماء في الوادي كحصان أبيض، وذهبت تريال معه.",
+  "who": "jida",
+  "mood": "telling"
+ },
+ "t6.end.2": {
+  "en": "Water! Water in my ears! Who taught that little thing to break walls?!",
+  "tq": "Aman! Aman deg yimeẓẓuɣen-iw! Anwa i yesselmden ayen-nni ameẓẓyan ad yerreẓ iɣraben?!",
+  "fr": "De l'eau ! De l'eau dans mes oreilles ! Qui a appris à ce petit machin à casser les murs ?!",
+  "ar": "ماء! ماء في أذنيّ! من علّم هذا الصغير كسر الجدران؟!",
+  "who": "teryel",
+  "mood": ""
+ },
+ "t6.end.3": {
+  "en": "Mqidec carried the ladle bride back to the village on his back. That same night the clouds came down from the Bibans.",
+  "tq": "Mqidec yerra-d Tislit n Wanzar ɣer taddart ɣef tuyat-is. Deg yiḍ-nni kan, isigna d-ḥedren seg Lbiban.",
+  "fr": "Mqidec rapporta la mariée d'Anzar au village sur son dos. La nuit même, les nuages descendirent des Bibans.",
+  "ar": "حمل مقيدش عروس أنزار إلى القرية على ظهره. وفي الليلة نفسها، نزلت الغيوم من البيبان.",
+  "who": "jida",
+  "mood": "telling"
+ },
+ "t6.end.4": {
+  "en": "Listen! It's raining, Jida! It's really raining!",
+  "tq": "Sell! Ageffur, a Jida! Ageffur s tidet!",
+  "fr": "Écoute ! Il pleut, Jida ! Il pleut pour de vrai !",
+  "ar": "اسمعي! إنها تمطر يا جدّة! تمطر حقا!",
+  "who": "girl",
+  "mood": ""
+ },
+ "t6.end.5": {
+  "en": "Then sing with me, the way we sang that summer. Anzar, Anzar, O God, water it down to the roots!",
+  "tq": "Ihi cnut yid-i, akken i ncennu anebdu-nni. Anzar, Anzar, a Rebbi sew-it ar iẓuran!",
+  "fr": "Alors chantez avec moi, comme nous chantions cet été-là. Anzar, Anzar, ô Dieu, abreuve-la jusqu'aux racines !",
+  "ar": "إذن غنّوا معي، كما غنّينا ذلك الصيف. أنزار، أنزار، يا ربّ اسقها حتى الجذور!",
+  "who": "jida",
+  "mood": "teasing"
+ },
+ "tip.water": {
+  "en": "Water. Fall in and it holds you up. Launch again from the surface once you are still.",
+  "tq": "Aman. Ɣli deg-sen ad k-ṭṭfen. Neggez seg ufella mi ara tersiḍ.",
+  "fr": "De l'eau. Tombe dedans, elle te porte. Relance-toi depuis la surface une fois immobile.",
+  "ar": "ماء. اسقط فيه فيحملك. انطلق من السطح من جديد حين تهدأ.",
+  "who": "",
+  "mood": ""
+ },
+ "tip.bucket": {
+  "en": "Two buckets on one rope. Your weight takes yours down and the other up. A stone dropped in one throws whatever stands in the other.",
+  "tq": "Sin isiṭlen ɣef yiwen wemrar. Taẓayt-ik ad tesder asiṭel-ik, wayeḍ ad yali. Azru yeɣlin deg yiwen ad yeḍeqqer ayen yellan deg wayeḍ.",
+  "fr": "Deux seaux sur une seule corde. Ton poids fait descendre le tien et monter l'autre. Une pierre tombée dans l'un projette ce qui se tient dans l'autre.",
+  "ar": "دلوان على حبل واحد. وزنك ينزل دلوك ويرفع الآخر. حجر يسقط في أحدهما يقذف ما يقف في الآخر.",
+  "who": "",
+  "mood": ""
+ },
+ "tip.frog": {
+  "en": "Her frogs leap when you come near. Hit them fast, or they bite.",
+  "tq": "Imqerqar-is ttneggizen mi ara d-tqerbeḍ. Wwet-iten s zzerb, neɣ ad k-qqesen.",
+  "fr": "Ses grenouilles bondissent quand tu approches. Frappe-les vite, ou elles mordent.",
+  "ar": "ضفادعها تقفز حين تقترب. اضربها بسرعة، وإلا عضّتك.",
+  "who": "",
+  "mood": ""
+ },
+ "tip.cistern": {
+  "en": "A cracked wall holding back water. A hard hit or a dash breaks it, and the water goes where it likes.",
+  "tq": "Aɣrab yeqqersen yeṭṭfen aman. Tiyita s zzerb neɣ tazzla ad t-tṛeẓ, aman ad ṛuḥen anda bɣan.",
+  "fr": "Un mur fendu qui retient l'eau. Un choc fort ou une ruée le brise, et l'eau va où elle veut.",
+  "ar": "جدار متصدّع يحبس الماء. ضربة قوية أو اندفاعة تكسره، فيذهب الماء حيث يشاء.",
+  "who": "",
+  "mood": ""
+ },
+ "tip.tied": {
+  "en": "A stone tied to the well rope. Rest a moment in a bucket and the rope slips: the stone drops into the other bucket.",
+  "tq": "Azru yeqqnen ɣer wemrar n lbir. Ẓẓeg ciṭ deg usiṭel, amrar ad yerxu: azru ad yeɣli deg usiṭel wayeḍ.",
+  "fr": "Une pierre attachée à la corde du puits. Reste un instant dans un seau et la corde glisse : la pierre tombe dans l'autre seau.",
+  "ar": "حجر مربوط بحبل البئر. ابق لحظة في دلو فينزلق الحبل: يسقط الحجر في الدلو الآخر.",
+  "who": "",
+  "mood": ""
+ },
+ "r.splash": {
+  "en": "Splash!",
+  "tq": "Bluf!",
+  "fr": "Plouf !",
+  "ar": "طرطش!",
+  "who": "girl",
+  "mood": ""
+ },
+ "r.jerk": {
+  "en": "He flew!",
+  "tq": "Yafeg!",
+  "fr": "Il s'envole !",
+  "ar": "طار!",
+  "who": "boy",
+  "mood": ""
+ },
+ "r.flood": {
+  "en": "The water! The water!",
+  "tq": "Aman! Aman!",
+  "fr": "L'eau ! L'eau !",
+  "ar": "الماء! الماء!",
+  "who": "boy",
+  "mood": ""
+ },
+ "tale.6": {
+  "en": "The bride of Anzar",
+  "tq": "Tislit n Wanzar",
+  "fr": "La mariée d'Anzar",
+  "ar": "عروس أنزار",
+  "who": "",
+  "mood": ""
+ },
+ "stage.21": {
+  "en": "The spring",
+  "tq": "Tala",
+  "fr": "La source",
+  "ar": "النبع",
+  "who": "",
+  "mood": ""
+ },
+ "stage.22": {
+  "en": "The bucket",
+  "tq": "Asiṭel",
+  "fr": "Le seau",
+  "ar": "الدلو",
+  "who": "",
+  "mood": ""
+ },
+ "stage.23": {
+  "en": "The well",
+  "tq": "Lbir",
+  "fr": "Le puits",
+  "ar": "البئر",
+  "who": "",
+  "mood": ""
+ },
+ "stage.24": {
+  "en": "Teryel at the spring",
+  "tq": "Teryel deg tala",
+  "fr": "Teryel à la source",
+  "ar": "تريال عند النبع",
+  "who": "",
+  "mood": ""
  }
 };

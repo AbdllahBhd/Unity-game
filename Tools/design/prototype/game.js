@@ -9,6 +9,12 @@
   const GRAVITY = -14.715,
     R = 0.45,
     MAX = 16;
+  // Water: the push up at full depth, and how far under the surface a floating hero sits
+  // (where that push balances gravity).
+  const BUOYANCY = 30,
+    FLOAT = (0.5 * -GRAVITY) / BUOYANCY;
+  // Resting or floating: a hero who can be aimed and launched.
+  const atRest = (state) => state === "resting" || state === "float";
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const clone = (o) => JSON.parse(JSON.stringify(o));
   function launchVelocity(dx, dy) {
@@ -66,12 +72,19 @@
       this.slide = null;
       this.slopeCooldown = 0;
       this.oiled = false;
+      this.float = null;
+      this.wet = false;
+      this.waterCooldown = 0;
+      this.floatStable = 0;
       this.objects = clone(l.objects || []).map((o) => ({
         ...o,
         homeX: o.x,
         homeY: o.y,
         alive: true,
       }));
+      for (const o of this.objects)
+        if (o.type === "water") Object.assign(o, { surface: o.level, flooded: false, floodT: 0 });
+      this.ropes = this.buildRopes();
       this.switches = clone(l.switches || []).map((s) => ({
         ...s,
         active: false,
@@ -119,7 +132,7 @@
     launch(vx, vy) {
       if (
         this.won ||
-        !["resting", "cannon"].includes(this.hero.state) ||
+        !(atRest(this.hero.state) || this.hero.state === "cannon") ||
         !Number.isFinite(vx) ||
         !Number.isFinite(vy) ||
         Math.hypot(vx, vy) < 0.2
@@ -134,6 +147,9 @@
         this.support.alive = false;
         this.emit("tear");
       }
+      // A launch from the water is not caught by the same water at once.
+      if (this.hero.state === "float") this.waterCooldown = 0.25;
+      this.float = null;
       this.hero.vx = vx;
       this.hero.vy = vy;
       this.hero.state = "flying";
@@ -232,6 +248,10 @@
       this.zip = null;
       this.slide = null;
       this.oiled = false;
+      this.float = null;
+      this.wet = false;
+      this.waterCooldown = 0;
+      this.floatStable = 0;
       this.support = null;
       this.stable = 0;
       this.dashTime = 0;
@@ -245,13 +265,15 @@
         p.safe = true;
         p.state = "return";
         p.vx = p.vy = 0;
+        p.leapClock = 0;
       }
       // A moment of grace after a respawn, so nothing kills on the same spot again.
       this.grace = 0.6;
-      // Stones that trapped Teryel stay where they are: she stays trapped too.
+      // Stones that trapped Teryel stay where they are: she stays trapped too. A broken
+      // cistern stays broken, and its flood stays up.
       const trapped = this.objects.some((o) => o.type === "teryel" && o.trapped);
       for (const p of this.platforms)
-        if (p.type === "drop" && !(p.trigger !== undefined && p.landed) && !(trapped && p.knock))
+        if (p.type === "drop" && !(p.trigger !== undefined && p.landed) && !(trapped && p.knock) && !p.flooded)
           Object.assign(p, {
             x: p.homeX,
             y: p.homeY,
@@ -264,6 +286,10 @@
             alive: true,
           });
       for (const o of this.objects) if (o.type === "web") o.alive = true;
+      for (const id of Object.keys(this.ropes)) {
+        Object.assign(this.ropes[id], { s: this.ropes[id].start, jerk: 0, moving: false });
+        this.placeBuckets(this.ropes[id]);
+      }
       this.bombs = [];
       this.emit("death");
     }
@@ -307,7 +333,9 @@
     dropStone(p, dt) {
       if (p.alive === false) return;
       const h = this.hero;
-      if (!p.falling && !p.landed && this.support === p && h.state === "resting") {
+      // A stone tied to a well rope slips once he has rested a moment in one of its buckets.
+      const tug = p.tied !== undefined && this.bucketUnderHero() && this.bucketUnderHero().rope === p.tied;
+      if (!p.falling && !p.landed && ((this.support === p && h.state === "resting") || tug)) {
         p.timer = (p.timer || 0) + dt;
         if (p.timer >= (p.delay === undefined ? 0.6 : p.delay)) {
           p.falling = true;
@@ -331,6 +359,8 @@
           p.vx = 0;
         }
         const q = p.restOn;
+        // A stone in a well bucket rides it up and down.
+        if (q && q.type === "bucket" && Math.abs(q.x - p.x) < (q.w + p.w) / 2) p.y = q.y + (p.h || 0.4);
         const held =
           q &&
           this.solid(q) &&
@@ -344,6 +374,16 @@
         p.restOn = null;
       }
       if (!p.falling) return;
+      // The cracked cistern: once knocked loose it breaks, and its water floods out.
+      if (p.flood !== undefined && !p.flooded) {
+        p.flooded = true;
+        p.alive = false;
+        for (const o of this.objects)
+          if (o.type === "water" && o.id === p.flood && !o.flooded)
+            Object.assign(o, { flooded: true, floodT: 0, floodFrom: o.surface });
+        this.emit("flood", { x: p.x, y: p.y });
+        return;
+      }
       this.trapAt(p.x, p.y - (p.h || 0.4) / 2, Math.max(0.4, p.w / 2));
       // The press beam ends on Teryel's back (drawn there); it leaves the stage.
       if (p.beam && this.objects.some((o) => o.type === "teryel" && o.trapped)) {
@@ -365,7 +405,10 @@
       for (const q of this.platforms) {
         if (q === p || !this.solid(q) || q.falling || q.type === "slope") continue;
         if (Math.abs(q.x - p.x) >= (q.w + p.w) / 2) continue;
-        if (bottom >= q.y - 0.001 && nextBottom <= q.y) {
+        // A bucket already moved this tick: a stone it rose past still lands in it.
+        const was = q.type === "bucket" && q.preY !== undefined ? q.preY : q.y;
+        if (bottom >= Math.min(was, q.y) - 0.001 && nextBottom <= q.y) {
+          const impact = -p.vy;
           p.y = q.y + (p.h || 0.4);
           p.vy = 0;
           p.falling = false;
@@ -374,6 +417,7 @@
           p.fallFrom = p.y;
           p.restOn = q;
           this.emit("thud", { x: p.x, y: p.y - (p.h || 0.4) });
+          if (q.type === "bucket" && impact >= 6) this.bucketJerk(q, impact);
           break;
         }
       }
@@ -421,6 +465,182 @@
           this.emit("trapped", { x: o.x, y: o.y });
         }
       }
+    }
+    // Well buckets hang in pairs on one rope. `s` (0 to 1) is how far the left bucket
+    // sits below its top; the right one sits as far above its bottom.
+    buildRopes() {
+      const ropes = {};
+      this.platforms.forEach((p, i) => {
+        if (p.type !== "bucket") return;
+        const r = ropes[p.rope] || (ropes[p.rope] = { ids: [], s: 0, jerk: 0, moving: false });
+        r.ids.push(i);
+        if (p.s !== undefined) r.s = p.s;
+      });
+      for (const id of Object.keys(ropes)) {
+        const r = ropes[id];
+        if (r.ids.length !== 2) throw new Error(`rope ${id}: a rope holds exactly two buckets, not ${r.ids.length}`);
+        r.ids.sort((i, j) => this.platforms[i].x - this.platforms[j].x);
+        const [a, b] = r.ids.map((i) => this.platforms[i]);
+        const travel = a.top - a.bottom;
+        if (!(travel > 0) || Math.abs(travel - (b.top - b.bottom)) > 1e-9)
+          throw new Error(`rope ${id}: both buckets must travel the same distance down from their top`);
+        r.a = r.ids[0];
+        r.b = r.ids[1];
+        r.start = r.s;
+        this.placeBuckets(r);
+      }
+      return ropes;
+    }
+    placeBuckets(r) {
+      const a = this.platforms[r.a],
+        b = this.platforms[r.b];
+      const travel = a.top - a.bottom;
+      a.y = a.top - r.s * travel;
+      b.y = b.bottom + r.s * travel;
+    }
+    // The bucket the resting hero stands in, directly or on a stone inside it.
+    bucketUnderHero() {
+      const sup = this.support;
+      if (this.hero.state !== "resting" || !sup) return null;
+      if (sup.type === "bucket") return sup;
+      if (sup.type === "drop" && sup.landed && !sup.falling && sup.restOn && sup.restOn.type === "bucket") return sup.restOn;
+      return null;
+    }
+    // A resting hero weighs 1, a stone resting in the bucket 2.
+    bucketLoad(q) {
+      let w = this.bucketUnderHero() === q ? 1 : 0;
+      for (const p of this.platforms)
+        if (p.type === "drop" && p.alive !== false && p.landed && !p.falling && p.restOn === q) w += 2;
+      return w;
+    }
+    heroBlocked(x, y, ignore) {
+      return (
+        Math.abs(x) > 6 - R ||
+        this.platforms.some(
+          (q) =>
+            !ignore.includes(q) &&
+            q.type !== "slope" &&
+            q.type !== "bucket" &&
+            this.solid(q) &&
+            x + R > q.x - q.w / 2 &&
+            x - R < q.x + q.w / 2 &&
+            y + R > q.y - (q.h || 0.4) &&
+            y - R < q.y,
+        )
+      );
+    }
+    // All ropes move in one pass before the platforms, so riders see one consistent move.
+    updateRopes(dt) {
+      for (const id of Object.keys(this.ropes)) {
+        const r = this.ropes[id],
+          a = this.platforms[r.a],
+          b = this.platforms[r.b];
+        for (const q of [a, b]) {
+          q.preX = q.x;
+          q.preY = q.y;
+        }
+        const travel = a.top - a.bottom;
+        const dir = r.jerk || Math.sign(this.bucketLoad(a) - this.bucketLoad(b));
+        const before = r.s;
+        r.s = Math.max(0, Math.min(1, r.s + (dir * (r.jerk ? 10 : 2.5) * dt) / travel));
+        if (r.jerk && (r.s === 0 || r.s === 1)) r.jerk = 0;
+        this.placeBuckets(r);
+        // The rope jams rather than carry him into a ledge.
+        const ride = this.bucketUnderHero();
+        if (ride === a || ride === b) {
+          const h = this.hero;
+          if (this.heroBlocked(h.x, h.y + ride.y - ride.preY, [this.support])) {
+            r.s = before;
+            r.jerk = 0;
+            this.placeBuckets(r);
+          }
+        }
+        const moving = r.s !== before;
+        if (moving && !r.moving) this.emit("bucket", { x: (a.x + b.x) / 2, y: Math.max(a.y, b.y) });
+        r.moving = moving;
+      }
+    }
+    // A stone landing hard in one bucket jerks the other up and throws its rider.
+    bucketJerk(q, impact) {
+      const r = this.ropes[q.rope];
+      if (!r) return;
+      const a = this.platforms[r.a];
+      const other = q === a ? this.platforms[r.b] : a;
+      const dir = q === a ? 1 : -1;
+      if ((dir > 0 && r.s >= 1) || (dir < 0 && r.s <= 0)) return;
+      r.jerk = dir;
+      const h = this.hero;
+      const flung = this.bucketUnderHero() === other;
+      if (flung) {
+        h.state = "flying";
+        h.vx = 0;
+        // The bucket shoots up at rope speed (10) and throws him off its floor, higher
+        // than any launch (16) can take him.
+        h.vy = Math.min(20, 10 + impact);
+        this.support = null;
+        this.stable = 0;
+        this.dashReady = true;
+      }
+      this.emit("jerk", { x: other.x, y: other.y, flung });
+    }
+    // Water whose surface lies more than `margin` above (x, y).
+    waterAt(x, y, margin = 0) {
+      return (
+        this.objects.find(
+          (o) => o.type === "water" && Math.abs(x - o.x) < o.w / 2 && y < o.surface - margin && y > o.y,
+        ) || null
+      );
+    }
+    updateWater(dt) {
+      for (const o of this.objects) {
+        if (o.type !== "water") continue;
+        const before = o.surface;
+        if (o.flooded) {
+          o.floodT += dt;
+          o.surface = o.floodFrom + (o.to - o.floodFrom) * Math.min(1, o.floodT / 1.5);
+        } else if (o.rise)
+          o.surface = o.level + (o.rise.dy * (1 - Math.cos((this.time * 2 * Math.PI) / (o.rise.period || 8)))) / 2;
+        o.surfaceV = dt > 0 ? (o.surface - before) / dt : 0;
+      }
+    }
+    enterFloat(pool) {
+      const h = this.hero;
+      h.state = "float";
+      h.vx = 0;
+      h.vy = 0;
+      this.float = pool;
+      this.support = null;
+      this.stable = 0;
+      this.floatStable = 0;
+      this.priorFlight = this.recording.slice();
+      this.emit("float", { x: h.x, y: pool.surface });
+    }
+    // Floating: he follows the surface; a falling surface sets him down on a ledge, and a
+    // rising one under a ledge holds him beneath it, still floating (so he can launch).
+    floatTick() {
+      const h = this.hero,
+        pool = this.float;
+      if (!pool || Math.abs(h.x - pool.x) >= pool.w / 2) {
+        h.state = "flying";
+        this.float = null;
+        return;
+      }
+      let target = pool.surface - FLOAT;
+      for (const q of this.platforms) {
+        if (!this.solid(q) || q.type === "slope") continue;
+        if (h.x + R <= q.x - q.w / 2 || h.x - R >= q.x + q.w / 2) continue;
+        if (target < h.y && h.y - R >= q.y - 0.001 && target - R < q.y) {
+          h.y = q.y + R;
+          h.state = "resting";
+          this.support = q;
+          this.float = null;
+          this.emit("land");
+          return;
+        }
+        const bottom = q.y - (q.h || 0.4);
+        if (target > h.y - 0.001 && h.y + R <= bottom + 0.001 && target + R > bottom) target = bottom - R;
+      }
+      h.y = target;
     }
     seesawHit(p, heroX, impact) {
       if (impact < 5) return;
@@ -587,6 +807,22 @@
           p.x = Math.max(lo, Math.min(hi, p.x));
           p.vx = 0;
         }
+        // A frog leaps `height` above its stone every `every` s while hunting; a leap
+        // already in the air is finished.
+        if (p.leap) {
+          const every = p.leap.every || 2,
+            T = 2 * Math.sqrt((2 * p.leap.height) / -GRAVITY);
+          const inAir = (p.leapClock || 0) > 0 && (p.leapClock || 0) % every < T;
+          if (p.state === "hunt" || inAir) {
+            const before = p.leapClock || 0;
+            p.leapClock = before + dt;
+            // A new leap starts on the first tick of the hunt and each time the clock wraps.
+            if (before === 0 || Math.floor(p.leapClock / every) > Math.floor(before / every))
+              this.emit("leap", { x: p.x, y: p.y });
+            const t = p.leapClock % every;
+            if (t < T) p.y = p.homeY + 4 * p.leap.height * (t / T) * (1 - t / T);
+          } else p.leapClock = 0;
+        }
       }
     }
     // A pumpkin thrown by a seesaw: ballistic until it hits anything.
@@ -691,9 +927,13 @@
             if (dist(f, s) < (s.r || 0.7)) s.active = true;
         } else this.echo = null;
       }
+      this.updateWater(dt);
+      this.updateRopes(dt);
+      this.waterCooldown = Math.max(0, this.waterCooldown - dt);
       for (const p of this.platforms) {
-        const ox = p.x,
-          oy = p.y;
+        // Buckets already moved in updateRopes: their move this tick starts from there.
+        const ox = p.type === "bucket" ? p.preX : p.x,
+          oy = p.type === "bucket" ? p.preY : p.y;
         p.previousY = oy;
         if (p.type === "drop") this.dropStone(p, dt);
         if (p.type === "mover") {
@@ -766,6 +1006,13 @@
         h.state = "flying";
         this.support = null;
       }
+      if (h.state === "resting") {
+        // On a ledge he floats once the water is well over the float line; with nothing
+        // under him, any water holds him.
+        const pool = this.waterAt(h.x, h.y, this.support ? FLOAT + 0.1 : 0);
+        if (pool) this.enterFloat(pool);
+      }
+      if (h.state === "float") this.floatTick();
       this.slopeCooldown = Math.max(0, this.slopeCooldown - dt);
       if (h.state === "slide" && this.slide) {
         // Gravity along the roof, a little friction from the tiles.
@@ -789,6 +1036,21 @@
         h.x += h.vx * dt;
         h.y += h.vy * dt + (GRAVITY * dt * dt) / 2;
         h.vy += GRAVITY * dt;
+        // Water holds him up and slows him; near the surface and still, he floats.
+        const pool = this.waterCooldown > 0 ? null : this.waterAt(h.x, h.y);
+        if (pool) {
+          if (!this.wet) this.emit("splash", { x: h.x, y: pool.surface, speed: Math.hypot(h.vx, h.vy) });
+          this.wet = true;
+          h.vy += BUOYANCY * Math.min(1, (pool.surface - h.y) / 0.5) * dt;
+          const k = Math.exp(-4 * dt);
+          h.vx *= k;
+          h.vy *= k;
+          if (Math.abs(pool.surface - FLOAT - h.y) < 0.25 && Math.hypot(h.vx, h.vy - (pool.surfaceV || 0)) < 1.2) this.floatStable += dt;
+          else this.floatStable = 0;
+        } else {
+          this.wet = false;
+          this.floatStable = 0;
+        }
         let landed = false;
         // Only the first tick of a glide on oil is announced.
         const wasOiled = this.oiled;
@@ -850,7 +1112,10 @@
             h.y = top + R;
             if (p.type === "seesaw") this.seesawHit(p, h.x, -h.vy);
             // A wheel plank past the top sinks under him; he sinks with it and settles.
-            h.vy = p.type === "wheel" && p.previousY !== undefined ? Math.min(0, (p.y - p.previousY) / dt) : 0;
+            h.vy =
+              (p.type === "wheel" || p.type === "bucket") && p.previousY !== undefined
+                ? Math.min(0, (p.y - p.previousY) / dt)
+                : 0;
             // Spilt oil: a fast landing keeps gliding; a gentle one still stops.
             if (p.oil && Math.abs(h.vx) >= 1.2) {
               h.vx *= Math.exp(-0.2 * dt);
@@ -881,6 +1146,7 @@
         }
         if (landed && Math.abs(h.vx) < 0.6) this.stable += dt;
         else this.stable = 0;
+        if (h.state === "flying" && !landed && pool && this.floatStable >= 0.12) this.enterFloat(pool);
         if (h.state === "flying" && this.stable >= 0.12) {
           h.state = "resting";
           h.vx = 0;
@@ -892,6 +1158,8 @@
             this.support.type !== "ghost" &&
             this.support.type !== "gate" &&
             this.support.type !== "drop" &&
+            this.support.type !== "bucket" &&
+            !this.waterAt(h.x, h.y) &&
             !this.inTeryelPath(h.x, h.y) &&
             this.support.phase === undefined
           )
@@ -932,7 +1200,7 @@
           this.lure && dist(p, this.lure) <= this.lure.r ? this.lure : h;
         const paused =
           (this.options.pursuit === "planning" &&
-            (this.aim || h.state === "resting")) ||
+            (this.aim || atRest(h.state))) ||
           (this.options.pursuit === "aim" && this.aim);
         if (this.lively) this.livelyPumpkin(p, dt, target, paused);
         else {
@@ -1003,6 +1271,11 @@
               o.x = o.homeX + Math.sin(tt) * (o.dx || 0);
               o.y = o.homeY + Math.sin(tt) * (o.dy || 0);
             }
+          }
+          // Water closing over her carries her off: any free Teryel under a surface is trapped.
+          if (!o.trapped && this.waterAt(o.x, o.y)) {
+            o.trapped = true;
+            this.emit("trapped", { x: o.x, y: o.y, flood: true });
           }
           if (!o.trapped && this.grace <= 0 && dist(h, o) < (o.r || 1) + R * 0.8) {
             this.die();
@@ -1267,5 +1540,5 @@
     }
     return game;
   }
-  return { Game, launchVelocity, trajectory, stars, simulateRoute, GRAVITY };
+  return { Game, launchVelocity, trajectory, stars, simulateRoute, atRest, GRAVITY };
 });

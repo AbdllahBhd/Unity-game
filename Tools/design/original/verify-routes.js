@@ -7,8 +7,9 @@ const levels = require("./levels.js");
 const { OPTIONS } = require("./find-routes.js");
 let failures = 0;
 // Layout checks. A rider anywhere on a press wheel plank (its width plus his own) must
-// never be swept into another platform or onto a hunter's home, and a walking rat must
-// stay on its beam.
+// never be swept into another platform or onto a hunter's home, a walking hunter must
+// stay on its beam, a well bucket (with a rider standing in it) must never travel
+// through a platform, and a frog's leap must stay clear of every platform.
 const R = 0.45;
 for (const stage of levels.all) {
   const axles = new Map();
@@ -36,7 +37,26 @@ for (const stage of levels.all) {
       (q) => Math.abs(q.y + 0.4 - k.y) < 0.01 && k.x - k.walk >= q.x - q.w / 2 && k.x + k.walk <= q.x + q.w / 2,
     );
     if (!beam) {
-      console.log(`FAIL stage ${stage.id}: the rat at (${k.x}, ${k.y}) walks off its beam`);
+      console.log(`FAIL stage ${stage.id}: the hunter at (${k.x}, ${k.y}) walks off its beam`);
+      failures++;
+    }
+  }
+  const fixed = stage.platforms.filter((q) => q.type !== "bucket" && q.type !== "ground");
+  const crosses = (x, half, bottom, top) =>
+    fixed.find((q) => Math.abs(q.x - x) < half + q.w / 2 && bottom < q.y && top > q.y - (q.h || 0.4));
+  for (const b of stage.platforms) {
+    if (b.type !== "bucket") continue;
+    const q = crosses(b.x, b.w / 2 + R, b.bottom - (b.h || 0.4), b.top + 2 * R);
+    if (q) {
+      console.log(`FAIL stage ${stage.id}: the bucket at x ${b.x} travels through the platform at (${q.x}, ${q.y})`);
+      failures++;
+    }
+  }
+  for (const k of stage.pumpkins) {
+    if (!k.leap) continue;
+    const q = crosses(k.x, (k.walk || 0) + 0.45, k.y - 0.35, k.y + k.leap.height + 0.45);
+    if (q) {
+      console.log(`FAIL stage ${stage.id}: the frog at (${k.x}, ${k.y}) leaps into the platform at (${q.x}, ${q.y})`);
       failures++;
     }
   }
@@ -94,6 +114,10 @@ for (const stage of levels.all) {
     "hop",
     "oil",
     "ride:wheel",
+    "float",
+    "ride:bucket",
+    "jerk",
+    "flood",
   ]
     .filter((m) => used.has(m))
     .join(", ");

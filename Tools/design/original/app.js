@@ -8,7 +8,7 @@
   const Story = globalThis.HNStory;
   const TEXT = globalThis.HNText;
   const Sfx = globalThis.HNSfx;
-  const { Game, launchVelocity } = globalThis.HNGame;
+  const { Game, launchVelocity, atRest } = globalThis.HNGame;
   const canvas = $("canvas");
   const ctx = canvas.getContext("2d");
   const STEP = 1 / 120;
@@ -99,6 +99,10 @@
           ? "roofs"
           : name.startsWith("press")
             ? "press"
+          : name === "hearth-rain" || name === "spring-rain"
+            ? "rain"
+          : name.startsWith("spring")
+            ? "spring"
           : name.startsWith("gorge") || name === "home"
             ? "gorge"
             : "hearth";
@@ -295,6 +299,10 @@
       sceneFlash = 0.5;
       sound("crush");
     } else if (newBeat && beat.fx === "wind") sound("dash", { pitch: 0.5, volume: 0.5 });
+    else if (newBeat && beat.fx === "flood") {
+      sceneFlash = 0.4;
+      sound("flood");
+    } else if (newBeat && beat.fx === "rain") sound("rain", { volume: 0.7 });
     else sound("page", { volume: 0.5 });
   }
   function advanceStory() {
@@ -380,7 +388,7 @@
     tipQueue = [],
     tip = null,
     teryelVoice = 0;
-  const NOTICE_SOUND = { pot: ["clink", 1], spider: ["snap", 1.6], ijenni: ["whisper", 1], raven: ["caw", 1], rat: ["squeak", 1] };
+  const NOTICE_SOUND = { pot: ["clink", 1], spider: ["snap", 1.6], ijenni: ["whisper", 1], raven: ["caw", 1], rat: ["squeak", 1], frog: ["croak", 1] };
 
   function stageLabels() {
     $("stage-number").textContent = `${T("ui.night")} ${Levels.taleOf(stageId)} · ${T("ui.stage")} ${stageId}`;
@@ -439,18 +447,23 @@
     };
     if (level.id === 1) add("launch", level.start.x, level.start.y, 1.4);
     const hunter = level.pumpkins.find((p) => p.range > 0 && !p.roll);
-    if (hunter) add(["ijenni", "raven", "rat"].includes(level.hunter) ? level.hunter : "hunter", hunter.x, hunter.y, 1.3);
+    if (hunter) add(["ijenni", "raven", "rat", "frog"].includes(level.hunter) ? level.hunter : "hunter", hunter.x, hunter.y, 1.3);
     if (level.id >= 2) add("dash", level.start.x, level.start.y, 1.4);
     for (const p of level.platforms) {
       if (p.oil) add("oil", p.x, p.y, p.w / 2 + 0.6);
       if (p.type === "wheel") add("wheel", p.cx, p.cy, p.radius + 0.9);
+      else if (p.type === "bucket") add("bucket", p.x, (p.top + p.bottom) / 2, (p.top - p.bottom) / 2 + 0.8);
+      else if (p.type === "drop" && p.flood !== undefined) add("cistern", p.x, p.y - p.h / 2, 1.4);
+      else if (p.type === "drop" && p.tied !== undefined) add("tied", p.x, p.y, 1.4);
       else if (p.type === "slope") add("slide", p.x, (p.y1 + p.y2) / 2, p.w / 2 + 0.6);
       else if (p.type === "drop" && p.knock) add("knock", p.x, p.y, 1.4);
       else if (["seesaw", "mover", "drop", "ghost"].includes(p.type)) add(p.type, p.x, p.y, p.w / 2 + 0.8);
     }
     for (const o of level.objects) {
       const kind = o.type === "cannon" ? "cannon" : o.type;
-      if (Story.tips[kind]) add(kind, o.x, o.y, o.type === "zip" ? 2.4 : o.type === "teryel" ? (o.r || 1) + 1 : 1.4);
+      // Water is pointed at where it is deepest: its surface, or the level a flood fills.
+      if (o.type === "water") add("water", o.x, o.to === undefined ? o.level : o.to, o.w / 2 + 0.4);
+      else if (Story.tips[kind]) add(kind, o.x, o.y, o.type === "zip" ? 2.4 : o.type === "teryel" ? (o.r || 1) + 1 : 1.4);
     }
     const roll = level.pumpkins.find((p) => p.roll);
     if (roll) add("roll", roll.x, roll.y, 1.3);
@@ -589,6 +602,27 @@
         fx.dust(at.x, at.y);
         remark("oil");
       }
+      else if (e.type === "splash") {
+        fx.splash(at.x, at.y, Math.min(2, (e.speed || 4) / 6));
+        sound("splash", { volume: Math.min(1, 0.4 + (e.speed || 4) / 14) });
+        remark("splash");
+      } else if (e.type === "float") fx.splash(at.x, at.y, 0.5);
+      else if (e.type === "bucket") sound("rope", { volume: 0.6 });
+      else if (e.type === "jerk") {
+        shake = Math.max(shake, 0.25);
+        sound("rope", { pitch: 1.5 });
+        if (e.flung) {
+          sound("launch", { pitch: 1.2 });
+          remark("jerk");
+        }
+      } else if (e.type === "leap") sound("croak", { volume: 0.35, pitch: 1.2 });
+      else if (e.type === "flood") {
+        shake = Math.max(shake, 0.5);
+        whiteFlash = 0.2;
+        fx.splash(at.x, at.y, 3);
+        sound("flood");
+        remark("flood");
+      }
       else if (e.type === "knock") {
         sound("clink", { pitch: 0.7 });
         sound("crush", { volume: 0.4, pitch: 1.3 });
@@ -647,7 +681,7 @@
       game.dash();
       return;
     }
-    if (game.hero.state !== "resting") return;
+    if (!atRest(game.hero.state)) return;
     drag = { x: event.clientX, y: event.clientY, id: event.pointerId };
     aim = null;
   });
@@ -668,7 +702,7 @@
   function release(event, cancel) {
     if (!drag || drag.id !== event.pointerId) return;
     game.setAim(false);
-    if (!cancel && aim && game.hero.state === "resting" && game.launch(aim.x, aim.y)) launchedOnce = true;
+    if (!cancel && aim && atRest(game.hero.state) && game.launch(aim.x, aim.y)) launchedOnce = true;
     drag = aim = null;
   }
   canvas.addEventListener("pointerup", (event) => release(event, false));
@@ -780,7 +814,7 @@
             teryelVoice = asleep ? 2.8 : 3.5;
           } else teryelVoice = 0.5;
         }
-        if (drag && game.hero.state !== "resting") {
+        if (drag && !atRest(game.hero.state)) {
           game.setAim(false);
           drag = aim = null;
         }

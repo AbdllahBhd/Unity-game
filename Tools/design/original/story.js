@@ -83,6 +83,23 @@
       },
       end: [beat("press-trap", ["t5.end.1", "t5.end.2", "t5.end.3"], "thud"), beat("hearth", ["t5.end.4", "t5.end.5"])],
     },
+    6: {
+      intro: [
+        beat("hearth", ["t6.intro.1", "t6.intro.2", "t6.intro.3"]),
+        beat("spring", ["t6.intro.4", "t6.intro.5", "t6.intro.6"]),
+      ],
+      stages: {
+        21: [beat("spring", ["t6.s1", "t6.s1.child"])],
+        22: [beat("spring", ["t6.s2", "t6.s2.child"])],
+        23: [beat("spring", ["t6.s3", "t6.s3.child"])],
+        24: [beat("spring-cistern", ["t6.s4", "t6.s4.child"])],
+      },
+      end: [
+        beat("spring-trap", ["t6.end.1", "t6.end.2"], "flood"),
+        beat("spring-rain", ["t6.end.3"], "rain"),
+        beat("hearth-rain", ["t6.end.4", "t6.end.5"], "rain"),
+      ],
+    },
   };
 
   // Teaching cards: object kind -> text id. Shown once each, the first time it appears.
@@ -108,6 +125,11 @@
     oil: "tip.oil",
     wheel: "tip.wheel",
     rat: "tip.rat",
+    water: "tip.water",
+    bucket: "tip.bucket",
+    frog: "tip.frog",
+    cistern: "tip.cistern",
+    tied: "tip.tied",
   };
   // Short lines during play, by event: text ids, one picked at random.
   const remarks = {
@@ -124,6 +146,9 @@
     knock: ["r.knock"],
     oil: ["r.oil"],
     wheel: ["r.wheel"],
+    splash: ["r.splash"],
+    jerk: ["r.jerk"],
+    flood: ["r.flood"],
   };
   return { opening, firstNight, closing, tales, tips, remarks };
 });

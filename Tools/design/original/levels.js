@@ -1,4 +1,4 @@
-/* The tales of Mqidec: five tales of four stages (Tools/design/yennayer-spec.md).
+/* The tales of Mqidec: six tales of four stages (Tools/design/yennayer-spec.md).
  * World units follow the shared engine: x from -6 to 6, y up, platform y is the
  * walking surface, door y is the centre of its trigger (surface + 1).
  * Every stage holds three hunters; each one broken is a star. The fourth stage of
@@ -45,6 +45,19 @@
   const ratNest = (x, surface) => ({ x, y: surface + 0.4, range: 0, speed: 0 });
   // The great press beam on its ledge: a hard side hit sends it over the edge.
   const beam = (x, surface, w = 2.2) => ({ x, y: surface + 0.55, w, h: 0.55, type: "drop", knock: true, delay: 99, beam: true });
+  // Water from `bottom` up to `level`; `rise` makes a basin that rises `dy` and falls back
+  // every `period` s; `to` is the level a flood fills it to.
+  const water = (x, bottom, w, level, extra = {}) => ({ type: "water", x, y: bottom, w, level, ...extra });
+  // Two well buckets on one rope, each with its own [bottom, top] (same travel); the left
+  // one starts `s` of the way down, the right one as far up.
+  const bucket = (x, bottom, top, w = 1.2, rope = "well") => ({ type: "bucket", rope, x, y: top, w, h: 0.4, top, bottom });
+  const well = (left, right, s) => [{ ...left, s }, right];
+  // A stone tied to the well rope: it slips `delay` s after he rests in one of its buckets.
+  const tied = (x, surface, rope = "well", delay = 0.6) => ({ x, y: surface + 0.6, w: 1.1, h: 0.6, type: "drop", delay, tied: rope });
+  // Frogs crouch on their stone, hop `walk` either way and leap `height` when hunting.
+  const frog = (x, surface, walk = 0.4, height = 1.6, every = 2.4, range = 3) => ({ x, y: surface + 0.4, range, speed: 1, walk, leap: { height, every } });
+  // The cracked cistern wall: a hard hit or a dash breaks it and floods the water `id`.
+  const cistern = (x, surface, id, h = 1.6) => ({ x, y: surface + h, w: 1, h, type: "drop", knock: true, delay: 99, flood: id });
 
   const tales = [
     { id: 1, key: "kitchen", hunter: "pot" },
@@ -52,6 +65,7 @@
     { id: 3, key: "gorge", hunter: "ijenni" },
     { id: 4, key: "roofs", hunter: "raven" },
     { id: 5, key: "press", hunter: "rat" },
+    { id: 6, key: "spring", hunter: "frog" },
   ];
 
   const stages = [
@@ -318,6 +332,67 @@
       platforms: [ground, ledge(-4, 3, 2.4), oily(0.4, 5.2, 4.4), beam(2.1, 5.2, 2), ledge(-4.4, 9, 2.2), ledge(4.6, 8.4, 1.8)],
       pumpkins: [rat(-4, 3, 0.8, 2.4, 0.9), ratNest(4.6, 8.4), rat(-1.4, 0, 1.2, 2.4, 1)],
       objects: [teryel(3.6, 0, 1.2, 1.4, 7)],
+    },
+    /* ---------- Tale 6: the bride of Anzar. Her frogs hunt him. ---------- */
+    // The spring's basin rises and falls; only its top reaches the high ledges.
+    {
+      id: 21,
+      height: 16,
+      teaches: "float",
+      start: { x: -4.8, y: 0.45 },
+      door: { x: -4.4, y: 14 },
+      platforms: [ground, post(1.35, 0, 1.4), ledge(0.6, 10.6, 2.4), ledge(4.4, 12.4, 2.2), ledge(-4.4, 13, 2.2)],
+      pumpkins: [frog(-1.2, 0, 0.8), frog(0.6, 10.6, 0.6), frog(4.4, 12.4, 0.5)],
+      objects: [water(3.8, 0, 4.4, 0.6, { rise: { dy: 6.4, period: 10 } })],
+    },
+    // A fraying stone drops him into the right bucket; the left one rises and stays up.
+    {
+      id: 22,
+      height: 20,
+      teaches: "ride:bucket",
+      start: { x: -4.8, y: 0.45 },
+      door: { x: -4.4, y: 17.8 },
+      platforms: [
+        ground,
+        ...well(bucket(-1.4, 3, 8.6), bucket(2, 0.8, 6.4), 1),
+        frayed(2, 7.9, 1.2, 0.5),
+        ledge(4.6, 4, 2),
+        ledge(2.8, 13.5, 2.4),
+        ledge(-4.4, 16.8, 2.2),
+      ],
+      pumpkins: [frog(-2.4, 0, 0.6), frog(4.6, 4, 0.4), frog(2.8, 13.5, 0.5)],
+      objects: [],
+    },
+    // The well: its wall is too high to jump; the tied stone throws him out in the bucket.
+    {
+      id: 23,
+      height: 16,
+      teaches: "jerk",
+      start: { x: 3.4, y: 0.95 },
+      door: { x: -4.4, y: 14 },
+      platforms: [
+        ground,
+        post(0.5, 0, 11.5),
+        ...well(bucket(1.9, 2.2, 11.2, 1), bucket(4.9, 2.2, 11.2, 1), 1),
+        tied(4.9, 14.4),
+        ledge(-4.2, 6, 2.4),
+        ledge(-1.6, 9.6, 2.2),
+        ledge(-4.4, 13, 2.2),
+      ],
+      pumpkins: [frog(-2.6, 0, 0.6), frog(-4.2, 6, 0.5), frog(-1.6, 9.6, 0.5)],
+      objects: [water(3.375, 0, 5.25, 1.2)],
+    },
+    // Break the cistern wall: the flood fills the dry bed and carries Teryel off.
+    {
+      id: 24,
+      height: 14,
+      rules: TRAP,
+      teaches: "flood",
+      start: { x: -4.8, y: 0.45 },
+      door: { x: -4.4, y: 11.6 },
+      platforms: [ground, ledge(-2.4, 4, 2.4), cistern(-1.7, 4, "flood"), ledge(4.4, 6.8, 2.2), ledge(-4.4, 10.6, 2.2)],
+      pumpkins: [frog(-0.2, 0, 0.6), frog(-3, 4, 0.3), frog(4.4, 6.8, 0.5)],
+      objects: [water(2.5, 0, 7, 0, { id: "flood", to: 3.4 }), teryel(3.6, 0, 1.2, 1.2, 7)],
     },
   ];
   const taleOf = (id) => Math.ceil(id / 4);

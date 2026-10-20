@@ -29,6 +29,7 @@
     else if (theme === "loom") loomBack(c, w, h, t, Y, S, height);
     else if (theme === "roofs") roofsBack(c, w, h, t, S, progress);
     else if (theme === "press") pressBack(c, w, h, t, Y, S, height);
+    else if (theme === "spring") springBack(c, w, h, t, Y, S, height, progress);
     else gorgeBack(c, w, h, t, Y, S, progress);
   }
 
@@ -311,10 +312,15 @@
     c.restore();
   }
 
-  // A pile of loose tiles, slightly askew; in the press, the great beam.
+  // A pile of loose tiles, slightly askew; in the press, the great beam; at the spring,
+  // a squared stone.
   function stack(c, x, top, w, h, t, theme) {
     if (theme === "press") {
       pressBeam(c, x, top, w, h, t);
+      return;
+    }
+    if (theme === "spring") {
+      stoneBlock(c, x, top, w, h);
       return;
     }
     c.save();
@@ -686,6 +692,1101 @@
     c.restore();
   }
 
+  /* ---------------- The spring of Ath Abbas (tala) ---------------- */
+  const STONE = "#776a56",
+    STONE_LIGHT = "#a6967b",
+    STONE_DARK = "#2c251d",
+    WATER = "rgba(70,125,165,",
+    FOAM = "rgba(236,244,250,",
+    FROG = "#17220f",
+    FROG_BELLY = "#5f6e3c";
+  // How far the bucket walls rise above the floor he stands on, in world units.
+  const RIM = 0.32;
+
+  // A hot summer night over a dry ravine: the moon in a haze, the Bibans, dry-stone
+  // terraces up both sides, the fig tree, heat shimmering over the cracked bed.
+  // weather.rain brings the clouds down over the moon and puts out the stars.
+  function springBack(c, w, h, t, Y, S, height, progress, weather = {}) {
+    const rain = Boolean(weather.rain);
+    const sky = c.createLinearGradient(0, 0, 0, h);
+    sky.addColorStop(0, rain ? "#0b0f17" : "#0a0d1f");
+    sky.addColorStop(0.6, rain ? "#171c25" : "#1d1a2c");
+    sky.addColorStop(1, rain ? "#20232a" : "#3a2a26");
+    c.fillStyle = sky;
+    c.fillRect(0, 0, w, h);
+    const mx = w * 0.7,
+      my = h * 0.14 + progress * h * 0.05;
+    if (!rain) {
+      for (let i = 0; i < 45; i++) {
+        c.fillStyle = `rgba(240,232,220,${0.2 + rnd(i + 330) * 0.5})`;
+        c.fillRect(rnd(i + 331) * w, rnd(i + 332) * h * 0.5, 1.3, 1.3);
+      }
+      // A summer moon, warm through the dust in the air.
+      glow(c, mx, my, w * 0.32, "rgba(255,205,150,0.2)");
+      c.fillStyle = "rgba(252,236,206,0.93)";
+      c.beginPath();
+      c.arc(mx, my, w * 0.055, 0, TAU);
+      c.fill();
+    } else {
+      glow(c, mx, my, w * 0.3, "rgba(200,210,230,0.07)");
+      cloudBank(c, w, h * 0.12, t, "#1c212b", 3, S);
+      cloudBank(c, w, h * 0.22, t * 1.4, "#151922", 9, S);
+    }
+    ridge(c, w, h, h * 0.56 + progress * 40, rain ? "#14171e" : "#191626", 0.55, 41);
+    ridge(c, w, h, h * 0.66 + progress * 60, rain ? "#0e1015" : "#120f1b", 0.75, 47);
+    if (rain) cloudBank(c, w, h * 0.42 + progress * 30, t * 0.8, "rgba(28,32,40,0.75)", 17, S);
+    // The fig tree far up the bed, drifting slower than the world.
+    figTree(c, w * 0.26, Y(0) * 0.6 + h * 0.4, S * 4.2, t, 0.5);
+    // Dry-stone terraces climb both walls of the ravine. Each step belongs to a world
+    // height, so the walls scroll with the stage instead of changing shape.
+    const step = 1.6;
+    const worldAt = (sy) => (Y(0) - sy) / S;
+    const k0 = Math.floor(worldAt(h) / step) - 1,
+      k1 = Math.ceil(worldAt(0) / step) + 1;
+    // A zero-size canvas (layout not finished) would make this loop endless.
+    if (!(S > 0) || !Number.isFinite(k0) || !Number.isFinite(k1) || k1 - k0 > 500) return;
+    for (const side of [-1, 1]) {
+      const x0 = side < 0 ? 0 : w;
+      const depth = (k) => (rnd(k * 5 + (side > 0 ? 13 : 29)) * 0.5 + 0.35) * S * 1.3;
+      c.save();
+      c.fillStyle = "#1b140e";
+      c.beginPath();
+      c.moveTo(x0, Y(k0 * step));
+      for (let k = k0; k <= k1; k++) {
+        c.lineTo(x0 - side * depth(k), Y(k * step));
+        c.lineTo(x0 - side * depth(k), Y((k + 1) * step));
+      }
+      c.lineTo(x0, Y((k1 + 1) * step));
+      c.closePath();
+      c.fill();
+      c.strokeStyle = "rgba(255,215,160,0.18)";
+      c.lineWidth = 2;
+      c.stroke();
+      // Courses of the dry stone, and a tuft of dry grass on each shelf.
+      c.strokeStyle = "rgba(0,0,0,0.35)";
+      c.lineWidth = 1;
+      for (let k = k0; k <= k1; k++) {
+        const d = depth(k);
+        for (let j = 1; j < 4; j++) {
+          const yy = Y(k * step + (j * step) / 4);
+          c.beginPath();
+          c.moveTo(x0, yy);
+          c.lineTo(x0 - side * d, yy);
+          c.stroke();
+          const jx = x0 - side * d * (0.3 + rnd(k * 9 + j) * 0.5);
+          c.beginPath();
+          c.moveTo(jx, yy);
+          c.lineTo(jx, Y(k * step + ((j - 1) * step) / 4));
+          c.stroke();
+        }
+        c.strokeStyle = "rgba(120,100,60,0.5)";
+        const gx = x0 - side * d * 0.7,
+          gy = Y((k + 1) * step);
+        for (let j = -1; j <= 1; j++) {
+          c.beginPath();
+          c.moveTo(gx + j * 2, gy);
+          c.lineTo(gx + j * 5 + Math.sin(t * 0.7 + k) * 1.5, gy - S * 0.22);
+          c.stroke();
+        }
+        c.strokeStyle = "rgba(0,0,0,0.35)";
+      }
+      c.restore();
+    }
+    if (!rain) {
+      // Heat over the dry bed: faint wavering bands, and motes drifting up.
+      c.save();
+      c.strokeStyle = "rgba(255,200,150,0.05)";
+      c.lineWidth = S * 0.25;
+      for (let i = 0; i < 3; i++) {
+        const y0 = Y(0) - S * (0.6 + i * 0.9);
+        c.beginPath();
+        for (let x = 0; x <= w; x += 12) c.lineTo(x, y0 + Math.sin(x * 0.03 + t * (1.2 + i * 0.3)) * 3);
+        c.stroke();
+      }
+      for (let i = 0; i < 12; i++) {
+        const y = h * ((((rnd(i + 340) - t * 0.012 * (1 + rnd(i + 341))) % 1) + 1) % 1);
+        c.fillStyle = `rgba(255,220,170,${0.08 + rnd(i + 342) * 0.12})`;
+        c.fillRect(rnd(i + 343) * w + Math.sin(t * 0.5 + i) * 8, y, 1.5, 1.5);
+      }
+      c.restore();
+      glow(c, w * 0.5, Y(0), w * 0.7, "rgba(255,170,90,0.06)");
+    }
+    vignette(c, w, h, 0.5);
+  }
+
+  // A row of heavy clouds rolling slowly along.
+  function cloudBank(c, w, y, t, color, seed, S) {
+    c.save();
+    c.fillStyle = color;
+    const span = w + S * 4;
+    for (let i = 0; i < 9; i++) {
+      const x = ((((rnd(seed + i) * span + t * 3 * (0.6 + rnd(seed + i + 1) * 0.4)) % span) + span) % span) - S * 2;
+      c.beginPath();
+      c.ellipse(x, y + rnd(seed + i + 2) * S * 0.6, S * (1.2 + rnd(seed + i + 3)), S * (0.45 + rnd(seed + i + 4) * 0.3), 0, 0, TAU);
+      c.fill();
+    }
+    c.restore();
+  }
+
+  // The fig tree (tneqlet): a smooth twisted trunk and broad three-lobed leaves.
+  // In front (figs true) it carries fruit and catches the moon; behind it is a shadow.
+  function figTree(c, x, base, size, t, alpha = 1, figs = false) {
+    c.save();
+    c.globalAlpha *= alpha;
+    const trunk = figs ? "#2b2622" : "#0e0c0b";
+    c.strokeStyle = trunk;
+    c.lineCap = "round";
+    c.lineWidth = size * 0.075;
+    c.beginPath();
+    c.moveTo(x, base);
+    c.bezierCurveTo(x - size * 0.1, base - size * 0.25, x + size * 0.12, base - size * 0.35, x + size * 0.02, base - size * 0.55);
+    c.stroke();
+    c.lineWidth = size * 0.035;
+    for (const [ex, ey] of [
+      [-0.32, -0.78],
+      [0.34, -0.74],
+      [0.05, -0.95],
+    ]) {
+      c.beginPath();
+      c.moveTo(x + size * 0.02, base - size * 0.52);
+      c.quadraticCurveTo(x + size * ex * 0.4, base - size * 0.7, x + size * ex, base + size * ey);
+      c.stroke();
+    }
+    if (figs) {
+      c.strokeStyle = "rgba(220,210,180,0.25)";
+      c.lineWidth = 1.5;
+      c.beginPath();
+      c.moveTo(x + size * 0.03, base);
+      c.bezierCurveTo(x - size * 0.07, base - size * 0.25, x + size * 0.15, base - size * 0.35, x + size * 0.05, base - size * 0.55);
+      c.stroke();
+    }
+    for (let i = 0; i < 30; i++) {
+      const a = rnd(i + 360) * TAU,
+        rr = Math.sqrt(rnd(i + 361));
+      const lx = x + Math.cos(a) * rr * size * 0.45,
+        ly = base - size * 0.8 + Math.sin(a) * rr * size * 0.25;
+      c.fillStyle = figs ? (i % 3 ? "#16200f" : "#1f2c15") : "#0c0b0a";
+      figLeaf(c, lx, ly, size * 0.11, a + Math.sin(t * 0.8 + i) * 0.06);
+    }
+    if (figs) {
+      c.fillStyle = "#3a1f33";
+      for (let i = 0; i < 6; i++) {
+        c.beginPath();
+        c.ellipse(x + (rnd(i + 390) - 0.5) * size * 0.6, base - size * (0.68 + rnd(i + 391) * 0.2), size * 0.025, size * 0.032, 0, 0, TAU);
+        c.fill();
+      }
+    }
+    c.restore();
+  }
+
+  function figLeaf(c, x, y, s, angle) {
+    c.save();
+    c.translate(x, y);
+    c.rotate(angle);
+    c.beginPath();
+    c.ellipse(0, -s * 0.45, s * 0.32, s * 0.55, 0, 0, TAU);
+    c.ellipse(-s * 0.4, -s * 0.25, s * 0.28, s * 0.4, -0.7, 0, TAU);
+    c.ellipse(s * 0.4, -s * 0.25, s * 0.28, s * 0.4, 0.7, 0, TAU);
+    c.fill();
+    c.restore();
+  }
+
+  // A squared stone from the old wall, chisel-marked and flecked with lichen.
+  function stoneBlock(c, x, top, w, h) {
+    c.save();
+    const g = c.createLinearGradient(0, top, 0, top + h);
+    g.addColorStop(0, STONE_LIGHT);
+    g.addColorStop(1, STONE_DARK);
+    c.fillStyle = g;
+    c.shadowColor = "rgba(255,215,160,0.3)";
+    c.shadowBlur = 8;
+    c.beginPath();
+    c.roundRect(x - w / 2, top, w, h, Math.min(w, h) * 0.18);
+    c.fill();
+    c.shadowBlur = 0;
+    c.strokeStyle = "rgba(30,24,18,0.45)";
+    c.lineWidth = 1;
+    for (let i = 0; i < 4; i++) {
+      const cx = x - w * 0.3 + i * w * 0.2,
+        cy = top + h * (0.35 + (i % 2) * 0.25);
+      c.beginPath();
+      c.moveTo(cx, cy);
+      c.lineTo(cx + w * 0.08, cy + h * 0.15);
+      c.stroke();
+    }
+    c.fillStyle = "rgba(205,210,150,0.35)";
+    for (let i = 0; i < 3; i++) {
+      c.beginPath();
+      c.ellipse(x + (i - 1) * w * 0.28, top + h * 0.2 + (i % 2) * h * 0.4, w * 0.06, h * 0.06, 0, 0, TAU);
+      c.fill();
+    }
+    c.strokeStyle = "rgba(255,235,200,0.4)";
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.moveTo(x - w / 2 + 3, top + 1);
+    c.lineTo(x + w / 2 - 3, top + 1);
+    c.stroke();
+    c.restore();
+  }
+
+  // The cracked cistern wall (aɣrab): courses of cut stone, a crack from the top to the
+  // foot, and the water behind it already seeping through, darkening the stone and
+  // dripping. course: the height of one course of stones, in pixels.
+  function cistern(c, x, top, w, h, t, course = Math.min(w, h) * 0.3) {
+    // A zero-size wall (layout not finished) would make the joint loop endless.
+    if (!(w > 1 && h > 1 && course > 1)) return;
+    const left = x - w / 2;
+    c.save();
+    // The water held behind it, catching the moon along the top.
+    glow(c, x, top, Math.max(w, course * 3) * 0.9, "rgba(140,190,230,0.16)");
+    const g = c.createLinearGradient(0, top, 0, top + h);
+    g.addColorStop(0, STONE);
+    g.addColorStop(1, STONE_DARK);
+    c.fillStyle = g;
+    c.shadowColor = "rgba(150,200,240,0.3)";
+    c.shadowBlur = 10;
+    c.beginPath();
+    c.roundRect(left, top, w, h, Math.min(w, h) * 0.05);
+    c.fill();
+    c.shadowBlur = 0;
+    c.save();
+    c.beginPath();
+    c.rect(left, top, w, h);
+    c.clip();
+    // Courses and joints.
+    const rows = Math.max(3, Math.round(h / course));
+    const rh = h / rows,
+      joint = rh * 1.7;
+    c.strokeStyle = "rgba(20,16,12,0.6)";
+    c.lineWidth = 1.2;
+    for (let r = 0; r < rows; r++) {
+      const yy = top + r * rh;
+      c.beginPath();
+      c.moveTo(left, yy);
+      c.lineTo(left + w, yy);
+      c.stroke();
+      for (let jx = left + (r % 2 ? joint * 0.5 : joint * (0.2 + rnd(r + 410) * 0.5)); jx < left + w; jx += joint * (0.8 + rnd(r * 7 + jx) * 0.4)) {
+        c.beginPath();
+        c.moveTo(jx, yy);
+        c.lineTo(jx, yy + rh);
+        c.stroke();
+      }
+    }
+    // The crack: a zigzag from top to foot, the stone wet and dark all round it.
+    const amp = Math.min(w * 0.4, course * 1.4);
+    const pts = [];
+    for (let i = 0; i <= 8; i++) pts.push([x + (rnd(i + 400) - 0.5) * amp, top + (h * i) / 8]);
+    c.fillStyle = "rgba(15,30,45,0.32)";
+    for (const [px, py] of pts) {
+      c.beginPath();
+      c.ellipse(px, py + rh * 0.3, amp * 0.45 + w * 0.08, rh * 0.8, 0, 0, TAU);
+      c.fill();
+    }
+    c.strokeStyle = "#0b0806";
+    c.lineWidth = Math.max(2, Math.min(w, h) * 0.05);
+    c.beginPath();
+    pts.forEach(([px, py], i) => (i ? c.lineTo(px, py) : c.moveTo(px, py)));
+    c.stroke();
+    c.strokeStyle = `rgba(150,200,240,${0.45 + Math.sin(t * 2) * 0.1})`;
+    c.lineWidth = 1;
+    c.beginPath();
+    pts.forEach(([px, py], i) => (i ? c.lineTo(px + 1, py) : c.moveTo(px + 1, py)));
+    c.stroke();
+    // Thin streams run down the face from the crack; a bead of light slides down each.
+    for (const s of [2, 4, 6]) {
+      const [sx, sy] = pts[s];
+      c.strokeStyle = "rgba(120,170,210,0.45)";
+      c.lineWidth = 1.5;
+      c.beginPath();
+      c.moveTo(sx, sy);
+      c.quadraticCurveTo(sx + rh * 0.2, (sy + top + h) / 2, sx + rh * 0.1, top + h);
+      c.stroke();
+      const k = (t * 0.6 + s * 0.3) % 1;
+      c.fillStyle = `rgba(210,235,255,${0.8 * (1 - k)})`;
+      c.beginPath();
+      c.arc(sx + rh * 0.12 * k, sy + (top + h - sy) * k, 1.8, 0, TAU);
+      c.fill();
+    }
+    c.restore();
+    // The water line along the top, swaying behind the coping.
+    c.strokeStyle = "rgba(180,220,245,0.6)";
+    c.lineWidth = 1.5;
+    c.beginPath();
+    for (let xx = left + 2; xx <= left + w - 2; xx += 4) c.lineTo(xx, top - 1 + Math.sin(xx * 0.2 + t * 2) * 0.8);
+    c.stroke();
+    c.strokeStyle = "rgba(255,235,200,0.35)";
+    c.beginPath();
+    c.moveTo(left, top + 1);
+    c.lineTo(left + w, top + 1);
+    c.stroke();
+    // Drops falling off the foot.
+    for (let i = 0; i < 2; i++) {
+      const life = (t * 0.9 + i * 0.5) % 1;
+      c.fillStyle = `rgba(170,210,240,${0.85 * (1 - life)})`;
+      c.beginPath();
+      c.ellipse(x + (i - 0.5) * w * 0.3, top + h + life * Math.max(10, rh), 1.6, 2.4, 0, 0, TAU);
+      c.fill();
+    }
+    c.restore();
+  }
+
+  // A water's surface height at screen x: a slow swell, rough while a flood comes in.
+  function waveAt(x, ys, t, rough) {
+    const amp = 1.4 + rough * 4.5;
+    return ys + Math.sin(x * 0.05 + t * 2) * amp + Math.sin(x * 0.13 - t * 3.1) * amp * 0.5;
+  }
+  function surfacePath(c, x0, x1, ys, t, rough) {
+    c.moveTo(x0, waveAt(x0, ys, t, rough));
+    for (let x = x0 + 6; x < x1; x += 6) c.lineTo(x, waveAt(x, ys, t, rough));
+    c.lineTo(x1, waveAt(x1, ys, t, rough));
+  }
+  // How hard a flood still churns: full while it rises, settling over 2.5 s after.
+  function floodStrength(o) {
+    if (!o.flooded) return 0;
+    return o.floodT < 1.5 ? 1 : Math.max(0, 1 - (o.floodT - 1.5) / 2.5);
+  }
+
+  // The body of a water from its surface ys down to yb; dir is the way a flood runs.
+  function waterBody(c, x0, x1, ys, yb, t, rough, dir, S) {
+    if (ys >= yb - 0.5) return;
+    c.save();
+    c.beginPath();
+    surfacePath(c, x0, x1, ys, t, rough);
+    c.lineTo(x1, yb);
+    c.lineTo(x0, yb);
+    c.closePath();
+    const g = c.createLinearGradient(0, ys, 0, yb);
+    g.addColorStop(0, rough ? `rgba(120,160,190,${0.55 + rough * 0.2})` : WATER + "0.5)");
+    g.addColorStop(1, "rgba(8,20,36,0.85)");
+    c.fillStyle = g;
+    c.fill();
+    c.clip();
+    // Moonlight wavering under the surface.
+    c.strokeStyle = "rgba(170,210,240,0.12)";
+    c.lineWidth = 1;
+    const deep = Math.min(yb - ys, S * 3);
+    for (let i = 0; i < 6; i++) {
+      const cx = x0 + (x1 - x0) * rnd(i + 500),
+        cy = ys + 4 + deep * rnd(i + 501);
+      c.beginPath();
+      c.moveTo(cx - S * 0.3, cy);
+      c.quadraticCurveTo(cx, cy + Math.sin(t * 2 + i) * 3, cx + S * 0.3, cy);
+      c.stroke();
+    }
+    // A flood: white streaks racing down the ravine under the surface.
+    if (rough) {
+      c.strokeStyle = FOAM + 0.5 * rough + ")";
+      c.lineWidth = 2;
+      const band = Math.min(yb - ys, S * 2.5);
+      for (let i = 0; i < 14; i++) {
+        const k = (t * 1.4 * (0.6 + rnd(i + 510)) + rnd(i + 520)) % 1;
+        const sx = dir > 0 ? x0 + k * (x1 - x0) : x1 - k * (x1 - x0);
+        const sy = ys + 4 + band * rnd(i + 540) * 0.85;
+        c.beginPath();
+        c.moveTo(sx, sy);
+        c.lineTo(sx - dir * S * (0.5 + rnd(i + 530)), sy + Math.sin(t * 6 + i) * 2);
+        c.stroke();
+      }
+    }
+    c.restore();
+  }
+
+  // The translucent front of a water, drawn over the hero: its surface line, moon
+  // glints, foam while a flood comes in.
+  function waterVeil(c, x0, x1, ys, yb, t, rough, dir, S) {
+    if (ys >= yb - 0.5) return;
+    c.save();
+    c.beginPath();
+    surfacePath(c, x0, x1, ys, t, rough);
+    c.lineTo(x1, yb);
+    c.lineTo(x0, yb);
+    c.closePath();
+    c.fillStyle = WATER + "0.3)";
+    c.fill();
+    c.beginPath();
+    surfacePath(c, x0, x1, ys, t, rough);
+    c.strokeStyle = rough ? FOAM + (0.6 + 0.35 * rough) + ")" : "rgba(190,225,250,0.55)";
+    c.lineWidth = rough ? 2 + rough * 3 : 1.5;
+    c.stroke();
+    for (let i = 0; i < 5; i++) {
+      const gx = x0 + (x1 - x0) * rnd(i + 600);
+      c.strokeStyle = `rgba(235,245,255,${Math.max(0, 0.25 + Math.sin(t * 3 + i * 2) * 0.3)})`;
+      c.lineWidth = 1.5;
+      c.beginPath();
+      c.moveTo(gx - 4, waveAt(gx, ys, t, rough) + 2);
+      c.lineTo(gx + 4, waveAt(gx, ys, t, rough) + 2);
+      c.stroke();
+    }
+    if (rough) {
+      for (let i = 0; i < 10; i++) {
+        const k = (t * 0.9 * (0.7 + rnd(i + 580)) + rnd(i + 590)) % 1;
+        const fx = dir > 0 ? x0 + k * (x1 - x0) : x1 - k * (x1 - x0);
+        c.fillStyle = FOAM + 0.7 * rough + ")";
+        c.beginPath();
+        c.arc(fx, waveAt(fx, ys, t, rough), S * (0.12 + rnd(i + 595) * 0.15) * rough, 0, TAU);
+        c.fill();
+      }
+    }
+    c.restore();
+  }
+
+  // White water bursting from a breach at (bx, by), falling to the surface ys.
+  function cascade(c, bx, by, bw, ys, t, k, dir) {
+    if (by >= ys || k <= 0) return;
+    c.save();
+    const g = c.createLinearGradient(0, by, 0, ys);
+    g.addColorStop(0, FOAM + 0.85 * k + ")");
+    g.addColorStop(1, WATER + 0.6 * k + ")");
+    c.fillStyle = g;
+    c.beginPath();
+    c.moveTo(bx - bw / 2, by);
+    c.quadraticCurveTo(bx - bw * 0.6 + dir * bw * 0.3, (by + ys) / 2, bx - bw * 0.8 + dir * bw, ys);
+    c.lineTo(bx + bw * 0.8 + dir * bw, ys);
+    c.quadraticCurveTo(bx + bw * 0.6 + dir * bw * 0.3, (by + ys) / 2, bx + bw / 2, by);
+    c.closePath();
+    c.fill();
+    c.strokeStyle = FOAM + 0.8 * k + ")";
+    c.lineWidth = 1.5;
+    for (let i = 0; i < 8; i++) {
+      const kk = (t * 2.2 + rnd(i + 560)) % 1;
+      const sx = bx + (rnd(i + 570) - 0.5) * bw + dir * bw * kk * 0.7,
+        sy = by + (ys - by) * kk;
+      c.beginPath();
+      c.moveTo(sx, sy);
+      c.lineTo(sx + dir * 2, sy + Math.min(14, (ys - by) * 0.2));
+      c.stroke();
+    }
+    glow(c, bx + dir * bw * 0.8, ys, bw * 1.3, FOAM + 0.35 * k + ")");
+    c.restore();
+  }
+
+  // A water object of the stage (engine fields: x, y bottom, w, surface, flooded, floodT).
+  function waterCoords(o, X, Y, g) {
+    const breach = o.flooded ? g.platforms.find((p) => p.flood !== undefined && p.flood === o.id) : null;
+    return {
+      x0: X(o.x - o.w / 2),
+      x1: X(o.x + o.w / 2),
+      yb: Y(o.y),
+      ys: Y(o.surface),
+      rough: floodStrength(o),
+      breach,
+      dir: breach ? Math.sign(o.x - breach.x) || 1 : 1,
+    };
+  }
+  function water(c, o, X, Y, S, t, g) {
+    const k = waterCoords(o, X, Y, g);
+    waterBody(c, k.x0, k.x1, k.ys, k.yb, t, k.rough, k.dir, S);
+    if (k.breach) {
+      const p = k.breach;
+      cascade(c, X(p.x), Y(p.y - (p.h || 0.4) * 0.3), p.w * S * 0.9, k.ys, t, k.rough, k.dir);
+    }
+  }
+
+  // The back of a well bucket: the iron handle, the dark inside, the far rim. Its walls
+  // come later (bucketFront, after the hero), so he stands inside it.
+  function bucketBack(c, x, top, w, S) {
+    const rim = top - RIM * S;
+    c.save();
+    c.strokeStyle = "#3d3a36";
+    c.lineWidth = Math.max(1.5, S * 0.05);
+    c.beginPath();
+    c.moveTo(x - w * 0.46, rim);
+    c.quadraticCurveTo(x, rim - w, x + w * 0.46, rim);
+    c.stroke();
+    c.fillStyle = "#1d130b";
+    c.fillRect(x - w * 0.5, rim, w, top - rim);
+    c.beginPath();
+    c.ellipse(x, rim, w * 0.5, w * 0.12, 0, Math.PI, TAU);
+    c.fill();
+    c.strokeStyle = "rgba(255,220,170,0.35)";
+    c.lineWidth = 1.2;
+    c.beginPath();
+    c.ellipse(x, rim, w * 0.5, w * 0.12, 0, Math.PI, TAU);
+    c.stroke();
+    c.restore();
+  }
+  // The front of the bucket: tapering staves, two iron hoops, the near rim.
+  function bucketFront(c, x, top, w, h, S) {
+    const rim = top - RIM * S,
+      foot = top + h;
+    c.save();
+    const g = c.createLinearGradient(x - w / 2, 0, x + w / 2, 0);
+    g.addColorStop(0, "#3a2414");
+    g.addColorStop(0.45, "#8a5c34");
+    g.addColorStop(1, "#2a190c");
+    c.fillStyle = g;
+    c.shadowColor = "rgba(255,190,120,0.3)";
+    c.shadowBlur = 6;
+    c.beginPath();
+    c.moveTo(x - w / 2, rim);
+    c.lineTo(x - w * 0.42, foot);
+    c.quadraticCurveTo(x, foot + w * 0.1, x + w * 0.42, foot);
+    c.lineTo(x + w / 2, rim);
+    c.ellipse(x, rim, w * 0.5, w * 0.12, 0, 0, Math.PI);
+    c.closePath();
+    c.fill();
+    c.shadowBlur = 0;
+    c.strokeStyle = "rgba(30,16,6,0.6)";
+    c.lineWidth = 1;
+    for (let i = 1; i < 5; i++) {
+      const u = i / 5;
+      c.beginPath();
+      c.moveTo(x - w / 2 + w * u, rim + w * 0.12 * Math.sin(u * Math.PI));
+      c.lineTo(x - w * 0.42 + w * 0.84 * u, foot + w * 0.1 * Math.sin(u * Math.PI) * 0.5);
+      c.stroke();
+    }
+    c.strokeStyle = "#3d3a36";
+    c.lineWidth = Math.max(2, S * 0.06);
+    for (const f of [0.3, 0.8]) {
+      const yy = rim + (foot - rim) * f,
+        half = w * (0.5 - 0.08 * f);
+      c.beginPath();
+      c.moveTo(x - half, yy);
+      c.quadraticCurveTo(x, yy + w * 0.12, x + half, yy);
+      c.stroke();
+    }
+    c.strokeStyle = "rgba(255,220,170,0.4)";
+    c.lineWidth = 1.2;
+    c.beginPath();
+    c.ellipse(x, rim, w * 0.5, w * 0.12, 0, 0, Math.PI);
+    c.stroke();
+    c.restore();
+  }
+  // Both halves of a bucket at once, for the story scenes.
+  function bucket(c, x, top, w, h, S) {
+    bucketBack(c, x, top, w, S);
+    bucketFront(c, x, top, w, h, S);
+  }
+
+  // The well frame for one rope: two posts and a beam, a pulley turning as the rope
+  // runs, and the rope from one bucket's handle over the pulley down to the other's.
+  // a, b: the two bucket platforms (world: x, y, w, h, top, bottom).
+  // The frame's place in world units: pulley centre (px, py), the underside of the beam,
+  // its ends, the posts' foot. It rises above any stone tied to the rope (at its home
+  // height, so the frame never moves when the stone falls) and its beam spans it.
+  function wellFrame(a, b, game) {
+    if (a.x > b.x) [a, b] = [b, a];
+    let py = Math.max(a.top, b.top) + RIM + Math.max(a.w, b.w) * 0.5 + 1.4,
+      left = a.x - a.w / 2 - 0.35,
+      right = b.x + b.w / 2 + 0.35;
+    for (const p of (game && game.platforms) || []) {
+      if (p.type !== "drop" || p.tied === undefined || p.tied !== a.rope) continue;
+      py = Math.max(py, (p.homeY === undefined ? p.y : p.homeY) + 0.5);
+      const hx = p.homeX === undefined ? p.x : p.homeX;
+      left = Math.min(left, hx - p.w / 2 - 0.2);
+      right = Math.max(right, hx + p.w / 2 + 0.2);
+    }
+    return {
+      a,
+      b,
+      px: (a.x + b.x) / 2,
+      py,
+      // The pulley is 0.34 in radius and hangs 0.28 under the beam.
+      beam: py + 0.34 + 0.28,
+      left,
+      right,
+      foot: Math.min(a.bottom, b.bottom) - Math.max(a.h || 0.4, b.h || 0.4) - 0.3,
+    };
+  }
+  // Every well frame of a stage, one per rope.
+  function wellFrames(game) {
+    const frames = [];
+    const seen = new Set();
+    for (const p of game.platforms) {
+      if (p.type !== "bucket" || seen.has(p.rope)) continue;
+      seen.add(p.rope);
+      const pair = game.platforms.filter((q) => q.type === "bucket" && q.rope === p.rope);
+      if (pair.length === 2) frames.push(wellFrame(pair[0], pair[1], game));
+    }
+    return frames;
+  }
+
+  function well(c, a, b, X, Y, S, t, game) {
+    const f = wellFrame(a, b, game);
+    [a, b] = [f.a, f.b];
+    const px = X(f.px),
+      py = Y(f.py),
+      pr = S * 0.34;
+    const beamY = py - pr - S * 0.28;
+    const left = X(f.left),
+      right = X(f.right);
+    const foot = Y(f.foot);
+    const pw = S * 0.22;
+    c.save();
+    // Posts and beam: rough timber, dim, behind the play.
+    c.fillStyle = "#24180e";
+    c.fillRect(left - pw / 2, beamY, pw, foot - beamY);
+    c.fillRect(right - pw / 2, beamY, pw, foot - beamY);
+    const g = c.createLinearGradient(0, beamY - S * 0.2, 0, beamY + S * 0.04);
+    g.addColorStop(0, "#5a3d22");
+    g.addColorStop(1, "#2a1a0d");
+    c.fillStyle = g;
+    c.beginPath();
+    c.roundRect(left - pw, beamY - S * 0.2, right - left + pw * 2, S * 0.24, S * 0.05);
+    c.fill();
+    c.strokeStyle = "rgba(255,215,160,0.3)";
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.moveTo(left - pw, beamY - S * 0.2);
+    c.lineTo(right + pw, beamY - S * 0.2);
+    c.stroke();
+    // The pulley's iron bracket, then the wheel, its spokes turned by the rope.
+    c.strokeStyle = "#3d3a36";
+    c.lineWidth = Math.max(2, S * 0.07);
+    c.beginPath();
+    c.moveTo(px, beamY);
+    c.lineTo(px, py);
+    c.stroke();
+    c.strokeStyle = "#5a3d22";
+    c.lineWidth = Math.max(2, S * 0.08);
+    c.beginPath();
+    c.arc(px, py, pr, 0, TAU);
+    c.stroke();
+    const turn = a.y / 0.34;
+    c.strokeStyle = "#4a321b";
+    c.lineWidth = Math.max(1.5, S * 0.05);
+    for (let i = 0; i < 4; i++) {
+      const an = turn + (i * Math.PI) / 2;
+      c.beginPath();
+      c.moveTo(px, py);
+      c.lineTo(px + Math.cos(an) * pr * 0.9, py + Math.sin(an) * pr * 0.9);
+      c.stroke();
+    }
+    c.fillStyle = "#2a1a0c";
+    c.beginPath();
+    c.arc(px, py, S * 0.09, 0, TAU);
+    c.fill();
+    c.strokeStyle = "rgba(255,210,150,0.3)";
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.arc(px, py, pr + S * 0.04, Math.PI * 1.1, Math.PI * 1.6);
+    c.stroke();
+    // The rope: up from each handle to the rim of the wheel and over its top.
+    const handle = (q) => [X(q.x), Y(q.y) - RIM * S - q.w * S * 0.5];
+    const [ax, ay] = handle(a),
+      [bx, by] = handle(b);
+    c.strokeStyle = "#b39a6c";
+    c.lineWidth = Math.max(1.5, S * 0.05);
+    c.lineCap = "round";
+    c.beginPath();
+    c.moveTo(ax, ay);
+    c.lineTo(px - pr, py);
+    c.arc(px, py, pr, Math.PI, TAU);
+    c.lineTo(bx, by);
+    c.stroke();
+    c.restore();
+  }
+
+  // A hanging stone at the spring (a drop that is neither knocked nor the cistern): a
+  // cracked slab on a frayed rope, or with `tied`, a block lashed to the well rope. The
+  // rope runs up to the well's beam when one is above it, else it is a short torn end.
+  // While p.timer grows toward p.delay the rope frays and the stone shivers; once the
+  // stone is falling or has landed, the rope is gone. Returns false for other themes.
+  function hanging(c, p, X, Y, S, t, game) {
+    if (game.level.theme !== "spring" || p.knock || p.flood !== undefined) return false;
+    const loose = p.falling || p.landed;
+    const strain = p.timer && !loose ? Math.min(1, p.timer / (p.delay || 0.6)) : 0;
+    const shiver = strain ? Math.sin(t * 60) * strain * 2.5 : 0;
+    const x = X(p.x) + shiver,
+      top = Y(p.y),
+      w = p.w * S,
+      h = (p.h || 0.4) * S;
+    if (!loose) {
+      const frames = wellFrames(game);
+      const frame =
+        p.tied !== undefined
+          ? frames.find((f) => f.a.rope === p.tied)
+          : frames.find((f) => p.x > f.left && p.x < f.right && f.beam > p.y && f.beam - p.y < 4.5);
+      const anchor = frame ? Y(frame.beam) + S * 0.04 : top - S * 0.55;
+      hangRope(c, x, top, anchor, S, t, strain, !frame);
+    }
+    if (p.tied !== undefined) {
+      stoneBlock(c, x, top, w, h);
+      // The lashing: two turns of rope round the block.
+      c.save();
+      c.strokeStyle = "#8e7a52";
+      c.lineWidth = Math.max(1.5, S * 0.05);
+      for (const f of [-0.22, 0.22]) {
+        c.beginPath();
+        c.moveTo(x + f * w, top);
+        c.lineTo(x + f * w * 1.1, top + h);
+        c.stroke();
+      }
+      c.restore();
+    } else crackedSlab(c, x, top, w, h, t);
+    return true;
+  }
+
+  // A rope from the stone's top up to anchorY. Near the top it frays: its strands part
+  // more as strain (0 to 1) grows. torn: a short end with loose fibres, tied to nothing.
+  function hangRope(c, x, top, anchorY, S, t, strain, torn) {
+    c.save();
+    c.strokeStyle = "#b39a6c";
+    c.lineCap = "round";
+    const lw = Math.max(1.5, S * 0.05);
+    const fray = anchorY + (top - anchorY) * (torn ? 0.15 : 0.3);
+    c.lineWidth = lw;
+    c.beginPath();
+    c.moveTo(x, top);
+    c.lineTo(x, fray + S * 0.08);
+    c.stroke();
+    // The fraying spot: thin strands bowing apart.
+    c.lineWidth = Math.max(1, lw * 0.4);
+    for (const k of [-1, 0, 1]) {
+      const bow = k * (1.5 + strain * 4) + (strain ? Math.sin(t * 50 + k) * strain : 0);
+      c.beginPath();
+      c.moveTo(x, fray + S * 0.08);
+      c.quadraticCurveTo(x + bow, fray, x + (torn ? bow * 1.5 : 0), fray - S * 0.08);
+      c.stroke();
+    }
+    if (!torn) {
+      c.lineWidth = lw * (1 - strain * 0.4);
+      c.beginPath();
+      c.moveTo(x, fray - S * 0.08);
+      c.lineTo(x, anchorY);
+      c.stroke();
+    }
+    c.restore();
+  }
+
+  // A loose slab of the old terraces, split by a crack.
+  function crackedSlab(c, x, top, w, h, t) {
+    stoneBlock(c, x, top, w, h);
+    c.save();
+    c.strokeStyle = "#140f0b";
+    c.lineWidth = Math.max(1.5, h * 0.08);
+    c.beginPath();
+    c.moveTo(x - w * 0.08, top);
+    c.lineTo(x + w * 0.04, top + h * 0.35);
+    c.lineTo(x - w * 0.05, top + h * 0.6);
+    c.lineTo(x + w * 0.06, top + h);
+    c.stroke();
+    c.strokeStyle = `rgba(255,235,200,${0.2 + Math.sin(t * 1.5) * 0.05})`;
+    c.lineWidth = 1;
+    c.beginPath();
+    c.moveTo(x - w * 0.06, top + 1);
+    c.lineTo(x + w * 0.06, top + h * 0.35 + 1);
+    c.stroke();
+    c.restore();
+  }
+
+  // Drawn after the hero: bucket walls (he stands inside them) and the front of every
+  // water (so a floating hero sits half in it), with ripples round him.
+  function front(c, g, X, Y, S, t) {
+    for (const p of g.platforms)
+      if (p.type === "bucket" && p.alive !== false) bucketFront(c, X(p.x), Y(p.y), p.w * S, (p.h || 0.4) * S, S);
+    for (const o of g.objects) {
+      if (o.type !== "water") continue;
+      const k = waterCoords(o, X, Y, g);
+      waterVeil(c, k.x0, k.x1, k.ys, k.yb, t, k.rough, k.dir, S);
+      const hero = g.hero;
+      if (hero.state === "float" && Math.abs(hero.x - o.x) < o.w / 2 && Math.abs(hero.y - o.surface) < 0.8) {
+        c.save();
+        for (let i = 0; i < 3; i++) {
+          const r = (t * 0.7 + i / 3) % 1;
+          c.strokeStyle = `rgba(210,235,255,${0.5 * (1 - r)})`;
+          c.lineWidth = 1.2;
+          c.beginPath();
+          c.ellipse(X(hero.x), k.ys, S * (0.45 + r * 0.9), S * (0.08 + r * 0.12), 0, 0, TAU);
+          c.stroke();
+        }
+        c.restore();
+      }
+    }
+  }
+
+  // Teryel's frogs (imqerqar): squat and dark, a pale throat pulsing while they wait,
+  // big glowing eyes on top. Mid-leap (extra.leap {k, up}) the body stretches and the
+  // hind legs kick out; extra.windup (0 to 1) is the crouch just before a leap.
+  function frog(c, x, y, size, t, mood, extra = {}) {
+    const face = extra.face || ((extra.vx || 0) < -0.05 ? -1 : (extra.vx || 0) > 0.05 ? 1 : 0);
+    const leap = extra.leap || null;
+    const asleep = mood === "sleep";
+    const crouch = leap ? 0 : extra.windup || (mood === "notice" ? 0.3 : 0);
+    const stretch = leap ? (leap.up ? 1 : 0.55) : 0;
+    c.save();
+    c.translate(x, y + size * 0.1);
+    if (leap) c.rotate(face * 0.15 * (leap.up ? 1 : -0.5));
+    glow(c, 0, 0, size * 0.85, mood === "chase" ? "rgba(200,255,90,0.2)" : "rgba(170,220,120,0.1)");
+    c.fillStyle = FROG;
+    c.strokeStyle = FROG;
+    c.lineCap = "round";
+    c.shadowColor = "rgba(190,230,140,0.45)";
+    c.shadowBlur = size * 0.16;
+    // Hind legs: folded at the sides on the stone, kicked out in the air.
+    c.lineWidth = Math.max(2, size * 0.09);
+    for (const sx of [-1, 1]) {
+      if (leap) {
+        const fx = leap.up ? sx * size * 0.16 : sx * size * 0.42,
+          fy = leap.up ? size * 0.62 : size * 0.4;
+        c.beginPath();
+        c.moveTo(sx * size * 0.18, size * 0.12);
+        c.quadraticCurveTo(sx * size * 0.34, size * 0.3, fx, fy);
+        c.stroke();
+        c.beginPath();
+        c.ellipse(fx, fy, size * 0.09, size * 0.035, sx * 0.4, 0, TAU);
+        c.fill();
+      } else {
+        c.beginPath();
+        c.ellipse(sx * size * (0.3 + crouch * 0.03), size * 0.13, size * 0.2, size * (0.14 - crouch * 0.02), sx * 0.5, 0, TAU);
+        c.fill();
+        c.beginPath();
+        c.ellipse(sx * size * 0.42, size * 0.25, size * 0.12, size * 0.035, 0, 0, TAU);
+        c.fill();
+      }
+    }
+    // Body and head in one squat mound; stretched tall in a leap, flatter in a crouch.
+    const rx = size * 0.34 * (1 - stretch * 0.15 + crouch * 0.08),
+      ry = size * 0.24 * (1 + stretch * 0.35 - crouch * 0.15);
+    c.beginPath();
+    c.ellipse(0, size * 0.04 - stretch * size * 0.05, rx, ry, 0, 0, TAU);
+    c.fill();
+    // Eye bulges on top.
+    const ey = size * 0.04 - stretch * size * 0.05 - ry * 0.75;
+    for (const sx of [-1, 1]) {
+      c.beginPath();
+      c.arc(sx * size * 0.16 + face * size * 0.02, ey, size * 0.1, 0, TAU);
+      c.fill();
+    }
+    // Front legs: planted, or reaching out in the air.
+    c.lineWidth = Math.max(1.5, size * 0.05);
+    for (const sx of [-1, 1]) {
+      c.beginPath();
+      if (leap && leap.up) {
+        c.moveTo(sx * size * 0.12, size * 0.05);
+        c.lineTo(sx * size * 0.28, -size * 0.12);
+      } else if (leap) {
+        c.moveTo(sx * size * 0.12, size * 0.12);
+        c.lineTo(sx * size * 0.22, size * 0.32);
+      } else {
+        c.moveTo(sx * size * 0.12, size * 0.12);
+        c.lineTo(sx * size * 0.14, size * 0.27);
+      }
+      c.stroke();
+    }
+    c.shadowBlur = 0;
+    // The pale throat, swelling and emptying while it sits.
+    const pulse = leap || mood === "chase" ? 0 : (Math.sin(t * (asleep ? 1.6 : 4.2) + x) + 1) * (asleep ? 0.15 : 0.3);
+    c.fillStyle = FROG_BELLY;
+    c.globalAlpha *= 0.85;
+    c.beginPath();
+    c.ellipse(face * size * 0.02, size * 0.1 + pulse * size * 0.03, size * 0.15 * (1 + pulse), size * 0.08 * (1 + pulse * 1.2), 0, 0, TAU);
+    c.fill();
+    c.globalAlpha /= 0.85;
+    // Wide mouth line and a few darker warts.
+    c.strokeStyle = "rgba(0,0,0,0.7)";
+    c.lineWidth = Math.max(1, size * 0.02);
+    c.beginPath();
+    c.moveTo(-size * 0.2 + face * size * 0.03, size * 0.02);
+    c.quadraticCurveTo(face * size * 0.03, size * 0.07, size * 0.2 + face * size * 0.03, size * 0.02);
+    c.stroke();
+    c.fillStyle = "#0b1207";
+    for (let i = 0; i < 4; i++) {
+      c.beginPath();
+      c.arc((i - 1.5) * size * 0.12, -size * 0.06 + (i % 2) * size * 0.05, size * 0.022, 0, TAU);
+      c.fill();
+    }
+    c.restore();
+    // Glowing eyes on the bulges, with slit pupils turned toward its prey.
+    const eyeY = y + size * 0.1 + ey;
+    const ex = x + face * size * 0.02;
+    eyes(c, ex, eyeY, size * 0.16, size * 0.62, mood, t, "rgba(215,255,110,A)");
+    if (!asleep) {
+      c.save();
+      c.fillStyle = "#050703";
+      for (const sx of [-1, 1]) {
+        c.beginPath();
+        c.ellipse(ex + sx * size * 0.16 + face * size * 0.025, eyeY, size * 0.04, size * 0.015, 0, 0, TAU);
+        c.fill();
+      }
+      c.restore();
+    }
+  }
+
+  // Tislit n Wanzar: the wooden ladle (aɣenja) dressed as a bride to call the rain. The
+  // bowl is her head under a red scarf, a crossed stick her arms, a striped dress, a
+  // little necklace of coral and silver. size: her full height. opts.tilt: radians.
+  function tislit(c, x, y, size, t, opts = {}) {
+    const s = size;
+    c.save();
+    c.translate(x, y);
+    c.rotate((opts.tilt || 0) + Math.sin(t * 1.4) * 0.04);
+    glow(c, 0, -s * 0.1, s * 0.9, "rgba(170,210,255,0.16)");
+    // The handle shows under the hem.
+    c.fillStyle = "#7a5230";
+    c.fillRect(-s * 0.035, s * 0.25, s * 0.07, s * 0.25);
+    // Arms: a crossed stick with tassels.
+    c.strokeStyle = "#6b4626";
+    c.lineWidth = Math.max(1.5, s * 0.05);
+    c.lineCap = "round";
+    c.beginPath();
+    c.moveTo(-s * 0.32, -s * 0.12);
+    c.lineTo(s * 0.32, -s * 0.12);
+    c.stroke();
+    for (const sx of [-1, 1]) {
+      c.strokeStyle = sx < 0 ? "#d9a441" : "#c0392b";
+      c.lineWidth = Math.max(1, s * 0.02);
+      for (let i = -1; i <= 1; i++) {
+        c.beginPath();
+        c.moveTo(sx * s * 0.32, -s * 0.12);
+        c.lineTo(sx * s * (0.34 + i * 0.02) + Math.sin(t * 3 + i) * 1, -s * 0.02);
+        c.stroke();
+      }
+    }
+    // The dress: a flaring cone in stripes, a woven band across it.
+    c.save();
+    c.beginPath();
+    c.moveTo(-s * 0.1, -s * 0.16);
+    c.lineTo(s * 0.1, -s * 0.16);
+    c.quadraticCurveTo(s * 0.2, s * 0.05, s * 0.24 + Math.sin(t * 2) * s * 0.01, s * 0.28);
+    c.lineTo(-s * 0.24 + Math.sin(t * 2 + 1) * s * 0.01, s * 0.28);
+    c.quadraticCurveTo(-s * 0.2, s * 0.05, -s * 0.1, -s * 0.16);
+    c.closePath();
+    c.clip();
+    const stripes = ["#9e2b22", "#d9a441", "#2f6b3a", "#9e2b22", "#1f4f8a", "#d9a441"];
+    stripes.forEach((col, i) => {
+      c.fillStyle = col;
+      c.fillRect(-s * 0.3, -s * 0.16 + (i * s * 0.44) / stripes.length, s * 0.6, s * 0.44 / stripes.length + 0.5);
+    });
+    bandZigzag(c, -s * 0.3, s * 0.12, s * 0.3, s * 0.12, s * 0.05, CREAM);
+    c.restore();
+    // Head: the bowl of the ladle, smooth wood catching the light.
+    const hg = c.createRadialGradient(-s * 0.04, -s * 0.33, s * 0.02, 0, -s * 0.28, s * 0.15);
+    hg.addColorStop(0, "#d9a466");
+    hg.addColorStop(1, "#6b4422");
+    c.fillStyle = hg;
+    c.beginPath();
+    c.ellipse(0, -s * 0.28, s * 0.11, s * 0.13, 0, 0, TAU);
+    c.fill();
+    // Scarf over the bowl, falling behind on both sides, with a yellow fringe.
+    c.fillStyle = "#b8302a";
+    c.beginPath();
+    c.moveTo(-s * 0.13, -s * 0.26);
+    c.quadraticCurveTo(0, -s * 0.5, s * 0.13, -s * 0.26);
+    c.quadraticCurveTo(s * 0.17 + Math.sin(t * 2) * s * 0.01, -s * 0.15, s * 0.14, -s * 0.08);
+    c.lineTo(s * 0.09, -s * 0.2);
+    c.quadraticCurveTo(0, -s * 0.38, -s * 0.09, -s * 0.2);
+    c.lineTo(-s * 0.14, -s * 0.08);
+    c.quadraticCurveTo(-s * 0.17, -s * 0.15, -s * 0.13, -s * 0.26);
+    c.closePath();
+    c.fill();
+    c.fillStyle = OCHRE;
+    for (let i = -3; i <= 3; i++) {
+      c.beginPath();
+      c.arc(i * s * 0.03, -s * 0.355 + Math.abs(i) * s * 0.012, s * 0.012, 0, TAU);
+      c.fill();
+    }
+    // The necklace: coral and silver beads, a little pendant.
+    for (let i = 0; i <= 6; i++) {
+      const u = i / 6;
+      c.fillStyle = i % 2 ? "#dfe2e8" : "#c0392b";
+      c.beginPath();
+      c.arc(-s * 0.08 + u * s * 0.16, -s * 0.13 + Math.sin(u * Math.PI) * s * 0.05, s * 0.016, 0, TAU);
+      c.fill();
+    }
+    c.fillStyle = "#dfe2e8";
+    c.beginPath();
+    c.moveTo(0, -s * 0.07);
+    c.lineTo(s * 0.025, -s * 0.03);
+    c.lineTo(0, s * 0.0);
+    c.lineTo(-s * 0.025, -s * 0.03);
+    c.closePath();
+    c.fill();
+    c.restore();
+  }
+
+  // A stone basin under the fig tree, nearly dry: one wet glint at the bottom.
+  function dryPool(c, x, y, w, t) {
+    c.save();
+    c.fillStyle = "#120d08";
+    c.beginPath();
+    c.ellipse(x, y, w / 2, w * 0.13, 0, 0, TAU);
+    c.fill();
+    c.fillStyle = `rgba(150,200,240,${0.35 + Math.sin(t * 1.7) * 0.1})`;
+    c.beginPath();
+    c.ellipse(x + w * 0.05, y + w * 0.02, w * 0.1, w * 0.025, 0, 0, TAU);
+    c.fill();
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * TAU;
+      c.fillStyle = i % 2 ? STONE : STONE_LIGHT;
+      c.beginPath();
+      c.ellipse(x + Math.cos(a) * w * 0.5, y + Math.sin(a) * w * 0.13, w * 0.09, w * 0.05, 0, 0, TAU);
+      c.fill();
+    }
+    c.restore();
+  }
+
+  // A few houses of Ath Abbas on their hill, every window lit.
+  function village(c, x0, x1, base, size, t) {
+    c.save();
+    c.fillStyle = "#0b0a0d";
+    c.beginPath();
+    c.ellipse((x0 + x1) / 2, base + size * 0.6, (x1 - x0) * 0.7, size * 1.6, 0, Math.PI, TAU);
+    c.fill();
+    for (let i = 0; i < 5; i++) {
+      const hx = x0 + ((i + 0.5) / 5) * (x1 - x0),
+        hw = size * (0.8 + rnd(i + 620) * 0.4),
+        top = base - size * (0.7 + rnd(i + 621) * 0.5) - Math.sin(((i + 0.5) / 5) * Math.PI) * size * 0.8;
+      c.fillStyle = "#121015";
+      c.fillRect(hx - hw / 2, top, hw, base - top + size);
+      c.fillStyle = TILE_DARK;
+      c.beginPath();
+      c.moveTo(hx - hw * 0.6, top);
+      c.lineTo(hx, top - size * 0.3);
+      c.lineTo(hx + hw * 0.6, top);
+      c.closePath();
+      c.fill();
+      const f = 0.85 + Math.sin(t * 5 + i) * 0.1;
+      glow(c, hx, top + size * 0.3, size * 0.4, `rgba(255,190,90,${0.3 * f})`);
+      c.fillStyle = "rgba(255,205,120,0.85)";
+      c.fillRect(hx - size * 0.06, top + size * 0.22, size * 0.12, size * 0.15);
+    }
+    c.restore();
+  }
+
+  // A window in the house wall at night, rain streaming past, cool light spilling in.
+  function rainWindow(c, x, y, ww, wh, t) {
+    c.save();
+    glow(c, x, y + wh, ww * 2.2, "rgba(150,180,220,0.1)");
+    c.fillStyle = "#1a0f08";
+    c.beginPath();
+    c.roundRect(x - ww / 2 - 6, y - wh / 2 - 6, ww + 12, wh + 12, [ww * 0.55, ww * 0.55, 3, 3]);
+    c.fill();
+    c.beginPath();
+    c.roundRect(x - ww / 2, y - wh / 2, ww, wh, [ww * 0.5, ww * 0.5, 2, 2]);
+    const g = c.createLinearGradient(0, y - wh / 2, 0, y + wh / 2);
+    g.addColorStop(0, "#1c2533");
+    g.addColorStop(1, "#2c3644");
+    c.fillStyle = g;
+    c.fill();
+    c.clip();
+    c.strokeStyle = "rgba(200,220,245,0.45)";
+    c.lineWidth = 1;
+    for (let i = 0; i < 24; i++) {
+      const k = (t * (1.6 + rnd(i + 640) * 0.8) + rnd(i + 641)) % 1;
+      const rx = x - ww / 2 + rnd(i + 642) * ww * 1.2 - k * ww * 0.15,
+        ry = y - wh / 2 - 10 + k * (wh + 20);
+      c.beginPath();
+      c.moveTo(rx, ry);
+      c.lineTo(rx - 2, ry + 9);
+      c.stroke();
+    }
+    c.restore();
+    // The wooden bar across, and drops gathering on the sill and falling.
+    c.save();
+    c.fillStyle = "#2a170b";
+    c.fillRect(x - 2, y - wh / 2, 4, wh);
+    c.fillRect(x - ww / 2 - 8, y + wh / 2 + 4, ww + 16, 6);
+    for (let i = 0; i < 3; i++) {
+      const life = (t * 0.8 + i / 3) % 1;
+      c.fillStyle = `rgba(190,215,245,${0.8 * (1 - life)})`;
+      c.beginPath();
+      c.ellipse(x - ww * 0.3 + i * ww * 0.3, y + wh / 2 + 12 + life * wh * 0.5, 1.6, 2.4, 0, 0, TAU);
+      c.fill();
+    }
+    c.restore();
+  }
+
   /* ---------------- Ground and ledges ---------------- */
   function ground(c, x0, x1, top, bottom, theme, t) {
     c.save();
@@ -702,6 +1803,41 @@
         c.fill();
       }
       c.strokeStyle = `rgba(170,200,255,${0.25 + Math.sin(t * 2) * 0.05})`;
+      c.lineWidth = 2;
+      c.beginPath();
+      c.moveTo(x0, top);
+      c.lineTo(x1, top);
+      c.stroke();
+    } else if (theme === "spring") {
+      // The dry bed of the spring: cracked earth and pale pebbles in the moonlight.
+      const g = c.createLinearGradient(0, top, 0, bottom);
+      g.addColorStop(0, "#5a4329");
+      g.addColorStop(1, "#140d07");
+      c.fillStyle = g;
+      c.fillRect(x0, top, x1 - x0, bottom - top);
+      c.strokeStyle = "rgba(20,12,6,0.7)";
+      c.lineWidth = 1.2;
+      const span = x1 - x0;
+      const n = Math.max(3, Math.min(60, Math.round(span / 46)));
+      for (let i = 0; i < n; i++) {
+        let cx = x0 + ((i + rnd(i + 200)) * span) / n,
+          cy = top + 1;
+        c.beginPath();
+        c.moveTo(cx, cy);
+        for (let j = 0; j < 4; j++) {
+          cx += (rnd(i * 7 + j + 210) - 0.5) * 18;
+          cy += 4 + rnd(i * 5 + j + 220) * 7;
+          c.lineTo(cx, cy);
+        }
+        c.stroke();
+      }
+      c.fillStyle = "rgba(160,145,115,0.5)";
+      for (let i = 0; i < n; i++) {
+        c.beginPath();
+        c.ellipse(x0 + span * rnd(i + 230), top + 2, 3 + rnd(i + 231) * 5, 2, 0, Math.PI, TAU);
+        c.fill();
+      }
+      c.strokeStyle = "rgba(255,220,170,0.25)";
       c.lineWidth = 2;
       c.beginPath();
       c.moveTo(x0, top);
@@ -731,6 +1867,48 @@
   // Kitchen shelves and loom beams are wood; the gorge keeps the original stone.
   function ledge(c, x, top, w, alpha, shake, theme) {
     if (theme === "gorge") return false;
+    if (theme === "spring") {
+      // A dry-stone terrace: flat stones laid without mortar, a pale capstone on top.
+      const h = Math.max(10, w * 0.11);
+      c.save();
+      c.globalAlpha *= alpha;
+      c.translate(shake, 0);
+      c.fillStyle = STONE_DARK;
+      c.shadowColor = "rgba(255,210,150,0.25)";
+      c.shadowBlur = 8;
+      c.beginPath();
+      c.roundRect(x - w / 2, top - h * 0.15, w, h * 1.6, h * 0.2);
+      c.fill();
+      c.shadowBlur = 0;
+      const seed = Math.round(w);
+      for (let row = 0; row < 2; row++) {
+        const ry = top + h * 0.3 + row * h * 0.62,
+          rh = h * 0.55;
+        for (let sx = x - w / 2 + 1, j = 0; sx < x + w / 2 - 2; j++) {
+          const sw = Math.min(x + w / 2 - 1 - sx, h * (0.9 + rnd(j * 3 + row * 17 + seed) * 0.9));
+          c.fillStyle = rnd(j + row * 11 + seed + 5) > 0.5 ? STONE : "#665a49";
+          c.beginPath();
+          c.roundRect(sx + 0.5, ry, Math.max(1, sw - 1.5), rh, rh * 0.3);
+          c.fill();
+          sx += Math.max(2, sw);
+        }
+      }
+      const g = c.createLinearGradient(0, top - h * 0.2, 0, top + h * 0.3);
+      g.addColorStop(0, STONE_LIGHT);
+      g.addColorStop(1, STONE);
+      c.fillStyle = g;
+      c.beginPath();
+      c.roundRect(x - w / 2 - 2, top - h * 0.2, w + 4, h * 0.45, h * 0.15);
+      c.fill();
+      c.strokeStyle = "rgba(255,235,200,0.45)";
+      c.lineWidth = 1.5;
+      c.beginPath();
+      c.moveTo(x - w / 2, top - h * 0.2);
+      c.lineTo(x + w / 2, top - h * 0.2);
+      c.stroke();
+      c.restore();
+      return true;
+    }
     if (theme === "roofs") {
       const h = Math.max(10, w * 0.12);
       c.save();
@@ -793,6 +1971,7 @@
     else if (kind === "spider") spiderHunter(c, x, y, size, t, mood, extra);
     else if (kind === "raven") raven(c, x, y, size, t, mood, extra);
     else if (kind === "rat") rat(c, x, y, size, t, mood, extra);
+    else if (kind === "frog") frog(c, x, y, size, t, mood, extra);
     else ijenni(c, x, y, size, t, mood, extra);
     if (extra.ring) {
       c.save();
@@ -948,6 +2127,10 @@
       updraft(c, X(o.x), Y(o.y + o.h / 2), (o.w || 2) * S, (o.h || 3) * S, t);
       return true;
     }
+    if (o.type === "water") {
+      water(c, o, X, Y, S, t, g);
+      return true;
+    }
     return false;
   }
 
@@ -984,6 +2167,13 @@
       W = r * 2.1;
     c.save();
     c.translate(x + sway + struggle, y + r);
+    // Carried off by the flood she rolls over and over in the white water.
+    const tumble = tumbleOf(st, t);
+    if (tumble) {
+      c.translate(0, -H * 0.5);
+      c.rotate(tumble);
+      c.translate(0, H * 0.5);
+    }
     glow(c, 0, -H * 0.5, W, st.trapped ? "rgba(255,200,120,0.12)" : st.near ? "rgba(255,90,40,0.32)" : "rgba(255,120,60,0.22)");
     // Body: a dark mound with hair falling over it.
     c.fillStyle = "#0b0706";
@@ -1049,11 +2239,17 @@
       c.fillText("z", W * 0.3 + k * r * 0.4, -H - k * r);
       c.globalAlpha = 1;
     }
-    if (st.trapped) trappedOverlay(c, st.theme, W, H, r, t);
+    if (st.trapped) trappedOverlay(c, st.theme, W, H, r, t, st);
     c.restore();
   }
 
-  function trappedOverlay(c, theme, W, H, r, t) {
+  function tumbleOf(st, t) {
+    return st.trapped && st.theme === "spring" ? Math.sin(t * 2.3) * 0.28 : 0;
+  }
+
+  // st.bride === false keeps the ladle bride out of the spring overlay (a scene that
+  // already shows her elsewhere).
+  function trappedOverlay(c, theme, W, H, r, t, st = {}) {
     if (theme === "kitchen") {
       // The great grain jar over her head like a hat.
       c.save();
@@ -1085,6 +2281,35 @@
         c.ellipse(-W * 0.3 + i * W * 0.2, -H * 0.4 + life * H * 0.4, r * 0.03, r * 0.05, 0, 0, TAU);
         c.fill();
       }
+    } else if (theme === "spring") {
+      // Swept down the ravine in white water, rolling; the ladle bride flies free.
+      c.save();
+      c.translate(0, -H * 0.5);
+      c.rotate(-tumbleOf(st, t));
+      c.translate(0, H * 0.5);
+      for (let i = 0; i < 14; i++) {
+        const k = (t * 0.8 + rnd(i + 700)) % 1;
+        c.fillStyle = FOAM + (0.55 + rnd(i + 701) * 0.35) * Math.sin(k * Math.PI) + ")";
+        c.beginPath();
+        c.ellipse(-W * 0.9 + k * W * 1.8, -H * (0.05 + rnd(i + 710) * 0.4), r * (0.25 + rnd(i + 720) * 0.25), r * (0.14 + rnd(i + 730) * 0.12), 0, 0, TAU);
+        c.fill();
+      }
+      c.fillStyle = FOAM + "0.88)";
+      c.beginPath();
+      c.moveTo(-W * 0.85, r * 0.1);
+      for (let i = 0; i <= 8; i++) c.lineTo(-W * 0.85 + i * W * 0.2125, -H * (0.2 + 0.08 * Math.sin(t * 5 + i * 1.7)));
+      c.lineTo(W * 0.85, r * 0.1);
+      c.closePath();
+      c.fill();
+      for (let i = 0; i < 6; i++) {
+        const life = (t * 1.2 + i / 6) % 1;
+        c.fillStyle = FOAM + 0.8 * (1 - life) + ")";
+        c.beginPath();
+        c.arc(Math.sin(i * 2.1) * W * 0.5 + life * W * 0.2, -H * (0.25 + life * 0.45), r * 0.05, 0, TAU);
+        c.fill();
+      }
+      c.restore();
+      if (st.bride !== false) tislit(c, W * 0.6 + Math.sin(t * 1.5) * r * 0.1, -H * 1.0 + Math.sin(t * 2) * r * 0.1, r * 0.9, t, { tilt: Math.sin(t * 1.3) * 0.4 });
     } else if (theme === "roofs") {
       // Halfway down the chimney: the bricks hold her lower half.
       c.save();
@@ -1245,19 +2470,20 @@
   }
   // Embers rise from fires, dust hangs in the rooms, mist drifts in the gorge.
   function particles(c, name, w, h, t) {
-    if (name === "hearth" || name.startsWith("kitchen")) {
+    const hearth = name === "hearth" || name === "hearth-rain";
+    if (hearth || name.startsWith("kitchen")) {
       const sprite = ember();
       c.save();
       for (let i = 0; i < 16; i++) {
         const k = (t * (0.12 + rnd(i) * 0.1) + rnd(i + 3)) % 1;
-        const x = w * (name === "hearth" ? 0.5 : 0.1) + (rnd(i + 5) - 0.5) * w * 0.25 + Math.sin(t * 2 + i) * 10;
+        const x = w * (hearth ? 0.5 : 0.1) + (rnd(i + 5) - 0.5) * w * 0.25 + Math.sin(t * 2 + i) * 10;
         const y = h * 0.7 - k * h * 0.6;
         c.globalAlpha = (1 - k) * 0.9;
         c.drawImage(sprite, x - 4, y - 4, 8, 8);
       }
       c.restore();
     }
-    if (name.startsWith("kitchen") || name.startsWith("loom") || name.startsWith("press") || name === "hearth") {
+    if (name.startsWith("kitchen") || name.startsWith("loom") || name.startsWith("press") || hearth) {
       for (let i = 0; i < 22; i++) {
         const x = w * ((rnd(i + 40) + t * 0.004 * (1 + rnd(i))) % 1);
         const y = h * ((rnd(i + 60) + Math.sin(t * 0.3 + i) * 0.02) % 1);
@@ -1276,6 +2502,61 @@
         c.fillRect(0, y - 30, w, 60);
       }
     }
+    if (name === "spring" || name === "spring-cistern") {
+      // A hot night: heat motes drifting up, fireflies blinking over the dry bed.
+      for (let i = 0; i < 18; i++) {
+        const y = h * ((((rnd(i + 760) - t * 0.01 * (1 + rnd(i + 761))) % 1) + 1) % 1);
+        c.fillStyle = `rgba(255,220,170,${0.08 + rnd(i + 762) * 0.12})`;
+        c.fillRect(w * rnd(i + 763) + Math.sin(t * 0.5 + i) * 8, y, 1.5, 1.5);
+      }
+      for (let i = 0; i < 7; i++) {
+        const x = w * ((rnd(i + 770) + Math.sin(t * 0.2 + i) * 0.04 + 1) % 1);
+        const y = h * (0.35 + rnd(i + 771) * 0.35) + Math.sin(t * 1.1 + i * 2) * 8;
+        const a = Math.max(0, 0.15 + 0.45 * Math.sin(t * 2.3 + i * 1.9));
+        glow(c, x, y, 7, `rgba(210,255,150,${a})`);
+      }
+    }
+    if (name === "spring-trap") {
+      // Spray thrown up off the flood.
+      for (let i = 0; i < 26; i++) {
+        const k = (t * (0.7 + rnd(i + 780) * 0.5) + rnd(i + 781)) % 1;
+        const x = w * (0.3 + rnd(i + 782) * 0.7) + k * w * 0.15;
+        const y = h * 0.7 - Math.sin(k * Math.PI) * h * (0.12 + rnd(i + 783) * 0.15);
+        c.fillStyle = FOAM + 0.7 * (1 - k) + ")";
+        c.beginPath();
+        c.arc(x, y, 1.5 + rnd(i + 784) * 2, 0, TAU);
+        c.fill();
+      }
+    }
+    if (name === "spring-rain") rainfall(c, w, h, t, 80, h * 0.7);
+  }
+
+  // Rain streaks slanting down, and little splashes where they meet the ground.
+  function rainfall(c, w, h, t, count, floorY) {
+    c.save();
+    c.strokeStyle = "rgba(200,215,240,0.35)";
+    c.lineWidth = 1.2;
+    for (let i = 0; i < count; i++) {
+      const k = (t * (1.4 + rnd(i + 790) * 0.8) + rnd(i + 791)) % 1;
+      const x = w * (rnd(i + 792) * 1.2 - k * 0.12),
+        y = -20 + k * (h + 40);
+      const len = 12 + rnd(i + 793) * 10;
+      c.beginPath();
+      c.moveTo(x, y);
+      c.lineTo(x - len * 0.18, y + len);
+      c.stroke();
+    }
+    c.strokeStyle = "rgba(210,225,245,0.4)";
+    for (let i = 0; i < 14; i++) {
+      const k = (t * 2 + rnd(i + 795)) % 1;
+      const x = w * rnd(i + 796),
+        y = floorY + rnd(i + 797) * h * 0.2;
+      c.globalAlpha = 1 - k;
+      c.beginPath();
+      c.ellipse(x, y, 2 + k * 8, 1 + k * 2, 0, 0, TAU);
+      c.stroke();
+    }
+    c.restore();
   }
 
   function sceneBody(c, name, w, h, t, view) {
@@ -1285,6 +2566,8 @@
       view.speaker === who ? 1 + Math.max(0, 0.06 - (view.lineAge || 9) * 0.08) + Math.sin(t * 14) * 0.015 * Math.max(0, 1 - (view.lineAge || 9)) : 1;
     const Yw = (yy) => floor - yy * S;
     if (name === "hearth") hearthScene(c, w, h, t, S, floor, view, talk);
+    else if (name === "hearth-rain") hearthScene(c, w, h, t, S, floor, view, talk, true);
+    else if (name.startsWith("spring")) springScene(c, name, w, h, t, S, floor, Yw, talk);
     else if (name === "home") homeScene(c, w, h, t, S, floor);
     else if (name.startsWith("kitchen")) {
       kitchenBack(c, w, h, t, Yw, S, 8);
@@ -1378,8 +2661,10 @@
     }
   }
 
-  function hearthScene(c, w, h, t, S, floor, view, talk) {
+  // rain: the window shows the first rain, and the children turn toward it.
+  function hearthScene(c, w, h, t, S, floor, view, talk, rain = false) {
     plaster(c, w, h, "#2c1a10", "#0c0705");
+    if (rain) rainWindow(c, w * 0.5, h * 0.2, S * 1.3, S * 1.6, t);
     // The wall niche with the lamp, top right.
     c.fillStyle = "#0a0604";
     c.beginPath();
@@ -1436,8 +2721,8 @@
     c.save();
     c.translate(0, -flinch);
     // The children on the right.
-    person(c, w * 0.7, floor + S * 0.2, S * 1.5 * talk("boy") * talk("children"), "boy", t, -0.05 + (view.mood === "hushed" ? 0.06 : 0), -1);
-    person(c, w * 0.84, floor + S * 0.2, S * 1.4 * talk("girl") * talk("children"), "girl", t, view.mood === "hushed" ? -0.12 : 0, -1);
+    person(c, w * 0.7, floor + S * 0.2, S * 1.5 * talk("boy") * talk("children"), "boy", t, rain ? -0.16 : -0.05 + (view.mood === "hushed" ? 0.06 : 0), -1);
+    person(c, w * 0.84, floor + S * 0.2, S * 1.4 * talk("girl") * talk("children"), "girl", t, rain ? -0.22 : view.mood === "hushed" ? -0.12 : 0, -1);
     c.restore();
     vignette(c, w, h, 0.5);
   }
@@ -1518,6 +2803,100 @@
     else c.arc(0, -size * 0.72 + breathe, size * 0.13, Math.PI - 0.9, Math.PI + 0.9);
     c.stroke();
     c.restore();
+  }
+
+  // The tale of the spring, night 6. Positions are in S (w / 9) from the left.
+  function springScene(c, name, w, h, t, S, floor, Yw, talk) {
+    const rain = name === "spring-rain";
+    springBack(c, w, h, t, Yw, S, 8, 0.3, { rain });
+    ground(c, 0, w, floor, h, "spring", t);
+    const Xs = (x) => x * S;
+    if (rain) {
+      // Home through the first rain, the ladle bride riding on his back.
+      village(c, w * 0.58, w * 1.02, floor - S * 0.9, S * 0.75, t);
+      c.save();
+      c.fillStyle = "rgba(150,180,210,0.12)";
+      for (let i = 0; i < 4; i++) {
+        c.beginPath();
+        c.ellipse(w * (0.15 + i * 0.22), floor + S * (0.4 + (i % 2) * 0.5), S * 0.6, S * 0.08, 0, 0, TAU);
+        c.fill();
+      }
+      c.restore();
+      const hop = Math.abs(Math.sin(t * 4)) * S * 0.12;
+      const hx = w * 0.4,
+        hy = floor - S * 0.55 - hop;
+      tislit(c, hx - S * 0.35, hy - S * 0.35, S * 1.0, t, { tilt: -0.55 });
+      Art.rabbit(c, hx, hy, S * 1.05, { time: t, state: "resting", look: { x: 1, y: -0.3 } });
+      return;
+    }
+    if (name === "spring") {
+      // The fig tree and its dry basin, the well, the cistern up on its terrace.
+      figTree(c, Xs(1.0), floor, S * 3.6, t, 1, true);
+      dryPool(c, Xs(2.1), floor + S * 0.1, S * 1.5, t);
+      const wa = { x: 4.9, y: 1.1, w: 0.9, h: 0.3, top: 1.4, bottom: 0.4 },
+        wb = { x: 6.2, y: 0.7, w: 0.9, h: 0.3, top: 1.4, bottom: 0.4 };
+      well(c, wa, wb, Xs, Yw, S, t);
+      for (const q of [wa, wb]) bucket(c, Xs(q.x), Yw(q.y), q.w * S, q.h * S, S);
+      ledge(c, Xs(8.1), Yw(2.6), S * 2.2, 1, 0, "spring");
+      cistern(c, Xs(8.3), Yw(2.6 + 1.7), S * 1.0, S * 1.7, t);
+      stoneBlock(c, Xs(2.95), Yw(0.35), S * 0.6, S * 0.35);
+      frog(c, Xs(2.95), Yw(0.35) - S * 0.4, S * 0.85, t, "sleep", {});
+      frog(c, Xs(6.2), Yw(wb.y + RIM) - S * 0.35, S * 0.8, t + 1, "hunt", { vx: -1 });
+      frog(c, Xs(7.5), Yw(2.6) - S * 0.4, S * 0.85, t + 2, "hunt", { vx: -1 });
+      Art.rabbit(c, Xs(3.7), floor - S * 0.55, S * 1.05, { time: t, state: "resting", look: { x: 1, y: -0.5 } });
+    } else if (name === "spring-cistern") {
+      // Teryel in the dry bed with the ladle bride in her hands, the cracked wall behind.
+      cistern(c, Xs(5.9), floor - S * 4.2, S * 4.6, S * 4.2, t, S * 0.5);
+      const tx = Xs(5.9);
+      teryel(c, tx, floor - S * 1.3, S * 1.3 * talk("teryel"), t, { theme: "spring", asleep: false });
+      tislit(c, tx, floor - S * 0.95, S * 1.1, t);
+      // Her long fingers round the bride's skirt.
+      c.save();
+      c.strokeStyle = "#120c0a";
+      c.lineWidth = S * 0.09;
+      c.lineCap = "round";
+      for (const sx of [-1, 1]) {
+        c.beginPath();
+        c.moveTo(tx + sx * S * 0.55, floor - S * 0.5);
+        c.quadraticCurveTo(tx + sx * S * 0.4, floor - S * 0.85, tx + sx * S * 0.14, floor - S * 0.78);
+        c.stroke();
+      }
+      c.restore();
+      stoneBlock(c, Xs(2.6), Yw(0.4), S * 0.7, S * 0.4);
+      frog(c, Xs(2.6), Yw(0.4) - S * 0.4, S * 0.85, t, "hunt", { vx: -1 });
+      frog(c, Xs(8.5), floor - S * 0.4, S * 0.8, t + 1, "sleep", {});
+      Art.rabbit(c, Xs(1.3), floor - S * 0.55, S * 1.05, { time: t, state: "resting", look: { x: 1, y: -0.6 } });
+    } else if (name === "spring-trap") {
+      // The wall bursts: white water down the ravine with Teryel in it; Mqidec safe on
+      // a stone above the flood, holding the ladle bride.
+      const wx = Xs(6.6),
+        top = floor - S * 4.2,
+        ww = S * 3.6;
+      c.save();
+      c.beginPath();
+      c.rect(wx - ww / 2 - 2, top - 2, ww + 4, S * 4.2 + 4);
+      c.moveTo(wx - S * 0.9, floor);
+      [[-0.7, 2.4], [-0.2, 3.1], [0.3, 2.7], [0.8, 3.3], [1.0, 0]].forEach(([dx, dy]) => c.lineTo(wx + dx * S, floor - dy * S));
+      c.closePath();
+      c.clip("evenodd");
+      cistern(c, wx, top, ww, S * 4.2, t, S * 0.5);
+      c.restore();
+      // Loose stones flung out of the breach.
+      for (let i = 0; i < 4; i++) {
+        const k = (t * 0.5 + i / 4) % 1;
+        stoneBlock(c, wx + S * (0.2 - k * 2.5 + i * 0.3), floor - S * (2.8 - k * 2.4 + Math.sin(k * Math.PI) * 0.8), S * 0.4, S * 0.3);
+      }
+      const surface = floor - S * 0.9;
+      waterBody(c, -2, w + 2, surface, h + 2, t, 1, -1, S);
+      cascade(c, wx + S * 0.1, floor - S * 2.6, S * 1.6, surface, t, 1, -1);
+      const tx = Xs(3.4) + Math.sin(t * 0.6) * S * 0.3;
+      teryel(c, tx, surface - S * 0.6, S * 1.15 * talk("teryel"), t, { trapped: true, theme: "spring", bride: false });
+      frog(c, Xs(5), surface - S * 1.6 + Math.sin(t * 2) * S * 0.2, S * 0.75, t, "notice", { leap: { k: 1, up: false }, vx: -1 });
+      stoneBlock(c, Xs(1.2), floor - S * 1.9, S * 1.5, S * 1.9);
+      waterVeil(c, -2, w + 2, surface, h + 2, t, 1, -1, S);
+      Art.rabbit(c, Xs(1.1), floor - S * 1.9 - S * 0.55, S * 1.05, { time: t, state: "resting", look: { x: 1, y: 0 } });
+      tislit(c, Xs(1.7), floor - S * 1.9 - S * 0.55, S * 0.95, t, { tilt: 0.2 });
+    }
   }
 
   function homeScene(c, w, h, t, S, floor) {
@@ -1619,5 +2998,14 @@
     rat,
     bread,
     tabzimt,
+    // Night 6, the spring.
+    frog,
+    tislit,
+    cistern,
+    well,
+    hanging,
+    bucketBack,
+    bucketFront,
+    front,
   };
 })(globalThis);
