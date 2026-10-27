@@ -82,3 +82,6 @@ CLAUDE.local.md
 /output/playwright/
 .claude/skills/apple-design/
 .agents/skills/apple-design/
+
+# Unity compile check output (Tools/unity_check.sh)
+Tools/.build/

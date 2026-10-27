@@ -30,6 +30,13 @@ stub_py() { # $1 = pass|fail
   printf 'import os, sys\nopen(os.environ["GATE_LOG"], "a").write("check_levels\\n")\nprint("stub stage failure")\nsys.exit(%s)\n' "$code" >"$FIX/Tools/check_levels.py"
 }
 
+stub_sh() { # $1 = pass|fail: the Unity compile check
+  local code=0
+  [ "$1" = fail ] && code=1
+  mkdir -p "$FIX/Tools"
+  printf 'echo unity_check >>"$GATE_LOG"\necho "stub compile failure"\nexit %s\n' "$code" >"$FIX/Tools/unity_check.sh"
+}
+
 git_fix() { git -C "$FIX" -c commit.gpgsign=false -c user.email=t@example.com -c user.name=t "$@"; }
 
 RC=0
@@ -44,6 +51,9 @@ echo "readme" >"$FIX/README.md"
 echo "// engine" >"$FIX/Tools/design/prototype/game.js"
 echo "// sorts after the checkers" >"$FIX/Tools/design/prototype/worker.js"
 stub_py pass
+stub_sh pass
+mkdir -p "$FIX/Assets/Editor"
+echo "class SmokeTest {}" >"$FIX/Assets/Editor/SmokeTest.cs"
 for f in game.test.js art.test.js verify-routes.js; do stub_js "Tools/design/prototype/$f" pass; done
 stub_js Tools/design/original/verify-routes.js pass
 git_fix init -q && git_fix add -A && git_fix commit -qm init && git_fix tag init ||
@@ -74,7 +84,7 @@ ran_nothing() { [ ! -s "$GATE_LOG" ]; }
 # --- First run and caching ----------------------------------------------------
 git_fix reset -q --hard init && rm -rf "$FIX/.git/done-gate" && : >"$GATE_LOG"
 run_hook
-check "first run checks every area" '[ $RC -eq 0 ] && ran check_levels && ran Tools/design/prototype/game.test.js && ran Tools/design/original/verify-routes.js'
+check "first run checks every area" '[ $RC -eq 0 ] && ran check_levels && ran Tools/design/prototype/game.test.js && ran Tools/design/original/verify-routes.js && ran unity_check'
 
 : >"$GATE_LOG"
 run_hook
@@ -135,6 +145,27 @@ rm "$FIX/Tools/check_levels.py"
 run_hook
 check "deleted simulator blocks instead of passing" '[ $RC -eq 2 ] && grep -q "NOT RUN" "$ERR"'
 check "the block names the way out for a removed area" 'grep -q "done-gate/stages" "$ERR"'
+
+# --- Unity compile check --------------------------------------------------------------
+reset_fixture
+echo "// edit" >>"$FIX/Assets/Scripts/HollowNight/Stage/LevelLibrary.cs"
+run_hook
+check "game code change runs the Unity compile check" '[ $RC -eq 0 ] && ran unity_check'
+
+reset_fixture
+echo "// edit" >>"$FIX/Assets/Editor/SmokeTest.cs"
+run_hook
+check "editor script change runs the compile check only" '[ $RC -eq 0 ] && ran unity_check && ! ran check_levels'
+
+reset_fixture
+stub_sh fail
+run_hook
+check "failing compile check blocks" '[ $RC -eq 2 ] && ran unity_check && grep -q "unity_check" "$ERR"'
+
+reset_fixture
+echo "png" >"$FIX/Assets/sprite.png"
+run_hook
+check "a non-script asset runs no compile check" '[ $RC -eq 0 ] && ! ran unity_check'
 
 # --- Browser prototypes -----------------------------------------------------------
 reset_fixture

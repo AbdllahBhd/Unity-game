@@ -991,4 +991,21 @@ behaviour is unchanged (only `build-text.py` gains an output).
 - **The product name** in Player Settings stays "Hollow Night" for now (open question).
 - **Recommended:** run this plan in a fresh session; this one carries Nights 6 and 7.
 
+
+### Progress
+
+- [x] 0. Tooling (2026-10-27). `bash Tools/unity_check.sh` (about 3 s): UGUI built once from
+      the editor's source; HollowNight.Logic, Assembly-CSharp (editor and player defines)
+      and Assembly-CSharp-Editor all compile with 0 errors; the runner's own test passes.
+      - Proved failing: a broken game script (2 errors, exit 1), `UnityEngine.Mathf` inside
+        Logic (CS0103), a red test (1 failed test, exit 1); all removed, green again.
+      - `done-gate.sh` gained the `unity` area (any `Assets/*.cs` or `*.asmdef`, the script,
+        the tests); `done-gate.test.sh` passes with 4 new cases; `scripts/sync-codex.sh` run.
+      - Note: the monolithic `Managed/UnityEditor.dll` clashes with the split editor
+        modules, so only the modules are referenced.
+- [ ] 1. Text, fonts and Arabic.
+- [ ] 2. Rules, stages and the simulator.
+- [ ] 3. Screens, story, art and sound.
+- [ ] 4. Review and wrap-up.
+
 /goal every Claude-verifiable "Done when" clause of "Unity port, slice 1" in task_plan.md is checked off (user gates listed as pending), and bash Tools/unity_check.sh, python3 Tools/check_levels.py and the browser prototype checks pass

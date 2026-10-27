@@ -9,11 +9,13 @@
 #   prototype  Tools/design/prototype/                 -> its game/art tests and route check
 #   original   Tools/design/original/ + prototype/     -> its route check (it loads
 #                                                         ../prototype/game.js)
+#   unity      every Assets/ C# script and asmdef,      -> bash Tools/unity_check.sh (the
+#              Tools/unity_check.sh, Tools/unity_tests/    editor's compiler + plain C# tests)
 # An area is re-checked only when its files differ from the last time its checks
 # passed (fingerprints in .git/done-gate/), because check_levels.py takes ~30 s
 # and this hook fires on every turn. Committing does not skip a check. A missing
-# checker or interpreter blocks instead of passing. The Unity compile check cannot
-# run here (no editor access). Tests: bash .claude/hooks/done-gate.test.sh
+# checker or interpreter blocks instead of passing. Playing in the Unity editor
+# cannot run here; compiling can. Tests: bash .claude/hooks/done-gate.test.sh
 #
 # Escape hatches:
 #   - Set SKIP_DONE_GATE=1 in the environment to disable temporarily.
@@ -102,6 +104,8 @@ gate_area prototype node "Tools/design/prototype/game.test.js Tools/design/proto
   Tools/design/prototype
 gate_area original node "Tools/design/original/verify-routes.js" \
   Tools/design/original Tools/design/prototype
+gate_area unity bash "Tools/unity_check.sh" \
+  'Assets/*.cs' 'Assets/*.asmdef' Tools/unity_check.sh Tools/unity_tests
 
 # --- npm scripts, when the project has a package.json -------------------------
 if [ -f package.json ]; then
