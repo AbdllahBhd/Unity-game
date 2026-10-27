@@ -6,12 +6,14 @@
 
 ## Project Overview
 
-- **Name:** **Hollow Night: Izan and the Pumpkin Hunt** (Unity project folder `game1`).
-- **What it does:** 2D Halloween physics puzzle game for mobile portrait. Drag to aim,
-  release to launch Izan the black rabbit, smash the glowing pumpkins that hunt him,
-  reach the door. One hero, 10 stages in 3 chapters, a witch boss, story screens.
-  Design record: `SPEC.md` (redesign of 2026-10-12). Everything (UI, levels, audio) is built from
-  code at runtime; scenes contain a single `GameBoot` object.
+- **Name:** **Timucuha n Mqidec, the tales of Mqidec** (Unity project folder `game1`; the
+  Player Settings product name is still "Hollow Night", an open question).
+- **What it does:** 2D physics puzzle game for mobile portrait, told by Jida, a Kabyle
+  grandmother, at the hearth. Drag to aim, release to launch Mqidec, a small black rabbit; break
+  Teryel the ogress's hunting pots, use her kitchen against her, reach the door. Slice 1 is
+  **Night 1** (stages 1-4) in four languages (Taqbaylit, French, Arabic, English).
+  Design record: `SPEC.md` (2026-10-21, supersedes the 2026-10-12 pumpkin game). Everything (UI,
+  levels, audio) is built from code at runtime; scenes contain a single `GameBoot` object.
 - **Tech stack:** Unity **6000.6.5f1** (Unity 6, upgraded from 2019.3 on 2026-10-12), C# code
   kept at **7.3** style, **built-in render pipeline** (URP removed, all sprites use `Sprites/Default`),
   Physics2D, legacy `Input`, `UnityEngine.UI` (no TextMeshPro). Python 3 + Pillow for tooling.
@@ -25,9 +27,16 @@ drive the editor; the user play-tests and pastes Console output. Never claim a U
 
 ```bash
 # All commands run from the project root (this folder)
-# Verify every stage is finishable (physics simulator; vary --seed when a stage is near par)
+# Compile every Unity assembly with the editor's own compiler, run the plain C# tests (~5 s)
+bash Tools/unity_check.sh
+
+# Every stage finishable with three stars and its lesson (physics simulator; use seeds 1, 5, 9)
 python3 Tools/check_levels.py
-python3 Tools/check_levels.py 4 7 --seed 5
+python3 Tools/check_levels.py 2 4 --seed 5
+
+# Text: edit Tools/design/yennayer-script.md, then regenerate Logic/TalesText.cs and text.js
+python3 Tools/design/original/build-text.py
+python3 Tools/check_glyphs.py      # every character exists in its language's font
 
 # Regenerate the procedural sprites in Assets/Resources/HN/ (keeps .meta GUIDs)
 python3 Tools/generate_art.py
@@ -36,8 +45,6 @@ python3 Tools/generate_art.py
 graphify query "how does the hero come to rest"
 graphify update .
 
-# Compile check: open the project in Unity; Library/ScriptAssemblies/Assembly-CSharp.dll
-# timestamp and Logs/Editor.log (grep 'error CS') show the result.
 ```
 
 ## Architecture Notes
@@ -48,7 +55,9 @@ graphify update .
   `bash scripts/sync-codex.sh`; never edit `.agents/skills/` directly.
 - **The full game guide is the "Game guide" section below**: folder map, scene flow, hero
   rules, how to add a stage, verification steps. Read it before touching code.
-- Game code: `Assets/Scripts/HollowNight/{Core,UI,Story,Stage,Elements}/`.
+- Game code: `Assets/Scripts/HollowNight/{Core,UI,Story,Stage,Elements}/`. Pure rules live in
+  `Logic/` (asmdef `HollowNight.Logic`, `noEngineReferences`): text table, Arabic layout, star and
+  door rules, the pot's state step, the story order. Tests in `Tools/unity_tests/` use only it.
   Entry point is `Core/GameBoot.cs` (its `.meta` GUID must never change).
   Scenes: `Assets/Scenes/HollowNight/HN_{MainMenu,WorldMap,Story,Stage}.unity`.
   Art and fonts: `Assets/Resources/HN/`, loaded by name through `Art.Get`.
@@ -58,10 +67,11 @@ graphify update .
   is disabled in the build. Never rename its classes or public fields; they are wired in scenes.
 - Never read or edit `Library/`, `Temp/`, `obj/`, `Logs/`, `*.csproj`, `*.sln`, or existing
   `.meta` files. Non-asset files go in `Tools/` (docs may also live in the root), not `Assets/`.
-- Status as of 2026-10-12: project opens in Unity 6 and compiled with 0 errors before the
-  pumpkin-hunt redesign; the redesign itself is **not yet compile-checked or play-tested**.
-  All 10 stages pass the simulator. `Hollow Night > Smoke Test (all stages)` in the editor
-  menu (from `Assets/Editor/HNSmokeTest.cs`) plays every screen and writes `Tools/smoke_report.txt`.
+- Status as of 2026-10-27 (branch `feat/unity-tales-slice1`): Night 1 compiles with 0 errors
+  in every assembly (`Tools/unity_check.sh`), its tests pass, and all 4 stages pass the
+  simulator with three stars. It is **not yet play-tested in the editor** (user gate).
+  `Hollow Night > Smoke Test (all stages)` in the editor menu (`Assets/Editor/HNSmokeTest.cs`)
+  taps through the story chain, plays every stage and writes `Tools/smoke_report.txt`.
 
 ## Rules
 
@@ -100,28 +110,27 @@ only sessions that touch an API pay for them. (This project has no HTTP API.)
 
 ### 1. What this project is
 
-**Hollow Night: Izan and the Pumpkin Hunt** — a 2D Halloween physics puzzle game for mobile (portrait).
-The player drags to aim and releases to launch Izan, a black rabbit hunted by glowing pumpkins. Smashing
-every pumpkin unseals the door. It has a story, one hero, 10 stages in 3 chapters and a boss fight.
-The agreed design is in `SPEC.md` (2026-10-12).
+**Timucuha n Mqidec**: Jida tells her grandchildren how Mqidec, a rabbit no bigger than a fist,
+outwits the ogress Teryel. Each night is a tale of four stages; slice 1 holds Night 1, Teryel's
+kitchen. The story, nights and mechanics come from the browser prototype in
+`Tools/design/original/`; `SPEC.md` (2026-10-21) records the port.
 
 The project contains two generations of code:
 
 | Part | Location | Status |
 |---|---|---|
-| **Hollow Night** (the game) | `Assets/Scripts/HollowNight/`, `Assets/Scenes/HollowNight/`, `Assets/Resources/HN/` | Active, in the build |
-| First prototype | `Assets/*.cs`, `Assets/Scripts/*.cs`, `Assets/Scenes/*.unity` | Legacy, bugs fixed, **disabled in the build** |
+| **The tales** (the game) | `Assets/Scripts/HollowNight/`, `Assets/Scenes/HollowNight/`, `Assets/Resources/HN/` | Active, in the build. Namespace and folders keep the old "HollowNight" name |
+| First prototype | `Assets/*.cs`, `Assets/Scripts/*.cs`, `Assets/Scenes/*.unity` | Legacy, **disabled in the build** |
 
 | Item | Value |
 |---|---|
-| Unity version | **6000.6.5f1** (Unity 6, upgraded 2026-10-12). Code stays in plain C# 7.3 style |
-| Render pipeline | **Built-in** (URP assets removed at upgrade). All sprites use the unlit `Sprites/Default` material |
+| Unity version | **6000.6.5f1** (Unity 6). Code stays in plain C# 7.3 style |
+| Render pipeline | **Built-in**. All sprites use the unlit `Sprites/Default` material |
 | Input | Legacy `Input` class (mouse = first touch) |
 | Physics | Physics2D, gravity (0, -9.81), hero gravity scale 1.5 |
-| UI | `UnityEngine.UI` built from code. TextMeshPro is **not** used |
-| Target | Android/iOS portrait. Product name `Hollow Night` |
-| Version control | git repository in `game1/`; generated folders are ignored |
-| Verification | Unity 6 is installed; the user play-tests. See §9 |
+| UI | `UnityEngine.UI` built from code; no TextMeshPro. Arabic is shaped by `Logic/ArabicText` |
+| Target | Android/iOS portrait later; slice 1 plays in the editor |
+| Verification | `Tools/unity_check.sh`, `Tools/check_levels.py`; the user play-tests. See §9 |
 
 ### 2. Key design decision: everything is built from code
 
@@ -139,17 +148,20 @@ Consequences:
 
 | Path | Content |
 |---|---|
+| `Assets/Scripts/HollowNight/Logic/` | Pure C# (no UnityEngine): `TalesText` (generated) and `Text`, `ArabicText`, `Rules`, `PotStep` (`Pot`), `TalesStory` |
 | `Assets/Scripts/HollowNight/Core/` | `GameBoot`, `Art`, `Flow`, `Progress`, `Heroes`, `Sfx`, `Juice` |
-| `Assets/Scripts/HollowNight/UI/` | `UIKit`, `MainMenuScreen`, `WorldMapScreen` |
-| `Assets/Scripts/HollowNight/Story/` | `Story` (all dialogue), `StoryScreen` |
+| `Assets/Scripts/HollowNight/UI/` | `UIKit` (incl. `Say`, `T`), `MainMenuScreen`, `WorldMapScreen` |
+| `Assets/Scripts/HollowNight/Story/` | `Story` (scenes, portraits, night card), `StoryScreen` |
 | `Assets/Scripts/HollowNight/Stage/` | `StageController`, `StageHud`, `Hero`, `CameraRig` (+`Trajectory`), `LevelData`, `LevelBuilder`, `LevelLibrary` |
-| `Assets/Scripts/HollowNight/Elements/` | `Elements.cs` (all level objects), `WitchBoss.cs` |
-| `Assets/Scenes/HollowNight/` | `HN_MainMenu`, `HN_WorldMap`, `HN_Story`, `HN_Stage` |
-| `Assets/Resources/HN/` | 100 sprites + `Fonts/` (Creepster, Luckiest Guy, with licences) |
+| `Assets/Scripts/HollowNight/Elements/` | `Elements.cs` (all level objects: `Hunter`, `Jar`, `Teryel`...), `WitchBoss.cs` (unused by Night 1) |
+| `Assets/Resources/HN/` | Sprites (placeholders for the tales) + `Fonts/` (Noto Sans, Noto Sans Arabic, Creepster, Luckiest Guy, with licences) |
+| `Tools/design/yennayer-script.md` | **The script**: every line in four languages. Source of `TalesText.cs` and the browser's `text.js` |
+| `Tools/design/original/` | The browser prototype of the tales (reference for rules, layouts and story order) |
 | `Tools/generate_art.py` | Regenerates the sprites (Pillow). Keeps existing `.meta` GUIDs |
-| `Tools/check_levels.py` | Simulates the stages to test that they can be finished |
-| `Tools/design/prototype/` | Isolated HTML/CSS/JS comparison: current AI-reworked ten Unity layouts, ten proposals, three adult story/art directions. The user's handmade legacy scenes are documented in `Tools/design/original-scenes.md`; not part of the Unity build |
-| `Assets/Editor/HNSmokeTest.cs` | Editor menu `Hollow Night > Smoke Test`: plays every screen/stage, writes `Tools/smoke_report.txt` |
+| `Tools/check_levels.py` | Simulates the stages: three stars with the stage's lesson |
+| `Tools/unity_check.sh`, `Tools/unity_tests/` | Compile gate and plain C# tests |
+| `Tools/check_glyphs.py` | Font coverage of every character per language |
+| `Assets/Editor/HNSmokeTest.cs` | Editor menu `Hollow Night > Smoke Test`: story chain and every stage, writes `Tools/smoke_report.txt` |
 | `Assets/AlienTileSet/`, `Assets/2D Halloween Decoration/`, `Assets/QS/` | Third-party art packs, no logic |
 | `Library/`, `Temp/`, `Logs/`, `obj/`, `*.csproj`, `*.sln` | Generated by Unity. **Never read or edit** |
 | `graphify-out/` | Code knowledge graph (§10) |
@@ -157,23 +169,26 @@ Consequences:
 ### 4. Scene flow
 
 Build order: `HN_MainMenu` (0), `HN_WorldMap` (1), `HN_Story` (2), `HN_Stage` (3).
-Scenes are loaded **by name** through `Flow.Go(...)`, which fades the screen.
+Scenes are loaded **by name** through `Flow.Go(...)`, which fades the screen (a load asked for
+during another waits its turn).
 
 ```mermaid
 flowchart LR
-    Menu[HN_MainMenu] -- "Play (first time)" --> Pro[HN_Story: prologue]
-    Pro --> Map[HN_WorldMap]
-    Menu -- Continue --> Map
-    Map -- "tap a stage" --> Pre["HN_Story: pre_N (first time)"]
-    Pre --> Stage[HN_Stage: level N]
-    Map -- "story already seen" --> Stage
-    Stage -- "Next" --> Post["HN_Story: post_N (after 3, 5, 7, 10)"]
-    Post --> Pre
+    Menu[HN_MainMenu] -- "Play" --> Chain["HN_Story: chain before the stage"]
+    Menu -- "The tales" --> Map[HN_WorldMap]
+    Map -- "tap a stage" --> Chain
+    Chain --> Stage[HN_Stage]
+    Stage -- "Next" --> After["HN_Story: end + closing (after stage 4) + next chain"]
+    After --> Stage
+    After -- "after the last stage" --> Menu
     Stage -- "Map" --> Map
-    Post -- "after stage 10" --> Menu
 ```
 
-State that survives a scene load is static: `Flow.Level`, `Flow.StoryId`, `Flow.AfterStory`.
+`TalesStory.BeforeStage` gives the chain: the first time a night is told, `opening`, then
+`first_night` (Mqidec's naming, once ever), then `night_N`; then `stage_N` once.
+`TalesStory.AfterStage` adds `end_N` and `closing` after the night's last stage, through "Next"
+only. One `StoryScreen` plays the whole chain (`Flow.Stories`), then marks every id seen.
+State that survives a scene load is static: `Flow.Level`, `Flow.Stories`, `Flow.AfterStory`.
 `HN_Stage` is one scene for all stages; it builds `LevelLibrary.Get(Flow.Level)`.
 
 ### 5. Core classes
@@ -181,72 +196,62 @@ State that survives a scene load is static: `Flow.Level`, `Flow.StoryId`, `Flow.
 | Class | Responsibility |
 |---|---|
 | `GameBoot` | Creates the camera and event system, then adds the screen component |
-| `Flow` / `FlowRunner` | Navigation, fade overlay, story-before-level logic |
-| `Progress` | PlayerPrefs save: `hn_done_N`, `hn_stars_N`, `hn_best_N`, `hn_story_ID`, `hn_sound` |
-| `Art` | Sprite/font cache, `Make` (fit to a world height), `MakeSliced` (9-slice), `Layer` sorting orders |
-| `Sfx` | Synthesises every sound and the music loop at runtime. `Sfx.Play(Sound.X)` |
-| `Juice.cs` | `Ease`, `Tween`, `Bob`, `Spin`, `Pulse`, `FrameLoop`, `Mote`, `Fx` (sprite particle bursts) |
-| `UIKit` | Canvas (reference 1080x1920), labels, pictures, buttons, `PointerOverUI()` |
-| `Story` | Dialogue data: `prologue`, `pre_1..10`, `post_3/5/7/10`. `Story.ChapterOf(level)` |
-| `StageController` | Singleton `StageController.I`. Input, score, win/lose, pause |
-| `StageHud` | Score bar, hints, pause and result panels |
-| `Hero` | Hero physics, states, abilities and squash-and-stretch animation |
-| `LevelData` | Fluent level description (`.Ledge()`, `.Hunter()`, `.Door()` ...) |
-| `LevelBuilder` | Turns `LevelData` into GameObjects |
-| `LevelLibrary` | The 10 stages |
-
-```mermaid
-graph TD
-    GameBoot --> MainMenuScreen & WorldMapScreen & StoryScreen & StageController
-    StageController --> LevelLibrary --> LevelData
-    StageController --> LevelBuilder --> Elements[Level objects]
-    StageController --> Hero & StageHud & CameraRig & Trajectory
-    Elements -- "StageController.I.HunterSmashed / Win / Shake ..." --> StageController
-    Elements -- "hero.Die / Bounce / Hang / TryTeleport" --> Hero
-    StageController --> Progress
-    StageController & StoryScreen & WorldMapScreen & MainMenuScreen --> Flow
-    StoryScreen --> Story
-```
+| `Flow` / `FlowRunner` | Navigation, fade overlay, story chains before and after stages |
+| `Progress` | PlayerPrefs save under `tm_` keys: `done_N`, `stars_N`, `best_N`, `story_ID`, `lang`, `sound`; `CurrentLevel` |
+| `Art` | Sprite/font cache, `Make`, `MakeSliced`, `Layer` sorting orders, `LatinFont`/`ArabicFont` |
+| `Sfx` | Synthesises every sound at runtime (Clink, Crack, Crush for the clay). `Sfx.Play(Sound.X)` |
+| `UIKit` | Canvas, labels, buttons. **`UIKit.Say(label, text)`** sets text in the chosen language (Arabic shaped and right to left, font fallback); `UIKit.T(id)` reads the table |
+| `TalesText` / `TalesStory` (Logic) | Every line in four languages; the beats of each story and their order |
+| `Story` / `StoryScreen` | Scene backdrops, portraits, night card; plays a chain with an Arabic typewriter |
+| `StageController` | Singleton `StageController.I`. Input, broken list, Teryel count, door, win, pause |
+| `StageHud` | Stage title, three stars, hints, pause and result panels (texts from ids) |
+| `Hero` | Hero physics, states, the dash, squash-and-stretch |
+| `LevelData` / `LevelBuilder` / `LevelLibrary` | Fluent stage description, its GameObjects, the 4 stages |
 
 ### 6. Gameplay rules
 
 #### Hero states (`HeroState`)
 `Resting` (kinematic, follows the ground it stands on, can be launched) → `Flying` (dynamic) →
 `Resting` again when grounded and slower than 0.6 for 0.12 s. Also `Cannon`, `Dead`, `Won`.
+`Hero.Rest` never saves a respawn spot inside a free Teryel's path (`Teryel.InPath`).
 
 #### Input (`StageController.Update`)
-- Press and drag while `Resting`: aim. Drag is measured in screen space, max 4 world units.
-  Launch **velocity** is set directly (`drag / 4 * maxSpeed`), so the trajectory preview is exact.
-- Press while `Flying`: the hero's ability. A drag shorter than 0.45 units is ignored.
+- Press and drag while `Resting`: aim (max 4 world units, velocity `drag / 4 * maxSpeed`, exact
+  preview). While a real aim is held, `StageController.Aiming` freezes the pots.
+- Press while `Flying`: the dash. A drag shorter than 0.45 units is ignored.
 - `R` restarts, `Esc` pauses.
 
 #### Hero (`Heroes.cs`)
+Mqidec (`HeroType.Izan` in code, sprites `izan_*`) is the only hero: launch speed 16, one Spirit
+Dash per flight (tap in the air, 0.45 s, breaks pots). Name and hint are text ids (`hero.name`,
+`tip.dash`). The other `HeroType` values only keep `Hero.cs` compiling.
 
-Izan, the black rabbit, is the only playable hero (max launch speed 16). Ability: Spirit Dash, a tap in
-flight that boosts speed for 0.45 s, smashes pumpkins and bats, and breaks crates. The `HeroType` enum
-still lists Hoot, Webster and Pip and `Hero.cs` keeps their ability code so it compiles, but they are
-not in the roster and no UI shows them. Sprites `izan_idle/blink/fly/happy/hurt` are drawn by
-`izan()` in `Tools/generate_art.py` to match the first prototype's rabbit.
+#### Pots (`Hunter` + `Logic/PotStep.cs`)
+Kinematic triggers driven by `Pot.Step`: idle, notice (0.35 s), hunt (speed x1.6, lunge x1.8
+within 1.6), give up beyond 1.4 x range, return home. A dash or an impact over 4.5 breaks one; a
+slower touch kills. From a death until the next launch every pot is sent home and is harmless
+(`PotsSafe`). `Sleeper` is a pot with range 0.
 
-#### Hunting pumpkins (`Hunter` in `Elements.cs`)
-Floating kinematic trigger (`useFullKinematicContacts` so it also touches the resting hero). Inside
-`Range` (3.5) it drifts toward the hero at `Speed` (1.2); otherwise it floats home. A dashing hero or an
-impact faster than `BreakSpeed` (4.5) smashes it (hero keeps 60 % of its speed); a slower touch kills the
-hero, after which the pumpkin waits at home until the next launch so a respawn is never camped. Sprites `hunter_0/1`
-come from the legacy `Assets/graphics/Texture/Jack o lantern_3.png`.
+#### Jars (`Jar`)
+Dynamic, rotation frozen (the roll is drawn). The hero passes through and kicks it (every 0.4 s
+of contact) with most of his horizontal speed. It breaks pots it bowls into, shatters after a fall
+of 2.5+ (crushing pots within 1.1), against a side wall above 3, or off the stage. The trap jar
+rolls out again 1.2 s after breaking while Teryel is free.
 
-#### Score
-Stars: 1 for finishing, +1 for smashing every pumpkin, +1 for `launches <= par`. A death costs one launch
-and respawns the hero at the last **stable** rest position. The door is sealed until every pumpkin in
-the stage is smashed (a `Key` adds a lock on top).
+#### Teryel (`Teryel`)
+Never fought: any touch kills, even a dash (respawn grace respected). Can patrol (`dx`, `period`).
+A moving jar traps her; then `StageController.TeryelTrapped` may open the door.
+
+#### Stars and door (`Logic/Rules.cs`)
+One star per hunter broken, up to 3: pots, sleepers and rolling jars count, the trap jar never.
+Finishing alone gives no star; there is no par. Door modes: `Always` (stages 1-3) or `Trap`
+(stage 4: opens once every Teryel is trapped).
 
 #### Level objects (`Kind` in `LevelData.cs`, classes in `Elements.cs`)
-`Platform`, `Door` (locked by `Key`; sealed while any `Hunter` is alive), `Hunter`, `Spikes`,
-`Mushroom` (bounce 17), `Mover`, `Wind`, `Portal`, `Bat`, `Cauldron` (cannon), `Crate` (cracked block),
-`Ghost` (blinking platform), `Web`, `Decor`, `Boss`.
-
-The boss (`WitchBoss`) has 3 health, rises 2.2 units and speeds up after each hit, throws `Bomb`s,
-and drops the `LanternGoal` when defeated; touching the lantern wins stage 10.
+Night 1 uses `Platform`, `Door`, `Pot`, `Sleeper`, `Jar`, `TrapJar`, `Teryel`, `Cauldron` (the
+hearth cannon: 0.4 s, set velocity) and `Ghost` (the crumbling ledge, phase from the stage start).
+Kept for later nights: `Key`, `Spikes`, `Mushroom`, `Mover`, `Wind`, `Portal`, `Bat`, `Crate`,
+`Web`, `Decor`, `Boss`.
 
 #### World units
 x from -6 to 6 (walls at ±6), y = 0 is the ground surface. Hero radius 0.45.
@@ -257,23 +262,27 @@ The camera always shows 12 units of width and follows the hero vertically.
 Edit `LevelLibrary.cs`. One call per line, plain numbers (the simulator parses this file):
 
 ```csharp
-static LevelData Level11()
+static LevelData Level5()
 {
-    return New(11, "New Stage", HeroType.Izan, 24f, 4)   // id, name, hero, height, par
-        .Hint("Shown until the first launch.")
+    return New(5, 16f)                 // id, height (name comes from text id stage.5)
+        .Rules(DoorMode.Trap)          // optional; default Always
+        .Hint("tip.roll")              // a teaching card id, shown until the first launch
         .Ground()
-        .Start(-4f, 0f)
-        .Ledge(2f, 5f, 3f)        // x, surface height, width
-        .Door(2.5f, 5f)
-        .Hunter(0f, 4f);      // floating pumpkin centre
+        .Start(-4.5f, 0f)
+        .Ledge(2f, 5f, 3f)             // x, surface height, width
+        .Door(2.5f, 5f)                // x, surface
+        .Pot(0f, 4f, 3f, 0.9f)         // centre x, y, range, speed
+        .Jar(-3f, 0f);                 // x, surface
 }
 ```
 
-Then: add it to `Build()`, raise `Progress.LevelCount`, update `Story.ChapterOf` and the world map
-chapter starts if needed, add a `pre_11` dialogue in `Story.cs`, and run `python3 Tools/check_levels.py 11`.
+Then: add it to `Build()`; the stage and story counts come from `TalesStory` (`Nights`,
+`StagesPerNight`), and its lines and beats go in `TalesStory` and the script. Run
+`bash Tools/unity_check.sh` and `python3 Tools/check_levels.py 5` (with seeds 5 and 9).
 
 To add a new kind of object: add a `Kind`, a fluent method in `LevelData`, a builder method in
-`LevelBuilder`, the behaviour class in `Elements.cs`, and teach `Tools/check_levels.py` about it.
+`LevelBuilder`, the behaviour class in `Elements.cs`, and teach `Tools/check_levels.py` about it
+(and its lesson flag if the stage teaches it).
 
 ### 8. Legacy prototype
 
@@ -292,15 +301,14 @@ Claude cannot drive the Unity editor, so:
 
 | Check | How | Covers |
 |---|---|---|
-| Compile | Open in Unity; check `Logs/Editor.log` for `error CS` | Syntax, types, API names |
-| Stages | `python3 Tools/check_levels.py` | A route to the goal, every pumpkin smashed, par |
-| Play test | **Open in Unity and play** | Everything else: scenes, sprite import, feel |
+| Compile | `bash Tools/unity_check.sh` (editor's compiler and engine assemblies; Logic, Assembly-CSharp in editor and player defines, Editor) | Syntax, types, API names, Logic purity |
+| Logic tests | Same script (`Tools/unity_tests/`) | Arabic layout, text table, stars and doors, pot step, story order, every text id used in code |
+| Stages | `python3 Tools/check_levels.py` (seeds 1, 5, 9) | A three-star route using the stage's lesson (roll, cannon, trapped) |
+| Text and fonts | `python3 Tools/check_glyphs.py` | Every character in its language's font |
+| Play test | **Open in Unity and play**, then `Hollow Night > Smoke Test` | Everything else: scenes, sprites, feel, Arabic on screen |
 
-`check_levels.py` is a random search over an approximation of the physics; results vary slightly with
-`--seed`. When a stage's best route is within one launch of par, test with several seeds. Hunters are
-simulated at their home position (no chase): fast or dashing contact smashes them, slow contact is death.
-`Hollow Night > Smoke Test (all stages)` in the editor plays everything and writes `Tools/smoke_report.txt`.
-
+`check_levels.py` is a random search over an approximation of the physics. Jars, Teryel and the
+door modes are simulated; pots stay at home (no hunt), so the chase is only judged in the editor.
 Never claim a change was tested in Unity unless it was.
 
 ### 10. Code knowledge graph (Graphify)

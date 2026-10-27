@@ -36,9 +36,14 @@ csc() { # $1 = label; rest = compiler arguments. Prints errors only.
   shift
   log=$(mktemp)
   "$DOTNET" "$CSC_DLL" -nologo -nostdlib -noconfig -r:"$NETSTD" "$@" >"$log" 2>&1
-  local n
+  local status=$? n
   n=$(grep -c "error CS" "$log")
-  if [ "$n" -gt 0 ]; then
+  if [ "$n" -eq 0 ] && [ "$status" -ne 0 ]; then
+    # The compiler itself failed (crash, broken SDK): no "error CS" line, but not a pass.
+    echo "FAIL $label: the compiler exited with status $status"
+    tail -5 "$log"
+    ERRORS=$((ERRORS + 1))
+  elif [ "$n" -gt 0 ]; then
     echo "FAIL $label: $n error(s)"
     grep "error CS" "$log" | sed "s#^$PWD/##" | head -40
     ERRORS=$((ERRORS + n))

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HollowNight.Logic;
 using UnityEngine;
 
@@ -109,17 +110,26 @@ namespace HollowNight
             }
         }
 
+        /// <summary>Every progress key (stages and stories); the language and sound settings are not progress.</summary>
+        public static IEnumerable<string> ProgressKeys
+        {
+            get
+            {
+                for (int i = 1; i <= LevelCount; i++)
+                {
+                    yield return Prefix + "done_" + i;
+                    yield return Prefix + "stars_" + i;
+                    yield return Prefix + "best_" + i;
+                }
+                foreach (string id in TalesStory.Ids) yield return Prefix + "story_" + id;
+            }
+        }
+
+        /// <summary>Forgets every stage and story; keeps the language and sound.</summary>
         public static void ResetAll()
         {
-            bool sound = SoundOn;
-            for (int i = 1; i <= LevelCount; i++)
-            {
-                PlayerPrefs.DeleteKey(Prefix + "done_" + i);
-                PlayerPrefs.DeleteKey(Prefix + "stars_" + i);
-                PlayerPrefs.DeleteKey(Prefix + "best_" + i);
-            }
-            foreach (string id in TalesStory.Ids) PlayerPrefs.DeleteKey(Prefix + "story_" + id);
-            SoundOn = sound;
+            foreach (string key in ProgressKeys) PlayerPrefs.DeleteKey(key);
+            PlayerPrefs.Save();
         }
     }
 }

@@ -16,7 +16,8 @@ this spec covers bringing them into the Unity project.
 
 ## 2. What the player gets in slice 1
 
-- **Main menu:** title "Timucuha n Mqidec", Play, the tales, a language selector
+- **Main menu:** title "Timucuha n Mqidec" (in Taqbaylit; the other languages show its
+  translation, `ui.title`, as the prototype does), Play, the tales, a language selector
   (Taqbaylit, Français, العربية, English) and sound.
 - **The hearth:** the first time, Jida's opening ("Amacahu!" / "Macahu!"), the first-night
   naming of Mqidec, then Night 1's intro.
@@ -105,3 +106,24 @@ Settings, the browser prototype itself (unchanged), and the legacy prototype sce
 | Stages | `python3 Tools/check_levels.py`: every Night 1 stage finishable with three stars in the simulator's approximation (taught mechanic used) |
 | Browser prototype | Unchanged: its tests and route checks still pass |
 | Play | The user plays `HN_MainMenu` in the editor and runs `Hollow Night > Smoke Test`; nothing else counts as a Unity play test |
+
+## 7. Evidence (2026-10-27, branch `feat/unity-tales-slice1`)
+
+| Gate | Result |
+|---|---|
+| Compile | `bash Tools/unity_check.sh`: 0 errors in HollowNight.Logic, Assembly-CSharp (editor and player defines) and Assembly-CSharp-Editor |
+| Pure logic | 45/45 plain C# tests: Arabic layout, text table, stars and doors, pot step, story order, every text id used in code in four languages |
+| Stages | `python3 Tools/check_levels.py`: 4/4 with three stars on seeds 1, 5 and 9; lessons used (2 roll, 3 cannon, 4 trapped). Stage 4 fails without its trap jar |
+| Glyphs | `python3 Tools/check_glyphs.py`: full coverage for Latin and Arabic |
+| Browser prototype | Unchanged behaviour: 124/124 tests, art checks, 60/60 and 28/28 routes |
+| Play | **Pending**: the user's editor play (English and Arabic) and `Hollow Night > Smoke Test` |
+
+Decisions taken while building, within this spec:
+- Leaving stage 4 by "Map" goes to the map, as the prototype; the tale's end and the closing play
+  through "Next". Play starts stage 1 again once the night is cleared.
+- The jar is solid to the world but not to Mqidec: he passes through and kicks it, as in the
+  prototype, so he never stands on it.
+- Saves use `tm_` keys; the pumpkin game's `hn_` saves are ignored.
+- One text row was added to the script: `hero.name` (Mqidec / مقيدش).
+- The tale's Taqbaylit name on the night card keeps a Latin font in Arabic (the Arabic font has
+  no Latin letters).

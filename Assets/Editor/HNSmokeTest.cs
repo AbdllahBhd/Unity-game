@@ -14,12 +14,14 @@ namespace HollowNight.EditorTools
     /// Automated first-run smoke test. Menu: Hollow Night / Smoke Test (all stages).
     /// Enters Play mode in HN_MainMenu, visits the map and the whole Night 1 story chain, then loads every stage,
     /// launches the hero a few times, forces a win to show the result panel, and writes all
-    /// Console warnings/errors to Tools/smoke_report.txt. Progress is saved as in a real win.
+    /// Console warnings/errors to Tools/smoke_report.txt. The player's saved progress is put back
+    /// afterwards, so a smoke run never hides the stories from a real play.
     /// </summary>
     [InitializeOnLoad]
     public static class HNSmokeTest
     {
         const string Flag = "HN_SmokeTest_Running";
+        const string SavedProgress = "HN_SmokeTest_SavedProgress";
         const string ReportPath = "Tools/smoke_report.txt";
         const string MenuScenePath = "Assets/Scenes/HollowNight/HN_MainMenu.unity";
         const float ScreenSeconds = 2.5f;
@@ -40,6 +42,39 @@ namespace HollowNight.EditorTools
         static bool sawRest;
         static int launchErrors;
         static int storyTaps;
+        static bool sawStoryScene;
+
+        [MenuItem("Hollow Night/Reset progress")]
+        static void ResetProgress()
+        {
+            Progress.ResetAll();
+            Debug.Log("[HollowNight] Progress reset: every stage and story is new again (language and sound kept).");
+        }
+
+        /// <summary>The progress keys as "key=value" lines ("key=" for an absent key), kept across the Play mode reload.</summary>
+        static void SaveProgress()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (string key in Progress.ProgressKeys)
+                sb.Append(key).Append('=').Append(PlayerPrefs.HasKey(key) ? PlayerPrefs.GetInt(key).ToString() : "").Append('\n');
+            EditorPrefs.SetString(SavedProgress, sb.ToString());
+        }
+
+        static bool RestoreProgress()
+        {
+            if (!EditorPrefs.HasKey(SavedProgress)) return false;
+            foreach (string line in EditorPrefs.GetString(SavedProgress).Split('\n'))
+            {
+                int eq = line.IndexOf('=');
+                if (eq <= 0) continue;
+                string key = line.Substring(0, eq), value = line.Substring(eq + 1);
+                if (value.Length == 0) PlayerPrefs.DeleteKey(key);
+                else PlayerPrefs.SetInt(key, int.Parse(value));
+            }
+            PlayerPrefs.Save();
+            EditorPrefs.DeleteKey(SavedProgress);
+            return true;
+        }
 
         [MenuItem("Hollow Night/Smoke Test (all stages)")]
         static void Run()
@@ -55,6 +90,7 @@ namespace HollowNight.EditorTools
                 Debug.LogError("[SmokeTest] Scene not found: " + MenuScenePath);
                 return;
             }
+            SaveProgress();
             EditorPrefs.SetBool(Flag, true);
             EditorSceneManager.playModeStartScene = menu;
             EditorApplication.EnterPlaymode();
@@ -67,6 +103,7 @@ namespace HollowNight.EditorTools
             {
                 // Stale flag from an aborted run.
                 EditorPrefs.DeleteKey(Flag);
+                RestoreProgress();
                 EditorSceneManager.playModeStartScene = null;
                 return;
             }
@@ -143,7 +180,8 @@ namespace HollowNight.EditorTools
 
                 case Phase.Story:
                     // Tap through every line of the chain: the screen must end on Flow.AfterStory.
-                    if (SceneManager.GetActiveScene().name == Flow.AfterStory && Elapsed > 1f)
+                    if (SceneManager.GetActiveScene().name == Flow.StoryScene) sawStoryScene = true;
+                    if (sawStoryScene && storyTaps > 0 && SceneManager.GetActiveScene().name == Flow.AfterStory)
                     {
                         Note("Story: the whole chain played in " + Elapsed.ToString("0.0") + " s (" + storyTaps
                              + " taps), then " + Flow.AfterStory);
@@ -319,7 +357,10 @@ namespace HollowNight.EditorTools
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
             EditorPrefs.DeleteKey(Flag);
             EditorSceneManager.playModeStartScene = null;
+            if (RestoreProgress()) Note("Saved progress restored as it was before the run.");
 
+            bool failed = issues.Exists(i => i.StartsWith("FAIL"));
+            if (failed) reason = "FAILED (" + reason + ")";
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Hollow Night smoke test  " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "  Unity " + Application.unityVersion);
             sb.AppendLine("Result: " + reason);

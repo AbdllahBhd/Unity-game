@@ -1115,6 +1115,39 @@ behaviour is unchanged (only `build-text.py` gains an output).
         empty story scene, Play after the last stage, the card's timing, the Arabic typewriter
         length, portraits that never mirrored, the HUD's overflow and doubled stage 4 card, Arabic
         map labels, the id grep's reach, and the trap beat's thud.
-- [ ] 4. Review and wrap-up.
+- [x] 4. Review and wrap-up (2026-10-28). **User gate pending**, and the merge to `develop`
+      waits for it.
+      - **Review** (`code-reviewer`, the whole slice, `develop..HEAD`):
+        - Fixed: a smoke run marked every story seen and every stage done, hiding the story from
+          the user's own play. It now saves the `tm_` progress keys before the run and restores
+          them after, and a new `Hollow Night > Reset progress` menu clears progress between
+          language runs.
+        - Fixed: the smoke report said "completed" despite FAIL lines (now `FAILED (...)`), and
+          could pass a story check that never reached `HN_Story`.
+        - Fixed: `unity_check.sh` ignored the compiler's exit code. Shown: with `/bin/false` as
+          the compiler, the old script printed "ok" for each assembly; the new one prints FAIL
+          and exits 1.
+        - Rebutted, SPEC reworded: the menu title is translated (`ui.title`), as in the
+          prototype; it is "Timucuha n Mqidec" in Taqbaylit.
+        - Open, for the editor: whether `Font.HasCharacter` on Creepster and Luckiest Guy
+          counts OS fallback fonts. If it does, Taqbaylit titles with ɣ, ḍ... keep the
+          decorative font instead of Noto Sans. Check `Art.BodyFont.HasCharacter('ɣ')` in the
+          Console during the play-test.
+      - **Docs:** the CLAUDE.md Game guide was rewritten for the tales: overview, commands, folder
+        map, scene flow, classes, rules, how to add a stage, verification. SPEC.md gained §7
+        Evidence and the decisions taken while building.
+      - **Not done:** `graphify update .` fails: the uv tool environment was built for Python
+        3.10, which now points at Python 3.14 (`ModuleNotFoundError: graphify`, then
+        `tree_sitter._binding`). `graphify-out/` was not refreshed; reinstalling the tool is the
+        user's call.
+      - **Evidence:**
+        - `bash Tools/unity_check.sh`: 0 errors, 45/45 tests.
+        - `check_levels.py`: 4/4 on seeds 1, 5 and 9.
+        - `check_glyphs.py`: full coverage.
+        - Browser prototype: 124/124 tests, art checks, 60/60 and 28/28 routes.
+        - `done-gate.test.sh` passes.
+      - **User gate:** in the editor, run `Hollow Night > Reset progress`, then play menu →
+        hearth → stages 1-4 in English. Reset again and play it in Arabic. Then run
+        `Hollow Night > Smoke Test` and paste the Console and `Tools/smoke_report.txt`.
 
 /goal every Claude-verifiable "Done when" clause of "Unity port, slice 1" in task_plan.md is checked off (user gates listed as pending), and bash Tools/unity_check.sh, python3 Tools/check_levels.py and the browser prototype checks pass
