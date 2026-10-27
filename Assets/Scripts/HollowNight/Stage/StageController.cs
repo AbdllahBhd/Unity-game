@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using HollowNight.Logic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,6 +29,9 @@ namespace HollowNight
         int launches;
         int smashed;
         int huntersLeft;
+        int teryelsFree;
+        bool potsSafe;
+        readonly List<Breakable> broken = new List<Breakable>();
         bool keyNeeded;
         bool keyFound;
         bool ended;
@@ -42,6 +46,10 @@ namespace HollowNight
         public int Launches { get { return launches; } }
         public int Smashed { get { return smashed; } }
         public bool Ended { get { return ended; } }
+        /// <summary>The player holds a real aim: the pots freeze.</summary>
+        public bool Aiming { get { return aiming; } }
+        /// <summary>From a death until the next launch the pots go home and harm no one.</summary>
+        public bool PotsSafe { get { return potsSafe; } }
 
         void Awake()
         {
@@ -64,6 +72,7 @@ namespace HollowNight
             builder = new LevelBuilder(Level, world.transform);
             builder.Build();
             huntersLeft = builder.Hunters;
+            teryelsFree = builder.Teryels;
             keyNeeded = Level.Count(Kind.Key) > 0;
 
             GameObject heroObject = new GameObject("Hero");
@@ -132,6 +141,7 @@ namespace HollowNight
                     Vector2 velocity = aimVelocity;
                     CancelAim();
                     launches++;
+                    potsSafe = false;
                     Hero.Launch(velocity);
                     hud.HideHint();
                     Refresh();
@@ -176,6 +186,7 @@ namespace HollowNight
         {
             // A fall costs one launch.
             launches++;
+            potsSafe = true;
             pressing = false;
             CancelAim();
             Refresh();
@@ -188,10 +199,21 @@ namespace HollowNight
             CheckDoor();
         }
 
-        public void HunterSmashed()
+        public void Broke(Breakable what)
         {
-            smashed++;
-            huntersLeft = Mathf.Max(0, huntersLeft - 1);
+            broken.Add(what);
+            if (Rules.CountsAsStar(what))
+            {
+                smashed++;
+                huntersLeft = Mathf.Max(0, huntersLeft - 1);
+            }
+            Refresh();
+        }
+
+        public void TeryelTrapped()
+        {
+            teryelsFree = Mathf.Max(0, teryelsFree - 1);
+            if (hud != null) hud.ShowHint(TalesText.Get("ui.trapped", Progress.Language), 2.5f);
             Refresh();
             CheckDoor();
         }
@@ -200,7 +222,7 @@ namespace HollowNight
         {
             if (builder.Door == null) return;
             if (keyNeeded && !keyFound) return;
-            if (huntersLeft > 0) return;
+            if (!Rules.DoorOpen(Level.door, teryelsFree)) return;
             builder.Door.Open();
         }
 
@@ -238,9 +260,7 @@ namespace HollowNight
             CancelAim();
             Hero.Win(goal);
 
-            int stars = 1;
-            if (smashed >= builder.Hunters) stars++;
-            if (launches <= Level.par) stars++;
+            int stars = Rules.Stars(broken);
             Progress.Complete(Level.id, stars, launches);
             Sfx.Play(Sound.Win);
             Fx.Burst(goal, "spark", 18, new Color(1f, 0.9f, 0.5f), 7f, 0.9f, 0.45f, 3f);
@@ -257,8 +277,7 @@ namespace HollowNight
         {
             if (hud == null) return;
             hud.SetScore(launches, Level.par, smashed, builder.Hunters);
-            if (huntersLeft > 0) hud.SetGoal("Pumpkins left: " + huntersLeft);
-            else if (keyNeeded && !keyFound) hud.SetGoal("Find the key!");
+            if (keyNeeded && !keyFound) hud.SetGoal("Find the key!");
             else hud.SetGoal("");
         }
 

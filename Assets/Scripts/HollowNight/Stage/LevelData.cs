@@ -1,12 +1,13 @@
 using System.Collections.Generic;
+using HollowNight.Logic;
 using UnityEngine;
 
 namespace HollowNight
 {
     public enum Kind
     {
-        Platform, Door, Key, Hunter, Spikes, Mushroom, Mover, Wind, Portal, Bat, Cauldron, Crate, Ghost,
-        Web, Decor, Boss
+        Platform, Door, Key, Pot, Sleeper, Jar, TrapJar, Teryel, Spikes, Mushroom, Mover, Wind, Portal, Bat,
+        Cauldron, Crate, Ghost, Web, Decor, Boss
     }
 
     /// <summary>One object of a level. The meaning of the fields depends on <see cref="kind"/>.</summary>
@@ -15,9 +16,9 @@ namespace HollowNight
         public Kind kind;
         public Vector2 pos;
         public Vector2 size;
-        public Vector2 b;      // second point: mover travel, portal exit, wind force, bat travel, cannon velocity
-        public float f;        // period, scale...
-        public float g;        // phase
+        public Vector2 b;      // second point: mover travel, portal exit, wind force, bat or Teryel travel, cannon velocity
+        public float f;        // period, scale, pot range, Teryel radius...
+        public float g;        // phase, pot speed, Teryel period
         public string s;       // sprite name
     }
 
@@ -35,6 +36,7 @@ namespace HollowNight
         public HeroType hero;
         public float height = 20f;
         public int par = 3;
+        public DoorMode door = DoorMode.Always;
         public Vector2 start = new Vector2(-3.5f, 0.45f);
         public string hint;
         public bool showFinger;
@@ -92,13 +94,56 @@ namespace HollowNight
             return this;
         }
 
-        /// <summary>
-        /// Glowing pumpkin floating at (x, y). It drifts toward the hero when close. A fast or dashing hero
-        /// smashes it; a slow touch kills. The door stays sealed until every hunter is smashed.
-        /// </summary>
-        public LevelData Hunter(float x, float y)
+        /// <summary>When the exit opens (SPEC.md §3): always, or once Teryel is trapped.</summary>
+        public LevelData Rules(DoorMode mode)
         {
-            Add(Kind.Hunter, x, y);
+            door = mode;
+            return this;
+        }
+
+        /// <summary>
+        /// Teryel's pot, floating with its centre at (x, y). It hunts the hero inside range at the given
+        /// speed (see <see cref="Pot"/>). A fast or dashing hero breaks it, a slow touch kills. Each pot is a star.
+        /// </summary>
+        public LevelData Pot(float x, float y, float range = 3.2f, float speed = 1f)
+        {
+            Elem e = Add(Kind.Pot, x, y);
+            e.f = range;
+            e.g = speed;
+            return this;
+        }
+
+        /// <summary>A pot asleep on a surface at height y: it never moves. Still a star.</summary>
+        public LevelData Sleeper(float x, float y)
+        {
+            Add(Kind.Sleeper, x, y + 0.55f);
+            return this;
+        }
+
+        /// <summary>A rolling jar resting on a surface at height y. The hero pushes it; when it breaks it is a star.</summary>
+        public LevelData Jar(float x, float y)
+        {
+            Add(Kind.Jar, x, y + global::HollowNight.Jar.Radius);
+            return this;
+        }
+
+        /// <summary>The great jar that traps Teryel. Never a star; it rolls out again while she is free.</summary>
+        public LevelData TrapJar(float x, float y)
+        {
+            Add(Kind.TrapJar, x, y + global::HollowNight.Jar.Radius);
+            return this;
+        }
+
+        /// <summary>
+        /// Teryel standing on a surface at height y, of radius r. She patrols dx either side every period
+        /// seconds, kills on any touch, and is trapped by a moving jar.
+        /// </summary>
+        public LevelData Teryel(float x, float y, float r, float dx = 0f, float period = 6f)
+        {
+            Elem e = Add(Kind.Teryel, x, y + r);
+            e.f = r;
+            e.b = new Vector2(dx, 0f);
+            e.g = period;
             return this;
         }
 

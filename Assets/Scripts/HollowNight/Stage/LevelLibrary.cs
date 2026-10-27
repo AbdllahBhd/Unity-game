@@ -1,248 +1,100 @@
+using HollowNight.Logic;
 using UnityEngine;
 
 namespace HollowNight
 {
     /// <summary>
-    /// The ten stages. Coordinates are world units: x from -6 to 6, y = 0 is the ground surface.
-    /// Tools/check_levels.py reads this file to test that every stage can be finished,
-    /// so keep one call per line and use plain numbers.
+    /// The stages of the tales: Night 1, Teryel's kitchen, from Tools/design/original/levels.js.
+    /// Coordinates are world units: x from -6 to 6, y = 0 is the ground surface; the y of Ledge,
+    /// Door, Sleeper, Jar, TrapJar, Teryel and Cauldron is the surface they stand on, a Pot's is
+    /// its centre. Tools/check_levels.py reads this file to test that every stage can be finished
+    /// with three stars, so keep one call per line and use plain numbers.
     /// </summary>
     public static class LevelLibrary
     {
-        static LevelData[] levels;
-
         public static LevelData Get(int id)
         {
-            if (levels == null) levels = Build();
+            // Built on each call so the stage name follows the chosen language.
+            LevelData[] levels = Build();
             return levels[Mathf.Clamp(id, 1, levels.Length) - 1];
         }
 
-        static LevelData New(int id, string name, HeroType hero, float height, int par)
+        static LevelData New(int id, float height)
         {
             return new LevelData
             {
-                id = id, name = name, hero = hero, height = height, par = par, chapter = Story.ChapterOf(id)
+                id = id, name = TalesText.Get("stage." + id, Progress.Language), hero = HeroType.Izan, height = height,
+                chapter = Story.ChapterOf(id)
             };
         }
 
         static LevelData[] Build()
         {
-            return new[]
-            {
-                Level1(), Level2(), Level3(), Level4(), Level5(), Level6(), Level7(), Level8(), Level9(), Level10()
-            };
+            return new[] { Level1(), Level2(), Level3(), Level4() };
         }
 
-        // ------------------------------------------------------------ Chapter 1: The Whispering Graveyard
+        // ------------------------------------------------------------ Night 1: Teryel's kitchen
+        // Her pots hunt him.
         static LevelData Level1()
         {
-            return New(1, "First Hop", HeroType.Izan, 18f, 2)
-                .Hint("Drag anywhere, aim, let go. Smash the pumpkin at full speed, then reach the door!", true)
+            return New(1, 16f)
                 .Ground()
-                .Start(-3.5f, 0f)
-                .Ledge(3f, 3.5f, 4.5f)
-                .Door(4f, 3.5f)
-                .Hunter(0.2f, 3.6f)
-                .Decor("tree_0", 5f, 0f, 6f)
-                .Decor("tomb_0", -5.2f, 0f, 1.5f)
-                .Decor("tomb_1", 0.5f, 0f, 1.7f)
-                .Decor("fence_0", -2f, 0f, 1.2f);
+                .Start(-4.5f, 0f)
+                .Ledge(3f, 4f, 3.4f)
+                .Ledge(-3f, 7.5f, 3.4f)
+                .Ledge(2f, 11f, 3.6f)
+                .Door(2.6f, 11f)
+                .Pot(0f, 2.6f, 3f, 0.9f)
+                .Pot(0f, 6.2f, 3f, 0.9f)
+                .Pot(-2.6f, 10.4f, 3f, 0.9f);
         }
 
+        // The rolling jar: pushed off its ledge it shatters, and counts as a hunter.
         static LevelData Level2()
         {
-            return New(2, "Graveyard Steps", HeroType.Izan, 22f, 4)
-                .Hint("Tap while flying to DASH. A dashing rabbit smashes any pumpkin it touches!")
+            return New(2, 16f)
                 .Ground()
-                .Start(-4f, 0f)
-                .Ledge(-1f, 3f, 3f)
-                .Ledge(3.5f, 6f, 3.5f)
-                .Ledge(-2.5f, 9.5f, 4f)
-                .Door(-3.5f, 9.5f)
-                .Hunter(1.4f, 5f)
-                .Hunter(0.6f, 8.6f)
-                .Hunter(-0.6f, 11.4f)
-                .Decor("tree_1", -5f, 0f, 7f)
-                .Decor("tomb_2", 4.5f, 0f, 1.6f)
-                .Decor("candle", 4.6f, 6f, 0.9f, true)
-                .Decor("fence_1", 1f, 0f, 1.1f);
+                .Start(-4.6f, 0f)
+                .Ledge(-2.8f, 4.2f, 4f)
+                .Ledge(3.6f, 9.4f, 3f)
+                .Door(3.8f, 9.4f)
+                .Jar(-3.2f, 4.2f)
+                .Sleeper(1.6f, 0f)
+                .Pot(2.8f, 7.4f, 3f, 1f);
         }
 
+        // The hearth cannons and a crumbling ledge.
         static LevelData Level3()
         {
-            return New(3, "Pumpkin Patrol", HeroType.Izan, 20f, 5)
-                .Hint("Four pumpkins guard this door. Hit them fast, and never stand still for long.")
+            return New(3, 24f)
                 .Ground()
                 .Start(-4.5f, 0f)
-                .Ledge(1f, 3f, 4f)
-                .Ledge(-3.5f, 6.5f, 3.5f)
-                .Door(4.8f, 0f)
-                .Hunter(0.2f, 4.6f)
-                .Hunter(2.2f, 4.6f)
-                .Hunter(-3.5f, 8.2f)
-                .Hunter(4.4f, 3.4f)
-                .Decor("tree_2", -5f, 0f, 5f)
-                .Decor("tomb_0", -1.5f, 0f, 1.4f)
-                .Decor("hat", 2.6f, 0f, 1f, true);
+                .Ledge(1.6f, 10f, 3.6f)
+                .Ghost(-3.4f, 14.2f, 2.8f, 8f, 0f)
+                .Ledge(-3f, 18f, 3.4f)
+                .Door(-3.4f, 18f)
+                .Pot(-1.2f, 5.6f, 2.5f, 0.8f)
+                .Pot(1.2f, 14f, 2.5f, 0.8f)
+                .Pot(-1f, 16.6f, 2.5f, 0.8f)
+                .Cauldron(-1.2f, 0f, 0.4f, 15f)
+                .Cauldron(4.2f, 10f, -6.5f, 13.5f);
         }
 
+        // The great jar traps Teryel; the door opens only then. The jar is not a star.
         static LevelData Level4()
         {
-            return New(4, "The Great Pit", HeroType.Izan, 24f, 4)
-                .Hint("Red mushrooms bounce you high. Dash from the top of the bounce to smash the pumpkins!")
-                .Ground(-6f, -2.5f)
-                .Ground(1.5f, 6f)
-                .Start(-4.5f, 0f)
-                .Mushroom(2.2f, 0f)
-                .Ledge(4.4f, 6f, 3.2f)
-                .Door(4.8f, 6f)
-                .Hunter(-1f, 4.6f)
-                .Hunter(2.4f, 9.4f)
-                .Hunter(0.4f, 7.2f)
-                .Decor("tree_0", -5.2f, 0f, 6.5f)
-                .Decor("tomb_1", -3f, 0f, 1.6f)
-                .Decor("fence_0", 4.6f, 0f, 1.2f)
-                .Decor("lolly", 3.2f, 6f, 1.2f, true);
-        }
-
-        // ------------------------------------------------------------ Chapter 2: The Webwood
-        static LevelData Level5()
-        {
-            return New(5, "Bat Alley", HeroType.Izan, 26f, 6)
-                .Hint("Bats bite! DASH into them to knock them out. The door needs the golden key.")
+            return New(4, 14f)
+                .Rules(DoorMode.Trap)
                 .Ground()
-                .Start(-4.5f, 0f)
-                .Ledge(-3.5f, 4f, 3.5f)
-                .Ledge(2.5f, 7.5f, 3.5f)
-                .Ledge(-3f, 11.5f, 3.5f)
-                .Ledge(3.5f, 15f, 4f)
-                .Door(4.2f, 15f)
-                .Key(-4.6f, 13.4f)
-                .Bat(-1.5f, 6.2f, 3f, 0f, 3f)
-                .Bat(2.5f, 11f, -3.5f, 0f, 3.5f)
-                .Bat(0.2f, 14.5f, 0f, 3f, 2.6f)
-                .Hunter(2.5f, 9.4f)
-                .Hunter(-0.4f, 9.6f)
-                .Hunter(1f, 17.2f)
-                .Decor("tree_1", 5f, 0f, 8f)
-                .Decor("hangbat", -5f, 9.2f, 1.2f)
-                .Decor("pumpkin_1", -5f, 0f, 1f, true);
-        }
-
-        static LevelData Level6()
-        {
-            return New(6, "Thorn Climb", HeroType.Izan, 28f, 6)
-                .Hint("Thorns cover half of every ledge. Land on the clear side, and leap before the pumpkins reach you.")
-                .Ground()
-                .Start(0f, 0f)
-                .Ledge(-3.5f, 5f, 5f)
-                .Spikes(-4.6f, 5f, 2.6f)
-                .Ledge(3.5f, 10f, 5f)
-                .Spikes(4.6f, 10f, 2.6f)
-                .Ledge(-3.5f, 15f, 5f)
-                .Spikes(-4.6f, 15f, 2.6f)
-                .Ledge(2.5f, 20f, 4.5f)
-                .Door(3.2f, 20f)
-                .Hunter(2.2f, 4.2f)
-                .Hunter(-1.6f, 9.2f)
-                .Hunter(1.2f, 14.2f)
-                .Hunter(-1f, 18.6f)
-                .Decor("tree_2", 4.8f, 0f, 5f)
-                .Decor("hangbat", 1f, 8.5f, 1.1f)
-                .Decor("tomb_2", -4.5f, 0f, 1.5f);
-        }
-
-        static LevelData Level7()
-        {
-            return New(7, "The Moving Woods", HeroType.Izan, 28f, 5)
-                .Hint("Ride the drifting platforms. Wind lifts you, and the blue portal leads to the orange one.")
-                .Ground(-6f, -2.5f)
-                .Start(-4.5f, 0f)
-                .Mover(-0.5f, 2.7f, 2.6f, 3.5f, 0f, 5f)
-                .Ledge(4.6f, 6f, 2.8f)
-                .Portal(5f, 7.4f, -4.5f, 19.5f)
-                .Wind(-4.3f, 10f, 3.2f, 9f, 0f, 24f)
-                .Ledge(-4f, 16.5f, 3.5f)
-                .Mover(0.5f, 16.5f, 2.6f, 0f, 4f, 5f)
-                .Ledge(4.2f, 21.5f, 3.5f)
-                .Door(4.6f, 21.5f)
-                .Hunter(1.4f, 4.8f)
-                .Hunter(-4.3f, 12f)
-                .Hunter(1.2f, 23f)
-                .Decor("tree_0", -5.2f, 0f, 6f)
-                .Decor("candle", -5.2f, 16.5f, 0.9f, true)
-                .Decor("pumpkin_0", 3.4f, 21.5f, 0.8f, true);
-        }
-
-        // ------------------------------------------------------------ Chapter 3: Morgra's Tower
-        static LevelData Level8()
-        {
-            return New(8, "Crumbling Cellar", HeroType.Izan, 25f, 5)
-                .Hint("The door is at the BOTTOM. DASH into the cracked blocks to break through!")
-                .Ground()
-                .Ledge(-4f, 20f, 4f)
-                .Start(-4f, 20f)
-                .Ledge(-3.5f, 15f, 6f)
-                .CrateRow(0f, 2f, 14.5f)
-                .Ledge(4.5f, 15f, 4f)
-                .Ledge(-5.5f, 10f, 2f)
-                .CrateRow(-4f, -2f, 9.5f)
-                .Ledge(2.5f, 10f, 8f)
-                .Ledge(-2.5f, 5f, 8f)
-                .CrateRow(2f, 4f, 4.5f)
-                .Ledge(5.5f, 5f, 2f)
-                .Door(3f, 0f)
-                .Hunter(1f, 12.6f)
-                .Hunter(-3f, 7.6f)
-                .Hunter(3f, 2.8f)
-                .Decor("candle", -5.3f, 15f, 0.9f, true)
-                .Decor("cauldron_candy", -4.6f, 0f, 1.3f, true)
-                .Decor("hat", -1f, 5f, 0.9f, true);
-        }
-
-        static LevelData Level9()
-        {
-            return New(9, "Cauldron Cannons", HeroType.Izan, 32f, 5)
-                .Hint("Jump into a cauldron to be fired! Ghostly platforms blink: land while they are solid.")
-                .Ground()
-                .Start(-4.5f, 0f)
-                .Cauldron(4.5f, 0f, -4.5f, 19f)
-                .Ledge(-4f, 10f, 3.5f)
-                .Ghost(0.5f, 8f, 3f, 5f, 0f)
-                .Cauldron(-5f, 10f, 6.5f, 17f)
-                .Ledge(4f, 17.5f, 3.5f)
-                .Bat(-1f, 15f, 3f, 0f, 3f)
-                .Ghost(0f, 21f, 3f, 5f, 0.5f)
-                .Ledge(-3.5f, 24.5f, 4f)
-                .Door(-4.2f, 24.5f)
-                .Bat(1.5f, 25f, 0f, 2.5f, 2.8f)
-                .Hunter(0.5f, 10f)
-                .Hunter(1f, 19.4f)
-                .Hunter(0f, 23f)
-                .Decor("candle", 5.2f, 17.5f, 0.9f, true)
-                .Decor("pumpkin_1", -5.2f, 0f, 1f, true)
-                .Decor("hangbat", 3f, 16.4f, 1.1f);
-        }
-
-        static LevelData Level10()
-        {
-            return New(10, "Morgra's Roost", HeroType.Izan, 24f, 7)
-                .Hint("Hit Morgra three times! Dodge her pumpkin bombs, or DASH through them.")
-                .Ground()
-                .Start(0f, 0f)
-                .Ledge(-4.2f, 4f, 3f)
-                .Ledge(4.2f, 4f, 3f)
-                .Mushroom(-5.2f, 0f)
-                .Mushroom(5.2f, 0f)
-                .Ledge(0f, 7.5f, 3f)
-                .Boss(0f, 10.5f)
-                .Hunter(-4.2f, 6.6f)
-                .Hunter(4.2f, 6.6f)
-                .Hunter(0f, 13.4f)
-                .Decor("cauldron", -2.5f, 0f, 1.3f)
-                .Decor("cauldron_candy", 2.5f, 0f, 1.3f)
-                .Decor("candle", -1.1f, 7.5f, 0.9f, true)
-                .Decor("candle", 1.1f, 7.5f, 0.9f, true);
+                .Start(-4.6f, 0f)
+                .Ledge(-3.6f, 3f, 3f)
+                .Ledge(-2.5f, 6.2f, 5f)
+                .Door(5f, 0f)
+                .TrapJar(-0.7f, 6.2f)
+                .Pot(-4.2f, 9.2f, 3f, 0.9f)
+                .Pot(1.2f, 9.4f, 3f, 0.9f)
+                .Pot(4.2f, 5.4f, 2.6f, 0.8f)
+                .Teryel(2.4f, 0f, 1.3f);
         }
     }
 }

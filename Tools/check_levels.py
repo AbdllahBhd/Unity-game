@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
-"""Checks that every stage in LevelLibrary.cs can be finished.
+"""Checks that every stage in LevelLibrary.cs can be finished with three stars.
 
 It re-implements the hero physics of the game (approximately) and searches for a chain of
-launches that reaches the door. For each stage it reports:
-  - whether the goal is reachable and the fewest launches found
-  - whether each hunting pumpkin can be smashed (checked at its home position)
-  - whether the par of the stage is achievable
+launches that reaches the door. A stage passes when one route reaches the open door with
+every hunter broken (pots, sleepers and rolling jars; never the trap jar) and uses the
+mechanic the stage teaches: a jar pushed ("roll") where the stage has a rolling jar, the
+hearth ("cannon") where it has one, Teryel trapped ("trapped") where the door waits for it.
+For each stage it reports the fewest launches of such a route and when each hunter broke.
+
+Modelled: the rolling and trap jars (part of the search state, rolling on while he waits
+between launches), Teryel's patrol, touch and trap, and the door modes (always, trap).
+Not modelled: pots hunting. They are checked at their home position (a fast or dashing
+touch breaks them, a slow one kills), so the chase in Unity is only approximated.
 
 Usage (from the project root):
     python3 Tools/check_levels.py            # all stages
-    python3 Tools/check_levels.py 4 7        # only stages 4 and 7
+    python3 Tools/check_levels.py 2 4        # only stages 2 and 4
     python3 Tools/check_levels.py --samples 400 --seed 3
 
 This is a sanity check, not a proof: Unity's physics differs in details. A stage that passes here
@@ -24,6 +30,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LIBRARY = os.path.join(ROOT, "Assets", "Scripts", "HollowNight", "Stage", "LevelLibrary.cs")
+TEXT = os.path.join(ROOT, "Assets", "Scripts", "HollowNight", "Logic", "TalesText.cs")
 
 R = 0.45
 G = 9.81 * 1.5
@@ -33,7 +40,10 @@ BOUNCE = 0.2
 FRICTION = 0.49
 KILL_Y = -3.5
 HALF = 6.0
-HUNT_RANGE = 3.5   # Hunter.Range in Elements.cs
+POT_R = 0.484      # pot trigger radius (LevelBuilder.Pot: 1.1 * 0.44)
+JAR_R = 0.45       # Jar.Radius
+JAR_DAMP = 0.45    # Rigidbody2D.linearDamping of a jar
+STARS = 3
 
 
 # ----------------------------------------------------------------------------- parsing
@@ -50,7 +60,10 @@ class Level:
         self.mushrooms = []  # list of box lists
         self.spikes = []     # trigger boxes
         self.keys = []
-        self.minions = []    # hunting pumpkins at their home position: (x, y, r)
+        self.minions = []    # pots at their home position: (x, y, r, range)
+        self.jars = []       # (x, y, trap)
+        self.teryels = []    # (x, y, r, dx, period)
+        self.door_mode = "always"
         self.movers = []     # (cx, cy, w, h, dx, dy, period)
         self.ghosts = []     # (cx, cy, w, h, period, phase)
         self.winds = []      # (cx, cy, w, h, ax, ay)
@@ -61,21 +74,47 @@ class Level:
         self.door = None     # trigger box
         self.boss = None
 
+    @property
+    def hunters(self):
+        """Hunters that are stars: every pot and every rolling jar."""
+        return len(self.minions) + sum(1 for j in self.jars if not j[2])
+
+    @property
+    def lessons(self):
+        taught = set()
+        if any(not j[2] for j in self.jars):
+            taught.add("roll")
+        if self.cauldrons:
+            taught.add("cannon")
+        if self.door_mode == "trap":
+            taught.add("trapped")
+        return taught
+
 
 def num(text):
     return float(text.strip().rstrip("f"))
 
 
+def stage_names():
+    """English stage names from the text table (stage.N)."""
+    try:
+        source = open(TEXT, encoding="utf-8").read()
+    except OSError:
+        return {}
+    return {int(m.group(1)): m.group(2) for m in re.finditer(r'Add\("stage\.(\d+)", "[^"]*", "[^"]*", "([^"]*)"', source)}
+
+
 def parse():
     source = open(LIBRARY, encoding="utf-8").read()
+    names = stage_names()
     levels = []
     for body in re.split(r"static LevelData Level\d+\(\)", source)[1:]:
-        head = re.search(r'New\((\d+),\s*"([^"]*)",\s*HeroType\.(\w+),\s*([\d.]+)f?,\s*(\d+)\)', body)
+        head = re.search(r"New\((\d+),\s*([\d.]+)f?\)", body)
         if not head:
             continue
         lv = Level()
-        lv.id, lv.name, lv.hero = int(head.group(1)), head.group(2), head.group(3)
-        lv.height, lv.par = float(head.group(4)), int(head.group(5))
+        lv.id, lv.height = int(head.group(1)), float(head.group(2))
+        lv.name = names.get(lv.id, "")
         lv.boxes.append((-HALF - 0.5, lv.height / 2, 1.0, lv.height + 20))
         lv.boxes.append((HALF + 0.5, lv.height / 2, 1.0, lv.height + 20))
         lv.boxes.append((0.0, lv.height + 6.5, 14.0, 1.0))
@@ -83,6 +122,9 @@ def parse():
         for call in re.finditer(r"^\s*\.(\w+)\(([^\n]*)\)\s*;?\s*$", body[:end], re.M):
             name, raw = call.group(1), call.group(2)
             if name in ("Hint", "Decor"):
+                continue
+            if name == "Rules":
+                lv.door_mode = raw.strip().split(".")[-1].lower()
                 continue
             a = [num(x) for x in raw.split(",")] if raw.strip() else []
             if name == "Start":
@@ -99,8 +141,14 @@ def parse():
                 lv.door = (a[0], a[1] + 1.0, 1.1, 1.9)
             elif name == "Key":
                 lv.keys.append((a[0], a[1]))
-            elif name == "Hunter":
-                lv.minions.append((a[0], a[1], 0.483))
+            elif name == "Pot":
+                lv.minions.append((a[0], a[1], POT_R, a[2] if len(a) > 2 else 3.2))
+            elif name == "Sleeper":
+                lv.minions.append((a[0], a[1] + 0.55, POT_R, 0.0))
+            elif name in ("Jar", "TrapJar"):
+                lv.jars.append((a[0], a[1] + JAR_R, name == "TrapJar"))
+            elif name == "Teryel":
+                lv.teryels.append((a[0], a[1] + a[2], a[2], a[3] if len(a) > 3 else 0.0, a[4] if len(a) > 4 else 6.0))
             elif name == "Spikes":
                 lv.spikes.append((a[0], a[1] + 0.19, a[2] - 0.25, 0.34))
             elif name == "Mushroom":
@@ -180,9 +228,143 @@ def ghost_solid(g, t):
     return ((t / max(0.5, g[4]) + g[5]) % 1.0) < 0.55
 
 
+# ----------------------------------------------------------------------------- jars and Teryel
+# A jar is [x, y, vx, vy, alive, fall_from, respawn_in, push_cd, grounded], as in Jar (Elements.cs).
+def new_jar(j):
+    return (j[0], j[1], 0.0, 0.0, True, j[1], 0.0, 0.0, True)
+
+
+def teryel_at(te, t):
+    return te[0] + te[3] * math.sin(t * 2 * math.pi / max(0.5, te[4])), te[1]
+
+
+def teryel_kills(lv, trapped, x, y, t):
+    for k, te in enumerate(lv.teryels):
+        if k not in trapped:
+            tx, ty = teryel_at(te, t)
+            if math.hypot(x - tx, y - ty) < te[2] + R * 0.8:
+                return True
+    return False
+
+
+def in_teryel_path(lv, trapped, x, y):
+    for k, te in enumerate(lv.teryels):
+        reach = te[2] + R + 0.3
+        if k not in trapped and abs(x - te[0]) < abs(te[3]) + reach and abs(y - te[1]) < reach:
+            return True
+    return False
+
+
+def jar_solids(lv, t, crates):
+    solids = list(lv.boxes)
+    solids += [c for i, c in enumerate(lv.crates) if i not in crates]
+    solids += [(m[0] + m[4] * wave(t, m[6]), m[1] + m[5] * wave(t, m[6]), m[2], m[3]) for m in lv.movers]
+    solids += [g[:4] for g in lv.ghosts if ghost_solid(g, t)]
+    return solids
+
+
+def shatter(lv, j, trap, trapped):
+    j[4] = False
+    j[6] = 1.2 if trap and len(trapped) < len(lv.teryels) else 0.0
+
+
+def step_jar(lv, i, j, t, crates, minions, trapped, flags, hero):
+    """One tick of jar i. hero is [x, y, vx, vy] while he flies (he can kick it), else None.
+    He passes through jars (Physics2D.IgnoreCollision in Jar), so a jar never holds him up."""
+    trap = lv.jars[i][2]
+    if not j[4]:
+        if j[6] > 0:
+            j[6] -= DT
+            if j[6] <= 0 and len(trapped) < len(lv.teryels):
+                j[:] = list(new_jar(lv.jars[i]))
+        return
+    j[7] = max(0.0, j[7] - DT)
+    if hero is not None and touches_circle(hero[0], hero[1], R, j[0], j[1], JAR_R):
+        if j[7] <= 0:
+            # Jar.Kick: the jar takes most of his horizontal speed and he hops off it.
+            j[7] = 0.4
+            push = hero[2] if abs(hero[2]) > 1 else math.copysign(4.0, j[0] - hero[0])
+            j[2] = math.copysign(max(4.0, min(14.0, abs(push) * 0.9)), push)
+            hero[2] *= 0.5
+            if hero[3] < 0:
+                hero[3] = 3.0
+            flags.add("roll")
+    was_grounded = j[8]
+    j[5] = j[1] if was_grounded else max(j[5], j[1])
+    damp = 1.0 / (1.0 + JAR_DAMP * DT)
+    j[3] -= G * DT
+    j[2] *= damp
+    j[3] *= damp
+    fast_x = j[2]
+    j[0] += j[2] * DT
+    j[1] += j[3] * DT
+    if abs(j[2]) > 1.5 or j[3] < -2:
+        # bowling: it breaks pots and traps Teryel
+        for k, m in enumerate(lv.minions):
+            if k in minions and touches_circle(j[0], j[1], JAR_R, m[0], m[1], m[2]):
+                minions.discard(k)
+                j[2] *= 0.85
+        for k, te in enumerate(lv.teryels):
+            if k not in trapped:
+                tx, ty = teryel_at(te, t)
+                if math.hypot(j[0] - tx, j[1] - ty) < te[2] + JAR_R:
+                    trapped.add(k)
+                    flags.add("trapped")
+    grounded = False
+    for box in jar_solids(lv, t, crates):
+        hit = circle_box(j[0], j[1], JAR_R, box)
+        if hit is None:
+            continue
+        nx, ny, depth = hit
+        if ny > 0.6 and not was_grounded and j[5] - j[1] > 2.5:
+            for k, m in enumerate(lv.minions):
+                if k in minions and math.hypot(m[0] - j[0], m[1] - j[1]) < 1.1:
+                    minions.discard(k)
+            return shatter(lv, j, trap, trapped)
+        if abs(nx) > 0.6 and abs(j[0]) > HALF - JAR_R - 0.1 and abs(fast_x) > 3:
+            return shatter(lv, j, trap, trapped)
+        j[0] += nx * depth
+        j[1] += ny * depth
+        vn = j[2] * nx + j[3] * ny
+        if vn < 0:
+            j[2] -= vn * nx
+            j[3] -= vn * ny
+        if ny > 0.6:
+            grounded = True
+    j[8] = grounded
+    if j[1] < -3:
+        shatter(lv, j, trap, trapped)
+
+
+def jars_still(jars):
+    return all((not j[4] and j[6] <= 0) or (j[8] and abs(j[2]) < 0.01 and abs(j[3]) < 0.01) for j in jars)
+
+
+def wait_world(lv, state, t1):
+    """Rolls the jars on while he waits at rest until t1. Returns False if Teryel walks into him."""
+    if not lv.jars and not lv.teryels:
+        return True
+    jars = [list(j) for j in state["jars"]]
+    minions, trapped, flags = set(state["minions"]), set(state["trapped"]), set(state["flags"])
+    t = state["t"]
+    moving = any(te[3] for te in lv.teryels)
+    while t < t1 - 1e-9:
+        if not moving and jars_still(jars):
+            break
+        t += DT
+        for i, j in enumerate(jars):
+            step_jar(lv, i, j, t, state["crates"], minions, trapped, flags, None)
+        if teryel_kills(lv, trapped, state["x"], state["y"], t):
+            return False
+    state["jars"] = tuple(tuple(j) for j in jars)
+    state["minions"], state["trapped"], state["flags"] = frozenset(minions), frozenset(trapped), frozenset(flags)
+    return True
+
+
 # ----------------------------------------------------------------------------- simulation
 class Result:
-    __slots__ = ("kind", "x", "y", "t", "key", "minions", "crates", "bosshit", "ground", "stable", "camped")
+    __slots__ = ("kind", "x", "y", "t", "key", "minions", "crates", "bosshit", "ground", "stable", "camped",
+                 "jars", "trapped", "flags")
 
     def __init__(self):
         self.kind = "dead"
@@ -210,17 +392,27 @@ def simulate(lv, state, vx, vy, plan, rnd):
     web_free = True   # launching from a web does not re-stick
     in_web = [touches_circle(x, y, R, w[0], w[1], w[2]) for w in lv.webs]
     flight = 0.0
-    door_open = (not lv.keys or key) and not minions
+    jars = [list(j) for j in state["jars"]]
+    trapped, flags = set(state["trapped"]), set(state["flags"])
+
+    def door_rule():
+        return lv.door_mode == "always" or len(trapped) == len(lv.teryels)
+
+    door_open = (not lv.keys or key) and door_rule()
 
     def finish(kind, ground=None, stable=True):
         res.kind, res.x, res.y, res.t = kind, x, y, t
         res.key, res.minions, res.crates = key, frozenset(minions), frozenset(crates)
+        res.jars, res.trapped, res.flags = tuple(tuple(j) for j in jars), frozenset(trapped), frozenset(flags)
         res.ground, res.stable = ground, stable
-        # a rest spot inside a live pumpkin's chase range is not safe to wait on
         if kind == "rest":
+            # a rest spot inside a live pot's hunting range is not safe to wait on
             for i, m in enumerate(lv.minions):
-                if i in minions and math.hypot(x - m[0], y - m[1]) < HUNT_RANGE + m[2]:
+                if i in minions and m[3] > 0 and math.hypot(x - m[0], y - m[1]) < m[3] + m[2]:
                     res.camped, res.stable = True, False
+            # Hero.Rest never saves a respawn spot inside a free Teryel's path
+            if in_teryel_path(lv, trapped, x, y):
+                res.stable = False
         return res
 
     for _ in range(int(9.0 / DT)):
@@ -341,7 +533,6 @@ def simulate(lv, state, vx, vy, plan, rnd):
                 for i, m in enumerate(lv.minions):
                     if i in minions and math.hypot(m[0] - x, m[1] - y) < 2.4 + m[2]:
                         minions.discard(i)
-                door_open = (not lv.keys or key) and not minions
             if hero == "Webster" and stick_cd <= 0 and (not tag or tag[0] != "mushroom"):
                 stable = tag is None and ny > 0.6 and abs(box[0]) < HALF
                 return finish("rest", tag, stable)
@@ -350,24 +541,34 @@ def simulate(lv, state, vx, vy, plan, rnd):
         if bounced:
             continue
 
-        # hunting pumpkins: a fast or dashing hero smashes them, a slow touch kills.
-        # The chase is not simulated; they are checked at their home position.
+        # pots: a fast or dashing hero breaks them, a slow touch kills.
+        # The hunt is not simulated; they are checked at their home position.
         for i, m in enumerate(lv.minions):
             if i not in minions or not touches_circle(x, y, R, m[0], m[1], m[2]):
                 continue
-            speed = math.hypot(pvx, pvy)
+            # Unity reads his speed in the trigger, after this step's collisions
+            speed = math.hypot(vx, vy)
             if speed > 4.5 or powered > 0:
                 minions.discard(i)
                 vx, vy = vx * 0.6, vy * 0.6
-                door_open = (not lv.keys or key) and not minions
             else:
                 return finish("dead")
+
+        # jars roll on, and Teryel kills on any touch, even a dash
+        if jars:
+            hero = [x, y, vx, vy]
+            for i, j in enumerate(jars):
+                step_jar(lv, i, j, t, crates, minions, trapped, flags, hero)
+            x, y, vx, vy = hero
+        if teryel_kills(lv, trapped, x, y, t):
+            return finish("dead")
+        door_open = (not lv.keys or key) and door_rule()
 
         # triggers
         for k in lv.keys:
             if touches_circle(x, y, R, k[0], k[1], 0.55):
                 key = True
-                door_open = (not lv.keys or key) and not minions
+                door_open = (not lv.keys or key) and door_rule()
         for s in lv.spikes:
             if touches_box(x, y, R, s):
                 return finish("dead")
@@ -390,7 +591,8 @@ def simulate(lv, state, vx, vy, plan, rnd):
                 if touches_circle(x, y, R, c[0], c[1] + 1.05, 0.55):
                     x, y = c[0], c[1] + 1.2
                     vx, vy = c[2], c[3]
-                    t += 0.45
+                    t += 0.4
+                    flags.add("cannon")
                     cannon_cd = 0.6
                     used, flaps, glide, smashing, powered = False, 2, 3.0, False, 0.0
                     break
@@ -441,21 +643,31 @@ def random_plan(hero, rnd):
     return []
 
 
+def hunters_left(lv, minions, jars):
+    return len(minions) + sum(1 for i, j in enumerate(jars) if j[4] and not lv.jars[i][2])
+
+
 def key_of(res):
-    return (round(res.x * 1.5), round(res.y * 1.5), res.key, res.minions, res.crates)
+    jars = tuple((round(j[0] * 2), round(j[1] * 2), j[4], abs(j[2]) > 0.3) for j in res.jars)
+    return (round(res.x * 1.5), round(res.y * 1.5), res.key, res.minions, res.crates, jars, res.trapped, res.flags)
 
 
 def check(args):
     lv, samples, seed = args
     rnd = random.Random(seed * 1000 + lv.id)
     speed = MAX_DRAG_SPEED[lv.hero]
+    lessons = lv.lessons
     start = {"x": lv.start[0], "y": lv.start[1], "t": 0.0, "key": False,
-             "minions": frozenset(range(len(lv.minions))), "crates": frozenset(), "depth": 0, "ground": None}
+             "minions": frozenset(range(len(lv.minions))), "crates": frozenset(), "depth": 0, "ground": None,
+             "jars": tuple(new_jar(j) for j in lv.jars), "trapped": frozenset(), "flags": frozenset()}
     frontier = [start]
-    seen = {(round(start["x"] * 1.5), round(start["y"] * 1.5), False, start["minions"], start["crates"])}
-    hunter_depth = {}
+    seen = set()
+    hunter_depth = {}   # pot index, or ("jar", index) -> first launch that broke it
     camped = set()
-    win_depth = None
+    win_depth = None    # any win
+    full_depth = None   # every hunter broken, lesson skipped
+    best = None         # every hunter broken and the lesson used
+    best_flags = frozenset()
     boss_depth = {}
     boss_heights = []
     if lv.boss is not None:
@@ -469,7 +681,7 @@ def check(args):
                 power = rnd.uniform(0.25, 1.0) ** 0.7
                 vx, vy = math.cos(ang) * speed * power, math.sin(ang) * speed * power
                 s = dict(st)
-                # the player may wait before launching (not on a vanishing platform)
+                # the player may wait before launching (not on a vanishing platform); jars roll on meanwhile
                 on_ghost = st["ground"] is not None and st["ground"][0] == "ghost"
                 s["t"] = st["t"] + (0.0 if on_ghost else rnd.uniform(0.0, 6.0))
                 s["glide"] = rnd.random() < 0.7
@@ -478,6 +690,10 @@ def check(args):
                     k0, k1 = wave(st["t"], m[6]), wave(s["t"], m[6])
                     s["x"] = st["x"] + m[4] * (k1 - k0)
                     s["y"] = st["y"] + m[5] * (k1 - k0)
+                s["t"], wanted = st["t"], s["t"]
+                if not wait_world(lv, s, wanted):
+                    continue
+                s["t"] = wanted
                 if boss_heights:
                     s["boss_y"] = boss_heights[rnd.randrange(3)]
                 res = simulate(lv, s, vx, vy, random_plan(lv.hero, rnd), rnd)
@@ -486,29 +702,37 @@ def check(args):
                 for i in range(len(lv.minions)):
                     if i not in res.minions:
                         hunter_depth.setdefault(i, depth)
+                for i, j in enumerate(res.jars):
+                    if not j[4] and not lv.jars[i][2]:
+                        hunter_depth.setdefault(("jar", i), depth)
                 if res.camped:
                     camped.add((round(res.x), round(res.y)))
                 if res.kind == "bosshit":
                     boss_depth.setdefault(s["boss_y"], depth)
                     continue
                 if res.kind == "win":
-                    if win_depth is None:
-                        win_depth = depth
+                    win_depth = win_depth or depth
+                    if hunters_left(lv, res.minions, res.jars) == 0:
+                        if lessons <= res.flags:
+                            if best is None:
+                                best, best_flags = depth, res.flags
+                        else:
+                            full_depth = full_depth or depth
                     continue
                 k = key_of(res)
                 if k in seen:
                     continue
                 seen.add(k)
                 nxt.append({"x": res.x, "y": res.y, "t": res.t, "key": res.key, "minions": res.minions,
-                            "crates": res.crates, "depth": depth, "ground": res.ground})
-        done = win_depth is not None or (boss_heights and len(boss_depth) == 3)
-        if done and len(hunter_depth) == len(lv.minions):
+                            "crates": res.crates, "depth": depth, "ground": res.ground, "jars": res.jars,
+                            "trapped": res.trapped, "flags": res.flags})
+        if best is not None or (boss_heights and len(boss_depth) == 3):
             break
-        if done and depth >= (win_depth or max(boss_depth.values())) + 2:
-            break
-        # keep the search bounded: prefer states near the goal
+        # keep the search bounded: prefer states with less left to do, then near the goal
         if lv.door is not None:
-            nxt.sort(key=lambda s: (not s["key"] and bool(lv.keys), len(s["minions"]),
+            nxt.sort(key=lambda s: (hunters_left(lv, s["minions"], s["jars"])
+                                    + len(lv.teryels) - len(s["trapped"]) + len(lessons - s["flags"]),
+                                    not s["key"] and bool(lv.keys),
                                     math.hypot(s["x"] - lv.door[0], s["y"] - lv.door[1])))
         rnd.shuffle(nxt[30:])
         frontier = nxt[:60]
@@ -525,29 +749,37 @@ def check(args):
                 ok = False
                 lines.append("    FAIL boss at height %.1f is never hit" % h)
         best = 3 if len(boss_depth) == 3 else None
-    else:
-        best = win_depth
-        if win_depth is None:
-            ok = False
-            lines.append("    FAIL no route to the door found")
+    elif best is None:
+        ok = False
+        if full_depth is not None:
+            lines.append("    FAIL the three-star routes found skip the lesson: %s" % ", ".join(sorted(lessons)))
+        elif win_depth is not None:
+            lines.append("    FAIL the door is reached, but never with every hunter broken")
+        else:
+            lines.append("    FAIL no route to the open door found")
     for i, m in enumerate(lv.minions):
+        what = "sleeper" if m[3] == 0 else "pot"
         if i in hunter_depth:
-            lines.append("    pumpkin (%.1f, %.1f) smashed, launch %d" % (m[0], m[1], hunter_depth[i]))
+            lines.append("    %s (%.1f, %.1f) broken, launch %d" % (what, m[0], m[1], hunter_depth[i]))
         else:
             ok = False
-            lines.append("    FAIL pumpkin (%.1f, %.1f) was never smashed" % (m[0], m[1]))
+            lines.append("    FAIL %s (%.1f, %.1f) was never broken" % (what, m[0], m[1]))
+    for i, j in enumerate(lv.jars):
+        if j[2]:
+            continue
+        if ("jar", i) in hunter_depth:
+            lines.append("    jar (%.1f, %.1f) broken, launch %d" % (j[0], j[1], hunter_depth[("jar", i)]))
+        else:
+            ok = False
+            lines.append("    FAIL jar (%.1f, %.1f) was never broken" % (j[0], j[1]))
     if camped:
-        lines.append("    note: %d rest spot(s) lie within a pumpkin's reach, e.g. (%d, %d): leap quickly there"
+        lines.append("    note: %d rest spot(s) lie within a pot's reach, e.g. (%d, %d): leap quickly there"
                      % (len(camped), min(camped)[0], min(camped)[1]))
-    par_note = ""
-    if best is not None:
-        if lv.par < best:
-            ok = False
-            par_note = "  FAIL par %d is below the best route found (%d)" % (lv.par, best)
-        else:
-            par_note = "  par %d" % lv.par
-    head = "%s Stage %2d  %-20s %-8s best route: %s launches%s" % (
-        "ok  " if ok else "FAIL", lv.id, lv.name, lv.hero, best if best is not None else "-", par_note)
+    used = ""
+    if best is not None and lessons:
+        used = "  lesson: %s" % ", ".join(sorted(lessons & best_flags))
+    head = "%s Stage %2d  %-22s door %-6s 3 stars in: %s launches%s" % (
+        "ok  " if ok else "FAIL", lv.id, lv.name, lv.door_mode, best if best is not None else "-", used)
     return ok, "\n".join([head] + lines)
 
 

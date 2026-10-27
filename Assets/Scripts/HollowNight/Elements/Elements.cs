@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using HollowNight.Logic;
 using UnityEngine;
 
 namespace HollowNight
@@ -77,43 +79,51 @@ namespace HollowNight
     }
 
     /// <summary>
-    /// Glowing pumpkin that hunts the hero. It drifts toward the hero inside <see cref="Range"/> and floats
-    /// home otherwise. A dashing or fast hero smashes it; a slow touch kills the hero.
+    /// Teryel's pot. Its moves come from <see cref="Pot"/> (idle, notice, hunt, lunge, return); it freezes while
+    /// the player aims and stays home, harmless, from a death until the next launch. A dashing or fast hero, or a
+    /// rolling jar, breaks it; a slower touch kills the hero. A range of 0 makes a sleeper that never moves.
     /// </summary>
     public class Hunter : MonoBehaviour
     {
         public const float BreakSpeed = 4.5f;
-        public const float Range = 3.5f;
-        public const float Speed = 1.2f;
 
-        public Vector2 home;
+        Pot pot;
         Rigidbody2D body;
-        int satedLaunch = -1;   // launch count at the last kill: the hunter waits at home until the next launch
+        SpriteRenderer sprite;
         bool broken;
+
+        public void Setup(Vector2 home, float range, float speed, SpriteRenderer renderer)
+        {
+            pot = new Pot(home.x, home.y, range, speed);
+            sprite = renderer;
+        }
 
         void Awake()
         {
             body = GetComponent<Rigidbody2D>();
         }
 
-        bool Sated
-        {
-            get { return StageController.I != null && StageController.I.Launches == satedLaunch; }
-        }
-
         void FixedUpdate()
         {
-            if (broken) return;
-            Vector2 target = home;
-            float speed = Speed * 1.5f;
-            Hero hero = StageController.I != null ? StageController.I.Hero : null;
-            if (!Sated && hero != null && hero.State != HeroState.Dead && hero.State != HeroState.Won
-                && Vector2.Distance(hero.Position, body.position) < Range)
+            if (broken || pot == null) return;
+            StageController stage = StageController.I;
+            Hero hero = stage != null ? stage.Hero : null;
+            bool heroGone = hero == null || hero.State == HeroState.Dead || hero.State == HeroState.Won;
+            bool safe = stage == null || stage.PotsSafe || heroGone;
+            if (safe && !pot.Safe && stage != null && stage.PotsSafe)
             {
-                target = hero.Position;
-                speed = Speed;
+                // A death puts every pot back home at once, so none waits on the respawn spot.
+                pot.SendHome();
+                body.position = new Vector2(pot.X, pot.Y);
             }
-            body.MovePosition(Vector2.MoveTowards(body.position, target, speed * Time.fixedDeltaTime));
+            pot.Safe = safe;
+            Vector2 target = hero != null ? hero.Position : body.position;
+            if (pot.Step(target.x, target.y, Time.fixedDeltaTime, stage != null && stage.Aiming))
+            {
+                Fx.Burst(body.position + Vector2.up * 0.5f, "dot", 4, new Color(1f, 0.85f, 0.4f, 0.9f), 2f, 0.3f, 0.2f, 0f);
+            }
+            if (sprite != null && Mathf.Abs(pot.Vx) > 0.05f) sprite.flipX = pot.Vx < 0f;
+            body.MovePosition(new Vector2(pot.X, pot.Y));
         }
 
         void OnTriggerEnter2D(Collider2D other) { Touch(other); }
@@ -122,8 +132,20 @@ namespace HollowNight
         void Touch(Collider2D other)
         {
             if (broken) return;
+            Jar jar = other.GetComponent<Jar>();
+            if (jar != null)
+            {
+                if (jar.Bowling)
+                {
+                    jar.Bowled();
+                    Smash();
+                }
+                return;
+            }
             Hero hero = other.GetComponent<Hero>();
             if (hero == null || hero.State == HeroState.Dead || hero.State == HeroState.Won) return;
+            // A safe pot (from a death until the next launch) neither breaks nor kills.
+            if (pot.Safe) return;
             bool flying = hero.State == HeroState.Flying;
             float impact = flying ? hero.Body.linearVelocity.magnitude : 0f;
             if (hero.Powered || impact > BreakSpeed)
@@ -131,11 +153,10 @@ namespace HollowNight
                 if (flying) hero.Body.linearVelocity *= 0.6f;
                 Smash();
             }
-            else if (!Sated && !hero.Invulnerable)
+            else
             {
-                // Die() counts as a launch, so the hunter stays home until the player launches again.
+                // Die() ignores a hero still in respawn grace, and makes every pot safe until the next launch.
                 hero.Die();
-                if (StageController.I != null) satedLaunch = StageController.I.Launches;
             }
         }
 
@@ -144,16 +165,282 @@ namespace HollowNight
             if (broken) return;
             broken = true;
             Vector2 p = transform.position;
-            Fx.Burst(p, "shard", 9, new Color(0.6f, 1f, 0.5f), 6f, 0.7f, 0.4f, 12f);
-            Fx.Burst(p, "dot", 8, new Color(0.7f, 1f, 0.4f, 0.9f), 3.5f, 0.5f, 0.5f, 0f);
-            Fx.Flash(p, new Color(0.6f, 1f, 0.4f, 0.8f), 3.5f);
+            Fx.Burst(p, "shard", 9, new Color(0.85f, 0.55f, 0.35f), 6f, 0.7f, 0.4f, 12f);
+            Fx.Burst(p, "dot", 8, new Color(1f, 0.8f, 0.5f, 0.9f), 3.5f, 0.5f, 0.5f, 0f);
+            Fx.Flash(p, new Color(1f, 0.8f, 0.5f, 0.8f), 3.5f);
             Sfx.Play(Sound.Break, 1f, Random.Range(0.9f, 1.15f));
             if (StageController.I != null)
             {
                 StageController.I.Shake(0.18f, 0.15f);
-                StageController.I.HunterSmashed();
+                StageController.I.Broke(Breakable.Pot);
             }
             Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// A rolling jar (SPEC.md §3). A dynamic body with frozen rotation (the spin is only drawn) that the flying
+    /// hero kicks along, as in the prototype: he passes through it (so he never stands or rests on it) and kicks
+    /// it again every 0.4 s while he overlaps it. It breaks pots it bowls into, and shatters after a fall of 2.5 or
+    /// more, against a side wall faster than 3, or off the stage. The hero never comes to rest on it. The trap
+    /// jar rolls out again from home 1.2 s after breaking while a Teryel is still free; it is never a star.
+    /// </summary>
+    public class Jar : MonoBehaviour
+    {
+        public const float Radius = 0.45f;
+        const float PushCooldown = 0.4f;
+        const float FallBreak = 2.5f;
+        const float WallBreakSpeed = 3f;
+        const float RespawnDelay = 1.2f;
+
+        public bool trap;
+        Vector2 home;
+        Rigidbody2D body;
+        Collider2D circle;
+        SpriteRenderer sprite;
+        float fallFrom;
+        float pushCool;
+        bool grounded;
+        bool wasGrounded = true;
+        bool broken;
+        bool ignoringHero;
+
+        public void Setup(Vector2 at, bool isTrap, SpriteRenderer renderer)
+        {
+            home = at;
+            trap = isTrap;
+            sprite = renderer;
+            body = GetComponent<Rigidbody2D>();
+            circle = GetComponent<Collider2D>();
+            fallFrom = at.y;
+        }
+
+        /// <summary>Fast enough to break a pot or trap Teryel.</summary>
+        public bool Bowling
+        {
+            get
+            {
+                if (broken || body == null) return false;
+                Vector2 v = body.linearVelocity;
+                return Mathf.Abs(v.x) > 1.5f || v.y < -2f;
+            }
+        }
+
+        /// <summary>A pot it hit slows it down a little.</summary>
+        public void Bowled()
+        {
+            Vector2 v = body.linearVelocity;
+            body.linearVelocity = new Vector2(v.x * 0.85f, v.y);
+        }
+
+        void FixedUpdate()
+        {
+            if (broken) return;
+            float dt = Time.fixedDeltaTime;
+            if (pushCool > 0f) pushCool -= dt;
+            Hero hero = StageController.I != null ? StageController.I.Hero : null;
+            if (hero != null)
+            {
+                if (!ignoringHero)
+                {
+                    Physics2D.IgnoreCollision(circle, hero.GetComponent<Collider2D>());
+                    ignoringHero = true;
+                }
+                if (Vector2.Distance(hero.Position, body.position) < Heroes.Radius + Radius) Kick(hero);
+            }
+            float y = body.position.y;
+            // Landing is judged when a floor contact begins, whatever the first contact was (a ledge corner).
+            if (grounded && !wasGrounded && fallFrom - y > FallBreak)
+            {
+                CrushPotsNear();
+                Shatter();
+                return;
+            }
+            fallFrom = grounded ? y : Mathf.Max(fallFrom, y);
+            wasGrounded = grounded;
+            grounded = false;
+            sprite.transform.Rotate(0f, 0f, -body.linearVelocity.x / Radius * Mathf.Rad2Deg * dt);
+            if (y < -3f) Shatter();
+        }
+
+        void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (broken) return;
+            Vector2 normal = collision.contactCount > 0 ? collision.GetContact(0).normal : Vector2.zero;
+            bool atWall = Mathf.Abs(body.position.x) > LevelData.HalfWidth - Radius - 0.1f;
+            if (atWall && Mathf.Abs(normal.x) > 0.6f && Mathf.Abs(collision.relativeVelocity.x) > WallBreakSpeed) Shatter();
+        }
+
+        void OnCollisionStay2D(Collision2D collision)
+        {
+            for (int i = 0; i < collision.contactCount; i++)
+            {
+                if (collision.GetContact(i).normal.y > 0.6f) grounded = true;
+            }
+        }
+
+        /// <summary>The prototype's push: the jar takes most of his horizontal speed, he hops off it.</summary>
+        void Kick(Hero hero)
+        {
+            if (hero.State != HeroState.Flying || pushCool > 0f) return;
+            pushCool = PushCooldown;
+            Vector2 hv = hero.LastVelocity;
+            float push = Mathf.Abs(hv.x) > 1f ? hv.x : Mathf.Sign(body.position.x - hero.Position.x) * 4f;
+            body.linearVelocity = new Vector2(Mathf.Sign(push) * Mathf.Clamp(Mathf.Abs(push) * 0.9f, 4f, 14f),
+                body.linearVelocity.y);
+            hero.Body.linearVelocity = new Vector2(hv.x * 0.5f, hv.y < 0f ? 3f : hv.y);
+            Sfx.Play(Sound.Bounce, 0.7f, 0.6f);
+        }
+
+        void CrushPotsNear()
+        {
+            Collider2D[] near = Physics2D.OverlapCircleAll(body.position, 1.1f);
+            for (int i = 0; i < near.Length; i++)
+            {
+                Hunter pot = near[i].GetComponent<Hunter>();
+                // The prototype's reach is 1.1 between centres, not to the trigger's edge.
+                if (pot != null && Vector2.Distance(pot.transform.position, body.position) < 1.1f) pot.Smash();
+            }
+        }
+
+        void Shatter()
+        {
+            if (broken) return;
+            broken = true;
+            Vector2 p = body.position;
+            body.linearVelocity = Vector2.zero;
+            body.simulated = false;
+            circle.enabled = false;
+            sprite.enabled = false;
+            Fx.Burst(p, "shard", 10, new Color(0.8f, 0.5f, 0.3f), 6f, 0.7f, 0.4f, 12f);
+            Fx.Flash(p, new Color(1f, 0.8f, 0.5f, 0.8f), 3f);
+            Sfx.Play(Sound.Break, 1f, Random.Range(0.7f, 0.85f));
+            if (StageController.I != null)
+            {
+                StageController.I.Shake(0.22f, 0.18f);
+                StageController.I.Broke(trap ? Breakable.TrapJar : Breakable.RollingJar);
+            }
+            if (trap && Teryel.AnyFree) Invoke("RollOutAgain", RespawnDelay);
+            else Destroy(gameObject);
+        }
+
+        void RollOutAgain()
+        {
+            if (!Teryel.AnyFree) return;
+            broken = false;
+            fallFrom = home.y;
+            grounded = false;
+            wasGrounded = true;
+            body.position = home;
+            transform.position = home;
+            body.simulated = true;
+            body.linearVelocity = Vector2.zero;
+            circle.enabled = true;
+            sprite.enabled = true;
+            Fx.Flash(home, new Color(1f, 0.85f, 0.5f, 0.7f), 2.5f);
+        }
+    }
+
+    /// <summary>
+    /// Teryel, the ogress (SPEC.md §3). Never fought: any touch kills, even a dash, though she respects the
+    /// hero's respawn grace. She can patrol, and a moving jar traps her. A rest inside the path of a free
+    /// Teryel is never saved as a respawn spot (<see cref="InPath"/>, used by Hero.Rest).
+    /// </summary>
+    public class Teryel : MonoBehaviour
+    {
+        static readonly List<Teryel> all = new List<Teryel>();
+
+        float radius = 1f;
+        Vector2 travel;
+        float period = 6f;
+        Vector2 home;
+        Rigidbody2D body;
+        SpriteRenderer sprite;
+        bool trapped;
+
+        public static bool AnyFree
+        {
+            get
+            {
+                for (int i = 0; i < all.Count; i++)
+                {
+                    if (!all[i].trapped) return true;
+                }
+                return false;
+            }
+        }
+
+        public static bool InPath(Vector2 p)
+        {
+            for (int i = 0; i < all.Count; i++)
+            {
+                Teryel t = all[i];
+                if (t.trapped) continue;
+                float reach = t.radius + Heroes.Radius + 0.3f;
+                if (Mathf.Abs(p.x - t.home.x) < Mathf.Abs(t.travel.x) + reach
+                    && Mathf.Abs(p.y - t.home.y) < Mathf.Abs(t.travel.y) + reach) return true;
+            }
+            return false;
+        }
+
+        public void Setup(Vector2 at, float r, Vector2 patrol, float patrolPeriod, SpriteRenderer renderer)
+        {
+            home = at;
+            radius = r;
+            travel = patrol;
+            period = Mathf.Max(0.5f, patrolPeriod);
+            sprite = renderer;
+            body = GetComponent<Rigidbody2D>();
+        }
+
+        void OnEnable()
+        {
+            all.Add(this);
+        }
+
+        void OnDisable()
+        {
+            all.Remove(this);
+        }
+
+        void FixedUpdate()
+        {
+            if (trapped || travel == Vector2.zero) return;
+            float angle = Time.timeSinceLevelLoad * Mathf.PI * 2f / period;
+            body.MovePosition(home + travel * Mathf.Sin(angle));
+            if (sprite != null && Mathf.Abs(travel.x) > 0.1f) sprite.flipX = Mathf.Cos(angle) * travel.x < 0f;
+        }
+
+        void OnTriggerEnter2D(Collider2D other) { Touch(other); }
+        void OnTriggerStay2D(Collider2D other) { Touch(other); }
+
+        void Touch(Collider2D other)
+        {
+            if (trapped) return;
+            Jar jar = other.GetComponent<Jar>();
+            if (jar != null)
+            {
+                if (jar.Bowling) Trap();
+                return;
+            }
+            Hero hero = other.GetComponent<Hero>();
+            if (hero == null || hero.State == HeroState.Dead || hero.State == HeroState.Won) return;
+            // The prototype's reach: her radius plus most of his. Die() honours the respawn grace.
+            if (Vector2.Distance(hero.Position, body.position) < radius + Heroes.Radius * 0.8f) hero.Die();
+        }
+
+        void Trap()
+        {
+            trapped = true;
+            if (sprite != null) sprite.color = new Color(0.55f, 0.5f, 0.6f);
+            Fx.Burst(body.position, "spark", 14, new Color(1f, 0.9f, 0.5f), 6f, 0.7f, 0.4f, 3f);
+            Fx.Flash(body.position, new Color(1f, 0.9f, 0.6f, 0.8f), radius * 3f);
+            Sfx.Play(Sound.Unlock, 1f, 0.8f);
+            if (StageController.I != null)
+            {
+                StageController.I.Shake(0.3f, 0.25f);
+                StageController.I.TeryelTrapped();
+            }
         }
     }
 
@@ -367,7 +654,7 @@ namespace HollowNight
             hero.EnterCannon(mouth);
             Sfx.Play(Sound.Land, 0.8f, 0.7f);
             Vector3 scale = visual.localScale;
-            yield return Tween.Run(0.45f, t =>
+            yield return Tween.Run(0.4f, t =>
             {
                 // Wind up: squash down before firing.
                 float k = Mathf.Sin(t * Mathf.PI * 0.5f);
@@ -423,7 +710,8 @@ namespace HollowNight
 
         void Update()
         {
-            float t = Mathf.Repeat(Time.time / Mathf.Max(0.5f, period) + phase, 1f);
+            // From the stage's start, as Tools/check_levels.py assumes.
+            float t = Mathf.Repeat(Time.timeSinceLevelLoad / Mathf.Max(0.5f, period) + phase, 1f);
             // Solid for the first 55% of the cycle, with a warning flicker before vanishing.
             bool solid = t < 0.55f;
             float alpha;

@@ -1029,7 +1029,43 @@ behaviour is unchanged (only `build-text.py` gains an output).
       - **Correction to the plan review:** only 1 Arabic line contains Latin text (a `{n}`
         placeholder and a digit), not 255. The left-to-right-run handling stays,
         covering digits and placeholders.
-- [ ] 2. Rules, stages and the simulator.
+- [x] 2. Rules, stages and the simulator (2026-10-27).
+      - **Tests first:** 15 Logic tests (`RulesTests`, `PotStepTests`) failed to compile before
+        `Logic/Rules.cs` and `Logic/PotStep.cs` existed; a 16th (`ADeathSendsItHomeAtOnce`)
+        was added red after the review, then made green.
+      - **Implemented:**
+        - `Rules`: `Breakable`, `DoorMode`, `Stars`, `CountsAsStar`, `DoorOpen`. `Pot`: the
+          prototype's `livelyPumpkin` (notice 0.35 s, hunt, lunge x1.8, give up, return, safe,
+          paused while aiming, `SendHome` on a death).
+        - `Elements.cs`: `Hunter` runs a `Pot` (`StageController.Aiming`, `PotsSafe`); new `Jar`
+          (dynamic, rotation frozen, the hero passes through it and kicks it every 0.4 s, fall
+          2.5, wall 3, trap jar back after 1.2 s) and `Teryel` (patrol, kills even a dash,
+          trapped by a moving jar, `InPath`). Hearth wind-up 0.4 s; the crumbling ledge's phase
+          counts from the stage start.
+        - `Hero.Rest` saves no respawn spot inside a free Teryel's path.
+        - `LevelData`: kinds `Pot`, `Sleeper`, `Jar`, `TrapJar`, `Teryel`, and `Rules(DoorMode)`.
+          `LevelBuilder` opens the door from `Rules.DoorOpen`. `LevelLibrary` holds stages 1-4
+          from `levels.js` (no par; names from `stage.N`). `Progress.LevelCount = 4`.
+        - `check_levels.py`: jars in the search state (rolling on during the wait), Teryel's
+          patrol, kill and trap, door modes, lesson flags (`roll`, `cannon`, `trapped`). Pass =
+          a win with every hunter broken and the lesson used. Pots stay static (stated).
+      - **Evidence:**
+        - `bash Tools/unity_check.sh`: 0 errors in all assemblies, 36/36 tests.
+        - `grep`: `StageController` calls `Rules.CountsAsStar`, `Rules.DoorOpen` and
+          `Rules.Stars`.
+        - `check_levels.py`: 4/4 with the default seed, `--seed 5` and `--seed 9`. Three stars
+          in 3-4 / 4 / 3 / 6-7 launches; lessons used: 2 roll, 3 cannon, 4 trapped. The
+          layouts from `levels.js` passed without re-tuning.
+        - Stage 4 with the `TrapJar` line removed: FAIL, "no route to the open door found".
+          Stage 3 with its hearths moved out of reach: FAIL, "skip the lesson: cannon". Both
+          edits were reverted.
+        - Browser prototype: 124/124 tests, art checks, 60/60 and 28/28 routes.
+      - **Review** (code-reviewer): fixed pots not snapping home on a death and safe pots still
+        breaking; the solid jar that could hold him up; the simulator reading the speed before
+        the collision and kicking on contact only; the jar's crush reach; a long fall first
+        touching a ledge corner; the ghost ledge's phase. Deferred to step 3: level results
+        still use the old `hn_` keys, so old pumpkin saves would show as tales stars.
+      - Not done here: no editor play (user gate). HUD texts and the par/launch lines are step 3.
 - [ ] 3. Screens, story, art and sound.
 - [ ] 4. Review and wrap-up.
 

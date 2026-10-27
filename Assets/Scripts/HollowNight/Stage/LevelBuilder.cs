@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HollowNight.Logic;
 using UnityEngine;
 
 namespace HollowNight
@@ -13,7 +14,9 @@ namespace HollowNight
         readonly bool hasKey;
         public Door Door { get; private set; }
         public WitchBoss Boss { get; private set; }
+        /// <summary>Everything breakable that counts as a star: pots, sleepers and rolling jars.</summary>
         public int Hunters { get; private set; }
+        public int Teryels { get; private set; }
 
         public LevelBuilder(LevelData data, Transform parent)
         {
@@ -56,7 +59,11 @@ namespace HollowNight
                 case Kind.Platform: Platform(e); break;
                 case Kind.Door: MakeDoor(e); break;
                 case Kind.Key: Key(e); break;
-                case Kind.Hunter: Hunter(e); break;
+                case Kind.Pot: Pot(e, e.f, e.g); break;
+                case Kind.Sleeper: Pot(e, 0f, 0f); break;
+                case Kind.Jar: MakeJar(e, false); break;
+                case Kind.TrapJar: MakeJar(e, true); break;
+                case Kind.Teryel: MakeTeryel(e); break;
                 case Kind.Spikes: Spikes(e); break;
                 case Kind.Mushroom: Mushroom(e); break;
                 case Kind.Mover: Mover(e); break;
@@ -130,8 +137,8 @@ namespace HollowNight
             SpriteRenderer renderer = Art.Make("door_closed", go.transform, Vector3.zero, height, Layer.Item - 1, "Sprite");
             Box(go, new Vector2(1.1f, 1.9f), true).offset = new Vector2(0f, -0.2f);
             Door = go.AddComponent<Door>();
-            bool sealedDoor = level.Count(Kind.Hunter) > 0;
-            Door.Setup(renderer, glow, !hasKey && !sealedDoor, hasKey);
+            bool open = Rules.DoorOpen(level.door, level.Count(Kind.Teryel));
+            Door.Setup(renderer, glow, !hasKey && open, hasKey);
         }
 
         void Key(Elem e)
@@ -144,25 +151,63 @@ namespace HollowNight
             go.AddComponent<KeyItem>();
         }
 
-        void Hunter(Elem e)
+        void Pot(Elem e, float range, float speed)
         {
-            const float height = 1.15f;
-            GameObject go = Holder("Hunter", e.pos);
-            SpriteRenderer glow = Art.Make("glow", go.transform, Vector3.zero, 2.8f, Layer.Enemy - 1, "Glow");
-            glow.color = new Color(0.55f, 1f, 0.45f, 0.5f);
+            const float height = 1.1f;
+            GameObject go = Holder(range > 0f ? "Pot" : "Sleeper", e.pos);
+            SpriteRenderer glow = Art.Make("glow", go.transform, Vector3.zero, 2.6f, Layer.Enemy - 1, "Glow");
+            glow.color = new Color(1f, 0.7f, 0.35f, 0.45f);
             glow.gameObject.AddComponent<Pulse>().amount = 0.2f;
             SpriteRenderer renderer = Art.Make("hunter_0", go.transform, Vector3.zero, height, Layer.Enemy, "Sprite");
-            FrameLoop loop = renderer.gameObject.AddComponent<FrameLoop>();
-            loop.frames = new[] { Art.Get("hunter_0"), Art.Get("hunter_1") };
-            loop.fps = 4f;
-            Bob bob = renderer.gameObject.AddComponent<Bob>();
-            bob.amplitude = new Vector2(0.05f, 0.12f);
-            bob.phase = Hunters * 1.7f;
-            Circle(go, height * 0.42f, true);
+            renderer.color = new Color(0.95f, 0.7f, 0.5f);
+            if (range > 0f)
+            {
+                FrameLoop loop = renderer.gameObject.AddComponent<FrameLoop>();
+                loop.frames = new[] { Art.Get("hunter_0"), Art.Get("hunter_1") };
+                loop.fps = 4f;
+                Bob bob = renderer.gameObject.AddComponent<Bob>();
+                bob.amplitude = new Vector2(0.05f, 0.12f);
+                bob.phase = Hunters * 1.7f;
+            }
+            Circle(go, height * 0.44f, true);
             // Full kinematic contacts so the trigger also fires against the resting (kinematic) hero.
             Kinematic(go).useFullKinematicContacts = true;
-            go.AddComponent<Hunter>().home = e.pos;
+            go.AddComponent<Hunter>().Setup(e.pos, range, speed, renderer);
             Hunters++;
+        }
+
+        void MakeJar(Elem e, bool trap)
+        {
+            float size = Jar.Radius * 2f * (trap ? 1.15f : 1f);
+            GameObject go = Holder(trap ? "TrapJar" : "Jar", e.pos);
+            SpriteRenderer renderer = Art.Make("pumpkin_0", go.transform, Vector3.zero, size, Layer.Enemy, "Sprite");
+            renderer.color = trap ? new Color(0.75f, 0.5f, 0.35f) : new Color(0.85f, 0.6f, 0.4f);
+            CircleCollider2D circle = Circle(go, Jar.Radius, false);
+            PhysicsMaterial2D slick = new PhysicsMaterial2D("Jar") { friction = 0f, bounciness = 0f };
+            circle.sharedMaterial = slick;
+            Rigidbody2D body = go.AddComponent<Rigidbody2D>();
+            body.gravityScale = 1.5f;
+            body.mass = 2f;
+            // The prototype's rolling drag (exp(-0.45 t)); rotation is frozen, so the roll is only drawn.
+            body.linearDamping = 0.45f;
+            body.freezeRotation = true;
+            body.interpolation = RigidbodyInterpolation2D.Interpolate;
+            body.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            go.AddComponent<Jar>().Setup(e.pos, trap, renderer);
+            if (!trap) Hunters++;
+        }
+
+        void MakeTeryel(Elem e)
+        {
+            float r = e.f;
+            GameObject go = Holder("Teryel", e.pos);
+            SpriteRenderer glow = Art.Make("glow", go.transform, Vector3.zero, r * 4f, Layer.Enemy - 1, "Glow");
+            glow.color = new Color(0.6f, 0.3f, 0.8f, 0.35f);
+            SpriteRenderer renderer = Art.Make("morgra_idle", go.transform, Vector3.zero, r * 2.2f, Layer.Enemy, "Sprite");
+            Circle(go, r, true);
+            Kinematic(go).useFullKinematicContacts = true;
+            go.AddComponent<Teryel>().Setup(e.pos, r, e.b, e.g, renderer);
+            Teryels++;
         }
 
         void Spikes(Elem e)

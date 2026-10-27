@@ -179,7 +179,8 @@ namespace HollowNight
             restCollider = ground;
             restParent = ground != null ? ground.transform : null;
             if (restParent != null) restLocal = restParent.InverseTransformPoint(transform.position);
-            if (stable) safePosition = transform.position;
+            // A respawn inside a free Teryel's path would be killed again at once.
+            if (stable && !Teryel.InPath(transform.position)) safePosition = transform.position;
             gliding = false;
             smashing = false;
             dashTimer = 0f;

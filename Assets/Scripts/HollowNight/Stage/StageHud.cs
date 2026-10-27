@@ -120,7 +120,7 @@ namespace HollowNight
         public void ShowHint(string text, float duration = 4f)
         {
             if (hintRoutine != null) StopCoroutine(hintRoutine);
-            hintLabel.text = text;
+            UIKit.Say(hintLabel, text);
             hintPanel.gameObject.SetActive(true);
             hintGroup.alpha = 1f;
             if (duration > 0f) hintRoutine = StartCoroutine(HideAfter(duration));

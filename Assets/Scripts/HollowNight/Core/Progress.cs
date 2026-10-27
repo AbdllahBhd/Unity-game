@@ -6,7 +6,7 @@ namespace HollowNight
     /// <summary>Saved player progress (PlayerPrefs). Levels are 1-based.</summary>
     public static class Progress
     {
-        public const int LevelCount = 10;
+        public const int LevelCount = 4;
         const string Prefix = "hn_";
 
         public static bool IsDone(int level)
