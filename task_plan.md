@@ -808,3 +808,187 @@ The rules:
         still finds no route; `graphify update .` done.
 
 /goal every Night 7 step in task_plan.md is checked off per its own "Done when", and the tales prototype's tests, route checks and ESLint pass
+
+## Unity port, slice 1: Night 1 in the editor (proposed 2026-10-21)
+
+Status: drafted and reviewed (fresh-context plan review, 12 findings folded in: stage 2's
+jar star, a pure Logic assembly for tests, the compile gate matching Unity's assemblies,
+Arabic marks, mirroring and typewriter, the pumpkin leftovers, Hero hooks, merged ordering,
+simulator scoring, the done-gate, user gates). Awaiting the user's go-ahead.
+Spec: `SPEC.md` (2026-10-21). Branch `feat/unity-tales-slice1` from `develop`.
+
+**Objective:** replace the Unity pumpkin game with the tales of Mqidec's Night 1 (menu,
+hearth, story in four languages, stages 1-4) on Physics2D with placeholder art, playable in
+the editor and verified by a real compile gate, plain C# tests and the level simulator.
+
+**In scope / out of scope:** see "Files touched" and SPEC §5. The browser prototype's
+behaviour is unchanged (only `build-text.py` gains an output).
+
+### Approach
+
+- **Adapt in place, don't rewrite.**
+  - `Hero` keeps its states, rest detection and dash.
+  - `Hunter` becomes the lively pot.
+  - `Bat`'s patrol becomes Teryel.
+  - `Cauldron` is the hearth.
+  - `GhostPlatform` is the crumbling ledge.
+  - New: `Jar`, door modes, and stars by hunters.
+  - The pumpkin game's stages, roster texts, story, HUD lines and prologue flow are
+    replaced. Element classes not used by Night 1 stay for later nights.
+- **A pure `Logic` assembly** (`Assets/Scripts/HollowNight/Logic/`, asmdef with
+  `noEngineReferences`). It holds the text table, `ArabicText`, the star and door rules
+  and the pot's state step, in plain floats. The MonoBehaviours call it: `Hunter` stays
+  kinematic and applies the step with `MovePosition`. Tests reference only Logic.dll, so
+  they run under the bundled `dotnet`.
+- **Layouts** use the prototype's world units, which match the Unity game: x -6..6,
+  hero radius 0.45, gravity scale 1.5, launch max 16. They are copied from `levels.js`,
+  then re-tuned in the simulator.
+- **Gates Claude can run:** `Tools/unity_check.sh` and `Tools/check_levels.py`. The
+  user's editor play and smoke test are separate, pending user gates.
+
+### Steps (each verified before the next)
+
+0. **Tooling.** `Tools/unity_check.sh` mirrors Unity's own assemblies:
+   - Logic.dll (no UnityEngine refs; the compiler enforces purity);
+   - Assembly-CSharp: every non-Editor `Assets/**/*.cs` outside asmdef folders, legacy
+     scripts included, referencing UnityEngine, the UGUI it builds once into
+     `Tools/.build/` (gitignored) and Logic.dll;
+   - the editor assembly from every `Editor/` folder (plus UnityEditor);
+   - then it compiles and runs `Tools/unity_tests/*.cs` against Logic.dll with the bundled
+     `dotnet` (generated runtimeconfig); exit code = compile errors + failed tests.
+
+   Add a `unity` area to `.claude/hooks/done-gate.sh` (runs the script when C# or the
+   script changed) and cover it in `done-gate.test.sh`.
+   Done when:
+   - `bash Tools/unity_check.sh` reports 0 errors for all three assemblies on today's
+     code, and a smoke test passes.
+   - A deliberately broken file makes it fail (shown, then reverted).
+   - A Logic file using `UnityEngine` fails to compile (shown, then reverted).
+   - `bash .claude/hooks/done-gate.test.sh` passes.
+   - Only `Tools/unity_check.sh`, `Tools/unity_tests/`, `.gitignore`, `.claude/hooks/`
+     and the Logic asmdef changed (then `bash scripts/sync-codex.sh`).
+1. **Text, fonts and Arabic, tests first.** Write failing tests (Logic) for:
+   - Arabic joining: isolated, initial, medial and final forms, lam-alef, non-joining
+     letters;
+   - marks kept on their base when reversing (shadda), and brackets and « » mirrored;
+   - Latin and digit runs kept in order, with neutral punctuation at run boundaries;
+   - wrapping with a stub measurer, and the typewriter prefix of a shaped line;
+   - the table holding every id in four languages.
+
+   Then implement:
+   - `build-text.py` also writes `Logic/TalesText.cs`, with `text.js` unchanged;
+   - `ArabicText`;
+   - the Noto fonts copied with the OFL text;
+   - a glyph-coverage check (`Tools/check_glyphs.py`: every character in each language
+     against its font's `fc-query` charset);
+   - `UIKit` choosing font, alignment and wrap mode by language;
+   - `Progress` saving the language under the new `tm_` key prefix.
+
+   Done when:
+   - `bash Tools/unity_check.sh` is green with the new tests passing.
+   - `python3 Tools/design/original/build-text.py` leaves `git diff` empty for `text.js`.
+   - `python3 Tools/check_glyphs.py` reports full coverage.
+   - The browser prototype checks pass.
+2. **Rules, stages and the simulator, tests first where pure.**
+   - Logic tests:
+     - stars = hunters broken, capped at 3; rolling jars count, the trap jar never;
+     - the door modes `always` and `trap`;
+     - the pot step: idle, notice, hunt, lunge, return; safe after a death; paused while
+       aiming.
+   - Unity code:
+     - `Hunter` gets its states, the sleeper and the aim pause (`StageController.I.Aiming`).
+     - `Jar` is dynamic. Rotation is frozen and the spin is only drawn. Its contacts
+       never count as ground for the hero. The trap jar respawns.
+     - Teryel: patrol, kill even when dashing (honours `Invulnerable`), trap.
+     - `Hero.Rest` doesn't save `safePosition` inside her path.
+     - Door modes in `LevelBuilder` and `StageController`; `Win` and `CheckDoor` call the
+       Logic rules.
+     - The new `Kind`s and fluent methods: `Pot`, `Sleeper`, `Jar`, `TrapJar`, `Teryel`,
+       `Rules`.
+     - `LevelLibrary` becomes stages 1-4 from `levels.js`, and
+       `Progress.LevelCount = 4`.
+   - `check_levels.py`:
+     - The jar is part of the search state (position, velocity, `key_of`) and keeps
+       rolling between launches.
+     - It models Teryel's patrol, kill and trap, and the door modes.
+     - Pass = a winning state with every hunter broken.
+     - Event flags per state (`roll`, `cannon`, `trapped`); FAIL when the winning route
+       lacks the stage's lesson.
+     - Pots stay static at home (a stated limitation).
+   - Re-tune the layouts until they pass.
+   Done when:
+   - Logic tests are green.
+   - `bash Tools/unity_check.sh` reports 0 errors.
+   - `grep` shows `StageController` calling the Logic star and door functions.
+   - `python3 Tools/check_levels.py` passes 4/4, and also with `--seed 5` and `--seed 9`.
+   - Each stage uses its lesson: 2 roll, 3 cannon, 4 trapped.
+   - Stage 4 fails with the trap jar removed.
+3. **Screens, story, art and sound.**
+   - `Heroes`: Mqidec's name, title and hint come from text ids.
+   - `Story`: the opening, the first night, Night 1's beats and the closing, as ids
+     (`who` and text resolved from `TalesText`).
+   - `Flow`: chained story hops (opening → first night → Night 1 intro; Night 1 end →
+     closing → menu).
+   - `StoryScreen`: speakers (Jida, girl, boy, Teryel, narration), the language, and the
+     Arabic typewriter.
+   - `MainMenuScreen`: title, language selector, and no hard-coded "prologue".
+   - `WorldMapScreen`: Night 1, with the total stars from `LevelCount`.
+   - `StageHud`: stars as hunters; the par, launches and pumpkin lines removed;
+     `SetGoal` texts from ids.
+   - `HNSmokeTest`: the new story ids and stage count; it fails on a missing story id
+     instead of skipping.
+   - `generate_art.py` placeholders: pot, jar, Teryel, Jida, the children, the hearth and
+     kitchen backdrops. Mqidec uses the `izan_*` sprites.
+   - `Sfx`: clink, crack and crush recipes.
+   - A Logic test checks that every story, hero and UI id used in code exists in four
+     languages; ids used in C# are extracted by a grep in the test runner.
+   Done when:
+   - `bash Tools/unity_check.sh` (all assemblies) is green with the id test passing.
+   - `python3 Tools/generate_art.py` runs, and `git diff --stat` shows no existing
+     `.meta` changed.
+   - `python3 Tools/check_levels.py` is still 4/4.
+   - **User gate (pending):** the user plays menu → hearth → stages 1-4 in the editor in
+     at least English and Arabic, runs `Hollow Night > Smoke Test`, and pastes the
+     Console and `Tools/smoke_report.txt`.
+4. **Review and wrap-up.**
+   - Independent `code-reviewer` pass; fix or rebut every finding, tests first for bugs.
+   - Update the CLAUDE.md Game guide, SPEC.md evidence and `graphify-out/`
+     (`graphify update .`).
+   - Commit, then merge to `develop` per `delivery.md` once the user gate is met.
+   Done when:
+   - All Claude-runnable gates are green after the fixes, and the commit exists.
+   - **User gate (pending):** the user's editor play shows no errors.
+
+### Files touched
+
+- **Assets/Scripts/HollowNight:**
+  - `Logic/` (new: asmdef, `TalesText.cs`, `ArabicText.cs`, `Rules.cs`, `PotStep.cs`);
+  - `Core/` (`Art`, `Flow`, `Heroes`, `Progress`, `Sfx`);
+  - `UI/` (`UIKit`, `MainMenuScreen`, `WorldMapScreen`);
+  - `Story/` (`Story`, `StoryScreen`);
+  - `Stage/` (`StageController`, `StageHud`, `Hero`, `LevelData`, `LevelBuilder`,
+    `LevelLibrary`);
+  - `Elements/Elements.cs` (Hunter, Jar, Teryel).
+- **Other Unity files:** `Assets/Editor/HNSmokeTest.cs`; `Assets/Resources/HN/` (new
+  placeholder PNGs with generated metas, plus new fonts with their OFL texts).
+- **Tools:** `check_levels.py`, `generate_art.py`, `check_glyphs.py` (new),
+  `unity_check.sh` (new), `unity_tests/` (new), and
+  `Tools/design/original/build-text.py`.
+- **Repo:** `.gitignore`, `.claude/hooks/done-gate.sh` and its test (then
+  `scripts/sync-codex.sh`), `CLAUDE.md` (Game guide), `SPEC.md`, `task_plan.md`,
+  `graphify-out/`.
+- **Never:** existing `.meta` files, `GameBoot`'s GUID, legacy class or field names,
+  `Library/`, `Temp/`, `Logs/`, `ProjectSettings/`.
+
+### Risks and open questions
+
+- **No live Unity play by Claude.** Physics2D feel (pushing the jar, rest detection) is
+  only judged in the editor. The simulator keeps pots static, so the hunt is approximate.
+- **Arabic:** presentation-form shaping covers this script's Arabic, marks included. The
+  user still reviews it on screen.
+- **New `.meta` files** are written by Unity on first import (and by `generate_art.py`);
+  no existing one is edited.
+- **The product name** in Player Settings stays "Hollow Night" for now (open question).
+- **Recommended:** run this plan in a fresh session; this one carries Nights 6 and 7.
+
+/goal every Claude-verifiable "Done when" clause of "Unity port, slice 1" in task_plan.md is checked off (user gates listed as pending), and bash Tools/unity_check.sh, python3 Tools/check_levels.py and the browser prototype checks pass
