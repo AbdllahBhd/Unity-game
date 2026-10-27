@@ -27,6 +27,8 @@ namespace HollowNight
         static Material spriteMaterial;
         static Font titleFont;
         static Font bodyFont;
+        static Font latinFont;
+        static Font arabicFont;
 
         public static Sprite Get(string name)
         {
@@ -85,6 +87,26 @@ namespace HollowNight
             {
                 if (bodyFont == null) bodyFont = LoadFont("LuckiestGuy");
                 return bodyFont;
+            }
+        }
+
+        /// <summary>Noto Sans: draws every Taqbaylit, French and English letter of the tales.</summary>
+        public static Font LatinFont
+        {
+            get
+            {
+                if (latinFont == null) latinFont = LoadFont("NotoSans");
+                return latinFont;
+            }
+        }
+
+        /// <summary>Noto Sans Arabic, with the joined letter forms ArabicText produces.</summary>
+        public static Font ArabicFont
+        {
+            get
+            {
+                if (arabicFont == null) arabicFont = LoadFont("NotoSansArabic");
+                return arabicFont;
             }
         }
 

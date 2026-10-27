@@ -1,3 +1,4 @@
+using HollowNight.Logic;
 using UnityEngine;
 
 namespace HollowNight
@@ -60,6 +61,30 @@ namespace HollowNight
         {
             PlayerPrefs.SetInt(Prefix + "story_" + storyId, 1);
             PlayerPrefs.Save();
+        }
+
+        // The tales keep their own save keys, apart from the pumpkin game's "hn_" ones.
+        const string TalesPrefix = "tm_";
+
+        /// <summary>The language of the tales; the first time, the device's language when the game has it.</summary>
+        public static Lang Language
+        {
+            get
+            {
+                int saved = PlayerPrefs.GetInt(TalesPrefix + "lang", -1);
+                if (saved >= 0 && saved <= (int)Lang.En) return (Lang)saved;
+                switch (Application.systemLanguage)
+                {
+                    case SystemLanguage.French: return Lang.Fr;
+                    case SystemLanguage.Arabic: return Lang.Ar;
+                    default: return Lang.En;
+                }
+            }
+            set
+            {
+                PlayerPrefs.SetInt(TalesPrefix + "lang", (int)value);
+                PlayerPrefs.Save();
+            }
         }
 
         public static bool SoundOn

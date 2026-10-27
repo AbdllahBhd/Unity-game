@@ -1,4 +1,5 @@
 using System.Collections;
+using HollowNight.Logic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -123,6 +124,67 @@ namespace HollowNight
             float d = Mathf.Max(2f, fontSize * 0.05f);
             outline.effectDistance = new Vector2(d, -d);
             return label;
+        }
+
+        /// <summary>A label's text in the tales' language (Progress.Language).</summary>
+        public static void Say(Text label, string text, bool title = false)
+        {
+            Say(label, text, Progress.Language, title);
+        }
+
+        /// <summary>
+        /// Sets a label's text in a language: Arabic is shaped, wrapped to the label's width and
+        /// laid out right to left (UI Text cannot), and Latin text keeps the decorative font
+        /// only when that font has every letter (Taqbaylit's ɣ, ḍ... fall back to Noto Sans).
+        /// </summary>
+        public static void Say(Text label, string text, Lang lang, bool title = false)
+        {
+            label.resizeTextForBestFit = false;
+            if (lang != Lang.Ar)
+            {
+                Font preferred = title ? Art.TitleFont : Art.BodyFont;
+                label.font = Draws(preferred, text) ? preferred : Art.LatinFont;
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
+                label.text = text;
+                return;
+            }
+            label.font = Art.ArabicFont;
+            label.alignment = RightToLeft(label.alignment);
+            // Lines are broken by ArabicText, in reading order, before they are reversed.
+            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            float width = label.rectTransform.rect.width;
+            label.text = ArabicText.Layout(text, s => Width(label, s), width > 0f ? width : float.MaxValue);
+        }
+
+        /// <summary>The typewriter for Arabic: the first <paramref name="reveal"/> letters, appearing from the right.</summary>
+        public static void SayArabicPart(Text label, string text, int reveal)
+        {
+            float width = label.rectTransform.rect.width;
+            label.text = ArabicText.Layout(text, s => Width(label, s), width > 0f ? width : float.MaxValue, reveal);
+        }
+
+        static bool Draws(Font font, string text)
+        {
+            foreach (char c in text)
+                if (!char.IsWhiteSpace(c) && !font.HasCharacter(c)) return false;
+            return true;
+        }
+
+        static float Width(Text label, string s)
+        {
+            TextGenerationSettings settings = label.GetGenerationSettings(Vector2.zero);
+            return label.cachedTextGeneratorForLayout.GetPreferredWidth(s, settings) / label.pixelsPerUnit;
+        }
+
+        static TextAnchor RightToLeft(TextAnchor a)
+        {
+            switch (a)
+            {
+                case TextAnchor.UpperLeft: return TextAnchor.UpperRight;
+                case TextAnchor.MiddleLeft: return TextAnchor.MiddleRight;
+                case TextAnchor.LowerLeft: return TextAnchor.LowerRight;
+                default: return a;
+            }
         }
 
         public static Button TextButton(string sprite, string text, Transform parent, Vector2 anchor, Vector2 position,
