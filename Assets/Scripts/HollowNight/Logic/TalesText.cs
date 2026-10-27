@@ -140,6 +140,7 @@ namespace HollowNight.Logic
             Add("who.boy", "", "", "The boy", "Aqcic", "Le garçon", "الولد");
             Add("who.children", "", "", "The children", "Igerdan", "Les enfants", "الأطفال");
             Add("who.teryel", "", "", "Teryel", "Teryel", "Teryel", "تريال");
+            Add("hero.name", "", "", "Mqidec", "Mqidec", "Mqidec", "مقيدش");
             Add("t4.intro.1", "jida", "telling", "On the morning of Yennayer the women baked the bread of the new year in the village oven. By evening the bread was gone, and so was Teryel.", "Ṣbeḥ n Yennayer, tilawin ssewwent aɣrum n useggas amaynut deg ufurnu n taddart. Tameddit, aɣrum ulac-it, Teryel daɣen ulac-itt.", "Le matin de Yennayer, les femmes ont cuit le pain de la nouvelle année au four du village. Le soir, le pain avait disparu, et Teryel aussi.", "صباح يناير، خبزت النساء خبز العام الجديد في فرن القرية. وفي المساء اختفى الخبز، واختفت تريال أيضا.");
             Add("t4.intro.2", "boy", "", "Teryel eats bread?", "Teryel tettett aɣrum?", "Teryel mange du pain ?", "تريال تأكل الخبز؟");
             Add("t4.intro.3", "jida", "teasing", "She eats everything. But this bread she hid on the highest roof of the citadel, where her ravens keep watch.", "Tettett kullec. Maca aɣrum-agi teffer-it ɣef ssqef ufellay n Lqelɛa, anda ttɛassan ijeɣdan-is.", "Elle mange de tout. Mais ce pain, elle l'a caché sur le plus haut toit de la citadelle, là où ses corbeaux montent la garde.", "تأكل كل شيء. لكن هذا الخبز خبّأته على أعلى سطح في القلعة، حيث تحرسه غربانها.");

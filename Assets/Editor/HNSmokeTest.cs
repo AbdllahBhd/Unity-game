@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using HollowNight.Logic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace HollowNight.EditorTools
 {
     /// <summary>
     /// Automated first-run smoke test. Menu: Hollow Night / Smoke Test (all stages).
-    /// Enters Play mode in HN_MainMenu, visits the map and prologue, then loads every stage,
+    /// Enters Play mode in HN_MainMenu, visits the map and the whole Night 1 story chain, then loads every stage,
     /// launches the hero a few times, forces a win to show the result panel, and writes all
     /// Console warnings/errors to Tools/smoke_report.txt. Progress is saved as in a real win.
     /// </summary>
@@ -24,6 +25,7 @@ namespace HollowNight.EditorTools
         const float ScreenSeconds = 2.5f;
         const float StageSeconds = 10f;
         const float AfterWinSeconds = 2.5f;
+        const float StorySeconds = 60f;
 
         enum Phase { Menu, Map, Story, StageLoad, StagePlay, StageWon, Done }
 
@@ -37,6 +39,7 @@ namespace HollowNight.EditorTools
         static bool pendingAbilityRelease;
         static bool sawRest;
         static int launchErrors;
+        static int storyTaps;
 
         [MenuItem("Hollow Night/Smoke Test (all stages)")]
         static void Run()
@@ -132,17 +135,38 @@ namespace HollowNight.EditorTools
                 case Phase.Map:
                     if (Elapsed < ScreenSeconds + 1f) return;
                     Note("Map: scene=" + SceneManager.GetActiveScene().name + " canvas=" + (HasCanvas()));
-                    Flow.StoryId = "prologue";
+                    Flow.Stories = NightOneChain();
                     Flow.AfterStory = Flow.Map;
                     SceneManager.LoadScene(Flow.StoryScene);
                     Enter(Phase.Story);
                     return;
 
                 case Phase.Story:
-                    if (Elapsed < ScreenSeconds) return;
-                    Note("Story: scene=" + SceneManager.GetActiveScene().name + " canvas=" + (HasCanvas()));
-                    level = 1;
-                    LoadStage();
+                    // Tap through every line of the chain: the screen must end on Flow.AfterStory.
+                    if (SceneManager.GetActiveScene().name == Flow.AfterStory && Elapsed > 1f)
+                    {
+                        Note("Story: the whole chain played in " + Elapsed.ToString("0.0") + " s (" + storyTaps
+                             + " taps), then " + Flow.AfterStory);
+                        level = 1;
+                        LoadStage();
+                        return;
+                    }
+                    if (Elapsed > StorySeconds)
+                    {
+                        issues.Add("FAIL story chain did not reach " + Flow.AfterStory + " within " + StorySeconds
+                                   + " s (scene=" + SceneManager.GetActiveScene().name + ", " + storyTaps + " taps)");
+                        level = 1;
+                        LoadStage();
+                        return;
+                    }
+                    if (EditorApplication.timeSinceStartup - lastAction < 0.15) return;
+                    StoryScreen screen = UnityEngine.Object.FindFirstObjectByType<StoryScreen>();
+                    if (screen != null)
+                    {
+                        screen.SendMessage("Next");
+                        storyTaps++;
+                    }
+                    lastAction = EditorApplication.timeSinceStartup;
                     return;
 
                 case Phase.StageLoad:
@@ -154,7 +178,7 @@ namespace HollowNight.EditorTools
                         NextStage();
                         return;
                     }
-                    Note("Stage " + level + " \"" + StageController.I.Level.name + "\": built, hero=" + StageController.I.Hero.Def.name
+                    Note("Stage " + level + " \"" + StageController.I.Level.name + "\": built, hero=" + StageController.I.Hero.Def.Name
                          + " objects=" + CountLevelObjects());
                     Enter(Phase.StagePlay);
                     return;
@@ -171,6 +195,24 @@ namespace HollowNight.EditorTools
                 case Phase.Done:
                     return;
             }
+        }
+
+        /// <summary>
+        /// Every story the flow can ask for in Night 1, in play order. A missing id is a failure,
+        /// not a skipped screen.
+        /// </summary>
+        static List<string> NightOneChain()
+        {
+            List<string> chain = TalesStory.BeforeStage(1, id => false);
+            for (int stage = 2; stage <= Progress.LevelCount; stage++)
+                chain.AddRange(TalesStory.BeforeStage(stage, id => chain.Contains(id)));
+            chain.AddRange(TalesStory.AfterStage(Progress.LevelCount, id => false));
+            foreach (string id in chain)
+            {
+                if (!Story.Has(id)) issues.Add("FAIL story id '" + id + "' is asked for by Flow but missing from TalesStory");
+            }
+            Note("Story chain (" + Progress.LevelCount + " stages): " + string.Join(" ", chain.ToArray()));
+            return chain;
         }
 
         static void LoadStage()

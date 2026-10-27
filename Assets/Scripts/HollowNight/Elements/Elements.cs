@@ -121,6 +121,7 @@ namespace HollowNight
             if (pot.Step(target.x, target.y, Time.fixedDeltaTime, stage != null && stage.Aiming))
             {
                 Fx.Burst(body.position + Vector2.up * 0.5f, "dot", 4, new Color(1f, 0.85f, 0.4f, 0.9f), 2f, 0.3f, 0.2f, 0f);
+                Sfx.Play(Sound.Clink, 0.6f, Random.Range(0.9f, 1.1f));
             }
             if (sprite != null && Mathf.Abs(pot.Vx) > 0.05f) sprite.flipX = pot.Vx < 0f;
             body.MovePosition(new Vector2(pot.X, pot.Y));
@@ -168,7 +169,7 @@ namespace HollowNight
             Fx.Burst(p, "shard", 9, new Color(0.85f, 0.55f, 0.35f), 6f, 0.7f, 0.4f, 12f);
             Fx.Burst(p, "dot", 8, new Color(1f, 0.8f, 0.5f, 0.9f), 3.5f, 0.5f, 0.5f, 0f);
             Fx.Flash(p, new Color(1f, 0.8f, 0.5f, 0.8f), 3.5f);
-            Sfx.Play(Sound.Break, 1f, Random.Range(0.9f, 1.15f));
+            Sfx.Play(Sound.Crack, 1f, Random.Range(0.9f, 1.15f));
             if (StageController.I != null)
             {
                 StageController.I.Shake(0.18f, 0.15f);
@@ -314,7 +315,7 @@ namespace HollowNight
             sprite.enabled = false;
             Fx.Burst(p, "shard", 10, new Color(0.8f, 0.5f, 0.3f), 6f, 0.7f, 0.4f, 12f);
             Fx.Flash(p, new Color(1f, 0.8f, 0.5f, 0.8f), 3f);
-            Sfx.Play(Sound.Break, 1f, Random.Range(0.7f, 0.85f));
+            Sfx.Play(Sound.Crush, 1f, Random.Range(0.9f, 1.05f));
             if (StageController.I != null)
             {
                 StageController.I.Shake(0.22f, 0.18f);
@@ -435,7 +436,7 @@ namespace HollowNight
             if (sprite != null) sprite.color = new Color(0.55f, 0.5f, 0.6f);
             Fx.Burst(body.position, "spark", 14, new Color(1f, 0.9f, 0.5f), 6f, 0.7f, 0.4f, 3f);
             Fx.Flash(body.position, new Color(1f, 0.9f, 0.6f, 0.8f), radius * 3f);
-            Sfx.Play(Sound.Unlock, 1f, 0.8f);
+            Sfx.Play(Sound.Crush, 1f, 0.7f);
             if (StageController.I != null)
             {
                 StageController.I.Shake(0.3f, 0.25f);

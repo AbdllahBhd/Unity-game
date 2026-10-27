@@ -1,14 +1,16 @@
-using System.Collections;
+using HollowNight.Logic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace HollowNight
 {
-    /// <summary>Title screen.</summary>
+    /// <summary>Title screen: the tales' title, Play, the tales (map), the language and the sound.</summary>
     public class MainMenuScreen : MonoBehaviour
     {
+        // Each language is named in itself, so these are not translated.
+        static readonly string[] LanguageNames = { "Taqbaylit", "Français", "العربية", "English" };
+
         Image soundIcon;
-        RectTransform confirm;
 
         void Start()
         {
@@ -16,99 +18,72 @@ namespace HollowNight
             Canvas canvas = UIKit.MakeCanvas("MenuCanvas", 10);
             Transform root = canvas.transform;
 
-            UIKit.Backdrop("bg_graveyard", root);
+            UIKit.Backdrop("bg_hearth", root);
+            UIKit.Fill(root, new Color(0.03f, 0.01f, 0.08f, 0.3f), false);
 
-            // Drifting clouds and a few bats give the title screen some life.
-            for (int i = 0; i < 3; i++)
-            {
-                Image cloud = UIKit.Picture("cloud", root, UIKit.Top, new Vector2(-300f + i * 330f, -520f - i * 130f),
-                    new Vector2(520f, 260f));
-                cloud.color = new Color(1f, 1f, 1f, 0.16f);
-                Drift drift = cloud.gameObject.AddComponent<Drift>();
-                drift.speed = 18f + i * 9f;
-                drift.range = 760f;
-            }
-            for (int i = 0; i < 2; i++)
-            {
-                Image bat = UIKit.Picture("bat_0", root, UIKit.Top, new Vector2(-350f + i * 600f, -760f - i * 90f),
-                    new Vector2(170f, 110f));
-                UIFrames frames = bat.gameObject.AddComponent<UIFrames>();
-                frames.frames = new[] { Art.Get("bat_0"), Art.Get("bat_1") };
-                Drift drift = bat.gameObject.AddComponent<Drift>();
-                drift.speed = 70f + i * 40f;
-                drift.range = 760f;
-                drift.bob = 30f;
-            }
-
-            Text title = UIKit.Label("HOLLOW NIGHT", root, UIKit.Top, new Vector2(0f, -330f), new Vector2(1060f, 260f), 190,
+            Text title = UIKit.Label("", root, UIKit.Top, new Vector2(0f, -330f), new Vector2(1000f, 300f), 130,
                 UIKit.Gold, true);
-            title.horizontalOverflow = HorizontalWrapMode.Overflow;
+            UIKit.Say(title, UIKit.T("ui.title"), true);
             title.gameObject.AddComponent<Pulse>().amount = 0.02f;
-            UIKit.Label("Izan and the Pumpkin Hunt", root, UIKit.Top, new Vector2(0f, -490f), new Vector2(1000f, 90f), 58,
-                UIKit.Cream);
+            Text tagline = UIKit.Label("", root, UIKit.Top, new Vector2(0f, -560f), new Vector2(940f, 140f), 50, UIKit.Cream);
+            UIKit.Say(tagline, UIKit.T("ui.tagline"));
 
-            // Izan on a platform, hunted by two glowing pumpkins.
-            Image platform = UIKit.Picture("plat_grave", root, UIKit.Center, new Vector2(0f, -250f), new Vector2(900f, 110f), true);
-            platform.rectTransform.SetAsLastSibling();
+            // Mqidec on the hearth's edge, with two of Teryel's pots.
+            Image ledge = UIKit.Picture("plat_wood", root, UIKit.Center, new Vector2(0f, -250f), new Vector2(900f, 110f), true);
+            ledge.rectTransform.SetAsLastSibling();
             Image hero = UIKit.Picture("izan_idle", root, UIKit.Center, new Vector2(0f, -90f), new Vector2(260f, 260f));
             hero.gameObject.AddComponent<Hopper>().delay = 0.2f;
             for (int i = 0; i < 2; i++)
             {
                 float side = i == 0 ? -1f : 1f;
-                Image pumpkin = UIKit.Picture("hunter_0", root, UIKit.Center, new Vector2(side * 330f, -60f + i * 70f),
+                Image pot = UIKit.Picture("pot_0", root, UIKit.Center, new Vector2(side * 330f, -60f + i * 70f),
                     new Vector2(190f, 190f));
-                UIFrames frames = pumpkin.gameObject.AddComponent<UIFrames>();
-                frames.frames = new[] { Art.Get("hunter_0"), Art.Get("hunter_1") };
+                UIFrames frames = pot.gameObject.AddComponent<UIFrames>();
+                frames.frames = new[] { Art.Get("pot_0"), Art.Get("pot_1") };
                 frames.fps = 4f;
-                pumpkin.gameObject.AddComponent<Pulse>().amount = 0.06f;
+                pot.gameObject.AddComponent<Pulse>().amount = 0.06f;
             }
-            Image lantern = UIKit.Picture("lantern_dark", root, UIKit.Center, new Vector2(0f, 190f), new Vector2(150f, 200f));
-            lantern.gameObject.AddComponent<Pulse>().amount = 0.03f;
 
-            bool started = Progress.Seen("prologue");
-            Button play = UIKit.TextButton("btn_green", started ? "CONTINUE" : "PLAY", root, UIKit.Bottom,
-                new Vector2(0f, 560f), new Vector2(560f, 170f), Play, 80);
+            Button play = UIKit.TextButton("btn_green", UIKit.T("ui.play"), root, UIKit.Bottom, new Vector2(0f, 760f),
+                new Vector2(560f, 170f), Play, 80);
             play.gameObject.AddComponent<Pulse>().amount = 0.035f;
+            UIKit.TextButton("btn_purple", UIKit.T("ui.tales"), root, UIKit.Bottom, new Vector2(0f, 590f),
+                new Vector2(440f, 130f), () => Flow.Go(Flow.Map), 54);
 
-            UIKit.TextButton("btn_purple", "STORY", root, UIKit.Bottom, new Vector2(0f, 380f), new Vector2(440f, 130f),
-                () => Flow.ShowStory("prologue", Flow.Menu), 54);
+            BuildLanguages(root);
 
             Button sound = UIKit.IconButton(Progress.SoundOn ? "ico_sound_on" : "ico_sound_off", root, UIKit.BottomLeft,
                 new Vector2(120f, 130f), 150f, ToggleSound);
             soundIcon = sound.GetComponent<Image>();
 
-            UIKit.TextButton("btn_orange", "RESET", root, UIKit.BottomRight, new Vector2(-170f, 130f), new Vector2(260f, 100f),
-                () => confirm.gameObject.SetActive(true), 40);
-
-            Text stars = UIKit.Label(Progress.TotalStars + " / " + (Progress.LevelCount * 3), root, UIKit.Bottom,
-                new Vector2(40f, 130f), new Vector2(300f, 90f), 54, UIKit.Gold);
+            Text stars = UIKit.Label(Progress.TotalStars + " / " + (Progress.LevelCount * Rules.MaxStars), root,
+                UIKit.BottomRight, new Vector2(-170f, 130f), new Vector2(300f, 90f), 54, UIKit.Gold);
             UIKit.Picture("star_full", stars.transform, UIKit.Center, new Vector2(-170f, 6f), new Vector2(90f, 90f));
-
-            BuildConfirm(root);
         }
 
-        void BuildConfirm(Transform root)
+        void BuildLanguages(Transform root)
         {
-            confirm = UIKit.Stretch("Confirm", root);
-            UIKit.Fill(confirm, new Color(0f, 0f, 0f, 0.7f), true);
-            Image panel = UIKit.Picture("panel", confirm, UIKit.Center, Vector2.zero, new Vector2(860f, 560f), true);
-            UIKit.Label("Erase all progress?", panel.transform, UIKit.Center, new Vector2(0f, 120f), new Vector2(760f, 200f),
-                64, UIKit.Cream);
-            UIKit.TextButton("btn_orange", "ERASE", panel.transform, UIKit.Center, new Vector2(-190f, -120f),
-                new Vector2(320f, 130f), () =>
-                {
-                    Progress.ResetAll();
-                    Flow.Go(Flow.Menu);
-                }, 50);
-            UIKit.TextButton("btn_green", "KEEP", panel.transform, UIKit.Center, new Vector2(190f, -120f),
-                new Vector2(320f, 130f), () => confirm.gameObject.SetActive(false), 50);
-            confirm.gameObject.SetActive(false);
+            Text label = UIKit.Label("", root, UIKit.Bottom, new Vector2(0f, 450f), new Vector2(800f, 70f), 40, UIKit.Cream);
+            UIKit.Say(label, UIKit.T("ui.language"));
+            Lang current = Progress.Language;
+            for (int i = 0; i < LanguageNames.Length; i++)
+            {
+                Lang lang = (Lang)i;
+                float x = -375f + i * 250f;
+                Button button = UIKit.TextButton(lang == current ? "btn_green" : "btn_purple", "", root, UIKit.Bottom,
+                    new Vector2(x, 350f), new Vector2(240f, 100f), () =>
+                    {
+                        Progress.Language = lang;
+                        Flow.Go(Flow.Menu);
+                    }, 36);
+                UIKit.Say(button.GetComponentInChildren<Text>(), LanguageNames[i], lang);
+            }
         }
 
-        void Play()
+        /// <summary>The first stage not cleared; once every stage is, the night starts again (as the prototype).</summary>
+        static void Play()
         {
-            if (!Progress.Seen("prologue")) Flow.ShowStory("prologue", Flow.Map);
-            else Flow.Go(Flow.Map);
+            Flow.PlayLevel(Progress.IsDone(Progress.LevelCount) ? 1 : Progress.CurrentLevel);
         }
 
         void ToggleSound()
@@ -120,11 +95,7 @@ namespace HollowNight
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                if (confirm != null && confirm.gameObject.activeSelf) confirm.gameObject.SetActive(false);
-                else Application.Quit();
-            }
+            if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
         }
     }
 

@@ -100,6 +100,17 @@ fi
 TEST_FAIL=0
 if [ -n "$(list Tools/unity_tests)" ]; then
   list Tools/unity_tests >"$OUT/tests.rsp"
+  # Every text id written as a literal in the game's code (the generated table itself excluded),
+  # for StoryTests.EveryTextIdInTheGameCodeExistsInFourLanguages.
+  {
+    echo "public static class UsedIds { public static readonly string[] All = {"
+    # Any "word.rest" literal is taken as an id (so a new prefix is checked too); file names are not.
+    list Assets | grep -v "/Logic/TalesText.cs$" | tr '\n' '\0' | xargs -0 grep -ohE \
+      '"[a-z][A-Za-z0-9]*\.[A-Za-z0-9][A-Za-z0-9._-]*"' | grep -vE '\.(png|cs|wav|txt|json|unity|asset)"$' \
+      | sort -u | sed 's/$/,/'
+    echo "}; }"
+  } >"$OUT/UsedIds.cs"
+  echo "$OUT/UsedIds.cs" >>"$OUT/tests.rsp"
   rm -f "$OUT/unity_tests.dll"
   csc "unity_tests" -langversion:7.3 -target:exe "${LOGIC_REF[@]}" -out:"$OUT/unity_tests.dll" @"$OUT/tests.rsp"
   if [ -f "$OUT/unity_tests.dll" ]; then

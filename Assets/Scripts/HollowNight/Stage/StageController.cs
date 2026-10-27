@@ -85,10 +85,10 @@ namespace HollowNight
 
             rig = cam.gameObject.GetComponent<CameraRig>();
             if (rig == null) rig = cam.gameObject.AddComponent<CameraRig>();
-            rig.Setup(cam, Hero.transform, Level.height, Story.ChapterBackdrops[Mathf.Clamp(Level.chapter, 0, 2)]);
+            rig.Setup(cam, Hero.transform, Level.height, Story.StageBackdrop(Level.id));
 
             hud = gameObject.AddComponent<StageHud>();
-            hud.Build(this, builder.Hunters, builder.Boss != null);
+            hud.Build(this, builder.Boss != null);
             hud.SetHero(Hero.Def);
             Refresh();
 
@@ -213,7 +213,7 @@ namespace HollowNight
         public void TeryelTrapped()
         {
             teryelsFree = Mathf.Max(0, teryelsFree - 1);
-            if (hud != null) hud.ShowHint(TalesText.Get("ui.trapped", Progress.Language), 2.5f);
+            if (hud != null) hud.ShowHint(UIKit.T("ui.trapped"), 2.5f);
             Refresh();
             CheckDoor();
         }
@@ -270,15 +270,16 @@ namespace HollowNight
         IEnumerator ShowResult(int stars)
         {
             yield return new WaitForSeconds(1f);
-            hud.ShowResult(Level, stars, launches, smashed, builder.Hunters);
+            hud.ShowResult(stars);
         }
 
         void Refresh()
         {
             if (hud == null) return;
-            hud.SetScore(launches, Level.par, smashed, builder.Hunters);
-            if (keyNeeded && !keyFound) hud.SetGoal("Find the key!");
-            else hud.SetGoal("");
+            hud.SetStars(Rules.Stars(broken));
+            // Stage 4: the door waits for Teryel. Before the first launch the same card is the stage's hint.
+            bool waiting = !Rules.DoorOpen(Level.door, teryelsFree) && launches > 0;
+            hud.SetGoal(waiting ? "tip.trap" : null);
         }
 
         // ------------------------------------------------------------------ buttons

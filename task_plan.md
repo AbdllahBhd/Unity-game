@@ -1066,7 +1066,55 @@ behaviour is unchanged (only `build-text.py` gains an output).
         touching a ledge corner; the ghost ledge's phase. Deferred to step 3: level results
         still use the old `hn_` keys, so old pumpkin saves would show as tales stars.
       - Not done here: no editor play (user gate). HUD texts and the par/launch lines are step 3.
-- [ ] 3. Screens, story, art and sound.
+- [x] 3. Screens, story, art and sound (2026-10-27). **User gate pending** (editor play in
+      English and Arabic, `Hollow Night > Smoke Test`, Console and `Tools/smoke_report.txt`).
+      - **Tests first:** `StoryTests` (9) failed to compile before `Logic/TalesStory.cs`. The id test
+        went red on `hero.name` before its row existed, then green. `TheTrapBeatLandsWithAThud`
+        went red before `Beat.Fx` existed.
+      - **Implemented:**
+        - `Logic/TalesStory.cs`: the beats of `story.js` and the chain before and after a stage
+          (opening, first night once, night intro, stage lines; after stage 4 the end, then the
+          closing).
+        - `Story` maps scenes, speakers and the night card to the placeholder art.
+        - `Flow.ShowStories`: one story screen plays the whole chain. "Map" goes straight to the
+          map, as in the prototype. `FlowRunner` now queues a load asked for during another.
+        - `StoryScreen`:
+          - speakers' names from `who.*`, a portrait per speaker, a backdrop per beat;
+          - the night card on the first beat only, with the Taqbaylit name in a Latin-font label;
+          - the trap beat's thud;
+          - the Arabic typewriter counted in shaped letters.
+        - `MainMenuScreen`: the title, Play, the tales, a selector for the four languages, sound.
+          Play starts stage 1 again after the whole night.
+        - `WorldMapScreen`: Night 1 only. This fixes the stage 5 and 8 banners that step 2's
+          `LevelCount = 4` left out of range.
+        - `StageHud`: three stars that light as hunters break; the par, launch and pumpkin lines
+          removed; every text from ids. Each stage's hint is a `tip.*` id.
+        - `Heroes`: `nameId`, `titleId`, `hintId`. One row, `hero.name`, added to
+          `yennayer-script.md`; `TalesText.cs` and `text.js` regenerated.
+        - `Progress` keys moved from `hn_` to `tm_`, so old pumpkin saves don't count.
+        - `HNSmokeTest` taps through the whole Night 1 chain and fails unless it ends on its
+          target scene.
+        - `Sfx`: Clink (a pot notices), Crack (a pot breaks), Crush (a jar shatters, Teryel
+          trapped, the trap beat).
+        - `generate_art.py`: pot (2 frames), jar, hearth, Teryel, portraits of Jida, the girl,
+          the boy, the children and Teryel, and the `bg_hearth` and `bg_kitchen` backdrops.
+        - `unity_check.sh` greps every `"word.rest"` literal in `Assets/**/*.cs` into
+          `UsedIds.cs` for the id test.
+      - **Evidence:**
+        - `bash Tools/unity_check.sh`: 0 errors in all assemblies, 45/45 tests. The grep finds 53
+          ids in the code.
+        - `generate_art.py` runs: 12 new sprites with new `.meta` files; `git status` shows no
+          existing `.meta` changed. The script re-writes `bg_graveyard` and `bg_tower` with a
+          few bytes of drift on every run; both were restored from git.
+        - `check_levels.py`: 4/4 with seeds 1, 5 and 9.
+        - `check_glyphs.py`: full coverage.
+        - Browser prototype: 124/124 tests, art checks, 60/60 and 28/28 routes.
+        - `done-gate.test.sh` passes.
+      - **Review** (code-reviewer, 12 findings, all fixed): the map exit after stage 4, the
+        Taqbaylit name in the Arabic font, a smoke test that never left the first line, a stuck
+        empty story scene, Play after the last stage, the card's timing, the Arabic typewriter
+        length, portraits that never mirrored, the HUD's overflow and doubled stage 4 card, Arabic
+        map labels, the id grep's reach, and the trap beat's thud.
 - [ ] 4. Review and wrap-up.
 
 /goal every Claude-verifiable "Done when" clause of "Unity port, slice 1" in task_plan.md is checked off (user gates listed as pending), and bash Tools/unity_check.sh, python3 Tools/check_levels.py and the browser prototype checks pass

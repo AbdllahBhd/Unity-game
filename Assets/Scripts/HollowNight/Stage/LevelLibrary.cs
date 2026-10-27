@@ -38,6 +38,7 @@ namespace HollowNight
         static LevelData Level1()
         {
             return New(1, 16f)
+                .Hint("tip.launch", true)
                 .Ground()
                 .Start(-4.5f, 0f)
                 .Ledge(3f, 4f, 3.4f)
@@ -53,6 +54,7 @@ namespace HollowNight
         static LevelData Level2()
         {
             return New(2, 16f)
+                .Hint("tip.roll")
                 .Ground()
                 .Start(-4.6f, 0f)
                 .Ledge(-2.8f, 4.2f, 4f)
@@ -67,6 +69,7 @@ namespace HollowNight
         static LevelData Level3()
         {
             return New(3, 24f)
+                .Hint("tip.cannon")
                 .Ground()
                 .Start(-4.5f, 0f)
                 .Ledge(1.6f, 10f, 3.6f)
@@ -85,6 +88,7 @@ namespace HollowNight
         {
             return New(4, 14f)
                 .Rules(DoorMode.Trap)
+                .Hint("tip.trap")
                 .Ground()
                 .Start(-4.6f, 0f)
                 .Ledge(-3.6f, 3f, 3f)

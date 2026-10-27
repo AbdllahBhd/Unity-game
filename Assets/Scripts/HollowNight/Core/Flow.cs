@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using HollowNight.Logic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,7 +16,8 @@ namespace HollowNight
         public const string Stage = "HN_Stage";
 
         public static int Level = 1;
-        public static string StoryId = "prologue";
+        /// <summary>The story ids the story screen plays, in order (see TalesStory).</summary>
+        public static List<string> Stories = new List<string>();
         public static string AfterStory = Map;
 
         public static void Go(string scene)
@@ -22,61 +25,55 @@ namespace HollowNight
             FlowRunner.Instance.Load(scene);
         }
 
-        public static void ShowStory(string id, string after)
+        /// <summary>Plays a chain of stories in one story screen, then goes on to a scene.</summary>
+        public static void ShowStories(List<string> ids, string after)
         {
-            StoryId = id;
+            if (ids.Count == 0)
+            {
+                Go(after);
+                return;
+            }
+            Stories = ids;
             AfterStory = after;
             Go(StoryScene);
         }
 
-        /// <summary>Starts a level, playing its intro story the first time.</summary>
+        /// <summary>Starts a stage with the stories not yet told before it (the hearth, the night, its lines).</summary>
         public static void PlayLevel(int level)
         {
             Level = Mathf.Clamp(level, 1, Progress.LevelCount);
-            string id = "pre_" + Level;
-            if (Story.Has(id) && !Progress.Seen(id)) ShowStory(id, Stage);
-            else Go(Stage);
+            ShowStories(TalesStory.BeforeStage(Level, Progress.Seen), Stage);
         }
 
-        /// <summary>Leaves a cleared level towards the next level or the map, playing any story unlocked by it.</summary>
+        /// <summary>
+        /// Leaves a cleared stage. "Next", as the prototype's nextStage: the last stage of a night first
+        /// tells the tale's end and the closing, then the next stage (or the menu after the last one).
+        /// "Map" goes straight to the map, as the prototype's toMap.
+        /// </summary>
         public static void LeaveLevel(int level, bool toNext)
         {
-            string post = "post_" + level;
-            bool last = level >= Progress.LevelCount;
-            if (Story.Has(post) && !Progress.Seen(post))
+            if (!toNext)
             {
-                if (last || !toNext)
-                {
-                    ShowStory(post, last ? Menu : Map);
-                }
-                else
-                {
-                    Level = level + 1;
-                    ShowStory(post, NextTarget(Level));
-                }
+                Go(Map);
                 return;
             }
-            if (toNext && !last) PlayLevel(level + 1);
-            else Go(Map);
+            List<string> ids = TalesStory.AfterStage(level, Progress.Seen);
+            if (level >= Progress.LevelCount)
+            {
+                ShowStories(ids, Menu);
+                return;
+            }
+            Level = level + 1;
+            List<string> told = ids;
+            ids.AddRange(TalesStory.BeforeStage(Level, id => Progress.Seen(id) || told.Contains(id)));
+            ShowStories(ids, Stage);
         }
 
-        static string NextTarget(int level)
-        {
-            string id = "pre_" + level;
-            return Story.Has(id) && !Progress.Seen(id) ? "story:" + id : Stage;
-        }
-
-        /// <summary>Called by the story screen when the dialogue ends.</summary>
+        /// <summary>Called by the story screen when the chain ends or is skipped.</summary>
         public static void StoryFinished()
         {
-            Progress.MarkSeen(StoryId);
-            string target = AfterStory;
-            if (target != null && target.StartsWith("story:"))
-            {
-                ShowStory(target.Substring(6), Stage);
-                return;
-            }
-            Go(string.IsNullOrEmpty(target) ? Map : target);
+            foreach (string id in Stories) Progress.MarkSeen(id);
+            Go(string.IsNullOrEmpty(AfterStory) ? Map : AfterStory);
         }
     }
 
@@ -86,6 +83,7 @@ namespace HollowNight
         static FlowRunner instance;
         CanvasGroup group;
         bool busy;
+        string pending;
 
         public static FlowRunner Instance
         {
@@ -125,7 +123,12 @@ namespace HollowNight
 
         public void Load(string scene)
         {
-            if (busy) return;
+            // A load asked for while another runs (a scene that leaves at once, in its Start) waits its turn.
+            if (busy)
+            {
+                pending = scene;
+                return;
+            }
             StartCoroutine(LoadRoutine(scene));
         }
 
@@ -154,6 +157,12 @@ namespace HollowNight
             yield return Fade(1f, 0f, 0.35f);
             group.blocksRaycasts = false;
             busy = false;
+            if (pending != null)
+            {
+                string next = pending;
+                pending = null;
+                StartCoroutine(LoadRoutine(next));
+            }
         }
 
         IEnumerator Fade(float from, float to, float duration)

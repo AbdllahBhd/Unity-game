@@ -55,9 +55,10 @@ namespace HollowNight
             return this;
         }
 
-        public LevelData Hint(string text, bool finger = false)
+        /// <summary>A teaching card shown until the first launch: a TalesText id (tip.*).</summary>
+        public LevelData Hint(string id, bool finger = false)
         {
-            hint = text;
+            hint = id;
             showFinger = finger;
             return this;
         }

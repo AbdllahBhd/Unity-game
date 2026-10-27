@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generates the Hollow Night sprite set into Assets/Resources/HN/ (with Unity .meta files).
+"""Generates the Hollow Night sprite set (and the tales' Night 1 placeholders) into Assets/Resources/HN/ (with Unity .meta files).
 
 Run from the project root:  python3 Tools/generate_art.py
 Requires Pillow. Re-running overwrites the PNGs but keeps existing .meta GUIDs.
@@ -1121,6 +1121,158 @@ def import_hunter():
     save(bright, "hunter_1", ss=1)
 
 
+# ----------------------------------------------------------------------------- the tales of Mqidec (placeholders)
+# Simple stand-ins for Night 1 until the final art (SPEC.md, 2026-10-21). Mqidec uses the izan_* sprites.
+CLAY, CLAY_HI, CLAY_LO, INK = "#b4623a", "#e59a6a", "#6a2e16", "#1a0c06"
+
+
+def pot(frame):
+    """Teryel's lively pot: a round clay pot with two handles, a lid and glowing eyes."""
+    img = canvas(256, 256)
+    for s in (-1, 1):
+        shape(img, lambda d: rot_ell(d, 128 + s * 86, 128, 16, 30, s * 20), CLAY, CLAY_HI, CLAY_LO, INK, 3.0)
+        flat(img, lambda d: rot_ell(d, 128 + s * 86, 128, 7, 18, s * 20), "#3a1608")
+    shape(img, lambda d: ell(d, 128, 146, 84, 80), CLAY, CLAY_HI, CLAY_LO, INK, 3.4)
+    flat(img, lambda d: line(d, curve((56, 170), (128, 196), (200, 170)), 4.0), "#8a3e1e")
+    shape(img, lambda d: rrect(d, 70, 52, 186, 78, 12), "#8a4426", "#c27a4a", "#4a1e0c", INK, 3.0)
+    shape(img, lambda d: ell(d, 128, 46, 16, 12), "#8a4426", "#c27a4a", "#4a1e0c", INK, 2.6)
+    look = (-0.3, 0.2) if frame == 0 else (0.3, 0.2)
+    for s in (-1, 1):
+        img = glow_layer(img, lambda d: ell(d, 128 + s * 30, 128, 20, 18), "#ffb84a", 6, 0.9)
+        eye(img, 128 + s * 30, 128, 15, "angry", "#ff8a1e", look, s)
+    mouth(img, 128, 164, 14, "angry", fang=frame == 1)
+    return shadow(img, 128, 236, 70)
+
+
+def jar():
+    """A rolling grain jar: round body, short neck, painted bands."""
+    img = canvas(224, 224)
+    shape(img, lambda d: ell(d, 112, 120, 92, 92), "#c98a52", "#f0c08a", "#7a4a22", INK, 3.4)
+    for y, w in ((84, 3.6), (150, 3.6)):
+        flat(img, lambda d: line(d, curve((30, y), (112, y + 16), (194, y)), w), "#6a2e16")
+    for i in range(5):
+        x = 52 + i * 30
+        flat(img, lambda d: poly(d, [(x, 108), (x + 12, 124), (x, 140), (x - 12, 124)]), "#8a3e1e")
+    shape(img, lambda d: rrect(d, 82, 14, 142, 40, 8), "#a86a3a", "#e0a870", "#5a2e12", INK, 3.0)
+    return img
+
+
+def hearth():
+    """The hearth cannon: a clay oven with a glowing mouth on top."""
+    img = canvas(264, 242)
+    shape(img, lambda d: poly(d, [(40, 236), (60, 80), (204, 80), (224, 236)]), "#9a8a7a", "#cfc2b2", "#5a4e44", INK, 3.4)
+    shape(img, lambda d: ell(d, 132, 80, 76, 26), "#6a5e54", "#9a8e84", "#3a302a", INK, 3.0)
+    img = glow_layer(img, lambda d: ell(d, 132, 80, 60, 18), "#ff7a1e", 10, 1.0)
+    flat(img, lambda d: ell(d, 132, 80, 54, 15), "#ffcf5a")
+    shape(img, lambda d: rrect(d, 96, 160, 168, 236, 30), "#2a1408", None, None, INK, 2.6)
+    img = glow_layer(img, lambda d: ell(d, 132, 214, 30, 16), "#ff6a1e", 8, 0.9)
+    for i in range(3):
+        flat(img, lambda d: line(d, [(70, 120 + i * 30), (194, 120 + i * 30)], 2.0), "#7a6e64")
+    return img
+
+
+def teryel():
+    """Teryel the ogress: a big dark figure with wild hair, a wide mouth and pale eyes."""
+    img = canvas(320, 320)
+    hair = [(40, 200), (30, 120), (70, 50), (160, 20), (250, 50), (290, 120), (280, 200)]
+    shape(img, lambda d: poly(d, hair), "#2a1a12", "#5a3a28", "#120804", INK, 3.4)
+    shape(img, lambda d: ell(d, 160, 230, 120, 86), "#5a2a4a", "#8a4a72", "#2a0a20", INK, 3.4)
+    shape(img, lambda d: ell(d, 160, 140, 86, 82), "#8a9a6a", "#bccaa0", "#4a5a32", INK, 3.4)
+    for s in (-1, 1):
+        eye(img, 160 + s * 34, 124, 18, "angry", "#d4c000", (0, 0.2), s)
+    mouth(img, 160, 176, 30, "angry", fang=True)
+    shape(img, lambda d: poly(d, [(150, 140), (160, 158), (170, 140)]), "#7a8a5a", None, None, INK, 2.0)
+    for s in (-1, 1):
+        shape(img, lambda d: ell(d, 160 + s * 92, 120, 12, 20), "#8a9a6a", "#bccaa0", "#4a5a32", INK, 2.6)
+        flat(img, lambda d: ell(d, 160 + s * 94, 140, 5, 5), "#ffcf4a")
+    return img
+
+
+def person(skin, scarf, scarf_hi, dress, dress_hi, old=False, small=False, hair=None):
+    """A storyteller's portrait: head, scarf or hair, shoulders. Kabyle-style patterned scarf for Jida."""
+    img = canvas(256, 256)
+    k = 0.82 if small else 1.0
+    cx, hy = 128, 112 + (24 if small else 0)
+    shape(img, lambda d: ell(d, cx, 250, 104 * k, 70 * k), dress, dress_hi, None, INK, 3.0)
+    for i in range(4):
+        x = cx - 60 * k + i * 40 * k
+        flat(img, lambda d: poly(d, [(x, 214), (x + 10, 226), (x, 238), (x - 10, 226)]), "#ffcf4a")
+    if hair:
+        shape(img, lambda d: ell(d, cx, hy - 6, 64 * k, 62 * k), hair, None, None, INK, 3.0)
+    shape(img, lambda d: ell(d, cx, hy + 6, 52 * k, 58 * k), skin, None, None, INK, 3.0, (0.4, 0.3))
+    if scarf:
+        shape(img, lambda d: poly(d, [(cx - 66 * k, hy + 40), (cx - 60 * k, hy - 44), (cx, hy - 70 * k),
+                                      (cx + 60 * k, hy - 44), (cx + 66 * k, hy + 40), (cx + 44 * k, hy - 20),
+                                      (cx - 44 * k, hy - 20)]), scarf, scarf_hi, None, INK, 3.0)
+        for i in range(5):
+            x = cx - 40 * k + i * 20 * k
+            flat(img, lambda d: ell(d, x, hy - 40, 4, 4), "#ffcf4a")
+    for s in (-1, 1):
+        eye(img, cx + s * 20 * k, hy + 4, 9 * k, "happy" if old else "idle", "#3a2010")
+    if old:
+        for s in (-1, 1):
+            flat(img, lambda d: line(d, curve((cx + s * 30 * k, hy + 18), (cx + s * 36 * k, hy + 24),
+                                               (cx + s * 32 * k, hy + 30)), 1.6), "#8a5a3a")
+        flat(img, lambda d: ell(d, cx, hy + 50, 3, 3), "#3a6a8a")
+    mouth(img, cx, hy + 30, 10 * k, "happy" if old else "idle")
+    cheeks(img, cx, hy + 22, 32 * k, 8 * k, "#e08a7a")
+    return img
+
+
+def portraits():
+    save(person("#d9a77a", "#c0392b", "#ff7a66", "#3a5a8a", "#6a8aba", old=True), "portrait_jida")
+    save(person("#e6b48a", "#e0b030", "#ffe08a", "#8a3a6a", "#ba6a9a", small=True, hair="#2a1408"), "portrait_girl")
+    save(person("#d8a07a", None, None, "#3a7a4a", "#6aaa7a", small=True, hair="#1a0c06"), "portrait_boy")
+    kids = canvas(256, 256)
+    girl = person("#e6b48a", "#e0b030", "#ffe08a", "#8a3a6a", "#ba6a9a", small=True, hair="#2a1408")
+    boy = person("#d8a07a", None, None, "#3a7a4a", "#6aaa7a", small=True, hair="#1a0c06")
+    kids.alpha_composite(boy.resize((P(200), P(200)), Image.LANCZOS), (P(70), P(56)))
+    kids.alpha_composite(girl.resize((P(200), P(200)), Image.LANCZOS), (P(-14), P(56)))
+    save(kids, "portrait_children")
+    save(teryel(), "portrait_teryel")
+
+
+def interior(name, wall, wall_lo, glow, kind, seed):
+    """A room for the story and the stages: hearth (Jida's home) or kitchen (Teryel's)."""
+    W, H = 720, 1440
+    rnd = random.Random(seed)
+    img = vgrad(W, H, [(0, rgb(wall_lo)[:3]), (0.6, rgb(wall)[:3]), (1, rgb(wall_lo)[:3])])
+    d = ImageDraw.Draw(img)
+    for row in range(0, H, 60):
+        off = 0 if (row // 60) % 2 == 0 else 45
+        for x in range(-off, W, 90):
+            shade = rnd.randint(-10, 10)
+            c = tuple(max(0, min(255, v + shade)) for v in rgb(wall)[:3]) + (255,)
+            d.rectangle([x + 3, row + 3, x + 87, row + 57], fill=c)
+    d.rectangle([0, H * 0.86, W, H], fill=rgb(wall_lo))
+    beam = rgb("#3a2010")
+    for y in (H * 0.18, H * 0.48):
+        d.rectangle([0, y, W, y + 26], fill=beam)
+    gl = Image.new("RGBA", (W, H), rgb(glow))
+    gl.putalpha(scale_alpha(radial((W, H), W * 0.5, H * 0.82, W * 0.75), 0.5))
+    img = Image.alpha_composite(img, gl)
+    d = ImageDraw.Draw(img)
+    if kind == "kitchen":
+        # shelves of jars and pots along the wall
+        for y in (H * 0.18, H * 0.48):
+            for i in range(6):
+                x = 60 + i * 120 + rnd.uniform(-10, 10)
+                r = rnd.uniform(26, 40)
+                col = rnd.choice(["#7a3a1e", "#8a5a2a", "#6a2e16"])
+                d.ellipse([x - r, y - 2 * r, x + r, y], fill=rgb(col))
+                d.rectangle([x - r * 0.4, y - 2 * r - 10, x + r * 0.4, y - 2 * r + 4], fill=rgb(col))
+    else:
+        # the family hearth: a fire and the oil lamp in its niche
+        d.rounded_rectangle([W * 0.3, H * 0.66, W * 0.7, H * 0.86], radius=40, fill=rgb("#2a1408"))
+        for i in range(7):
+            x = W * 0.36 + i * W * 0.045
+            h = rnd.uniform(60, 120)
+            d.polygon([(x - 20, H * 0.85), (x, H * 0.85 - h), (x + 20, H * 0.85)], fill=rgb("#ff9a2a"))
+        d.rounded_rectangle([W * 0.42, H * 0.3, W * 0.58, H * 0.42], radius=30, fill=rgb("#2a1408"))
+        d.ellipse([W * 0.47, H * 0.34, W * 0.53, H * 0.4], fill=rgb("#ffe08a"))
+    save(img, name, ss=1)
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     import_hunter()
@@ -1187,6 +1339,14 @@ def main():
                (280, 380, 130), "#8affc9", "#0c3038", "#071f26", "#031216", "forest", 22)
     background("bg_tower", [(0, (30, 6, 30)), (0.5, (84, 18, 60)), (0.8, (150, 40, 60)), (1, (220, 100, 60))],
                (540, 300, 170), "#ff9a6a", "#3a0f30", "#240820", "#120410", "tower", 33)
+    save(pot(0), "pot_0")
+    save(pot(1), "pot_1")
+    save(jar(), "jar")
+    save(hearth(), "hearth")
+    save(teryel(), "teryel")
+    portraits()
+    interior("bg_hearth", "#5a3a2a", "#2a160c", "#ff9a4a", "hearth", 41)
+    interior("bg_kitchen", "#4a3a3a", "#1e1414", "#ff7a3a", "kitchen", 42)
     import_deco()
     print("sprites written to", OUT, "->", len([f for f in os.listdir(OUT) if f.endswith(".png")]))
 

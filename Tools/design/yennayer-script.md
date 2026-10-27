@@ -239,6 +239,7 @@ subtitle shown under it.
 | who.boy | The boy | Aqcic | Le garçon | الولد |
 | who.children | The children | Igerdan | Les enfants | الأطفال |
 | who.teryel | Teryel | Teryel | Teryel | تريال |
+| hero.name | Mqidec | Mqidec | Mqidec | مقيدش |
 
 ---
 

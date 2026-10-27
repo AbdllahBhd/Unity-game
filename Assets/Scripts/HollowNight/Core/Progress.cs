@@ -6,8 +6,10 @@ namespace HollowNight
     /// <summary>Saved player progress (PlayerPrefs). Levels are 1-based.</summary>
     public static class Progress
     {
-        public const int LevelCount = 4;
-        const string Prefix = "hn_";
+        public const int LevelCount = TalesStory.Stages;
+        // The tales keep their own save keys, apart from the pumpkin game's "hn_" ones, so an old
+        // pumpkin save never shows up as tales stars.
+        const string Prefix = "tm_";
 
         public static bool IsDone(int level)
         {
@@ -24,10 +26,23 @@ namespace HollowNight
             return PlayerPrefs.GetInt(Prefix + "stars_" + level, 0);
         }
 
-        /// <summary>Fewest launches used to clear the level, 0 if never cleared.</summary>
+        /// <summary>Fewest launches used to clear the level, 0 if never cleared (kept for information; there is no par).</summary>
         public static int Best(int level)
         {
             return PlayerPrefs.GetInt(Prefix + "best_" + level, 0);
+        }
+
+        /// <summary>The first stage not yet cleared (the last one when all are).</summary>
+        public static int CurrentLevel
+        {
+            get
+            {
+                for (int i = 1; i <= LevelCount; i++)
+                {
+                    if (!IsDone(i)) return i;
+                }
+                return LevelCount;
+            }
         }
 
         public static int TotalStars
@@ -63,15 +78,12 @@ namespace HollowNight
             PlayerPrefs.Save();
         }
 
-        // The tales keep their own save keys, apart from the pumpkin game's "hn_" ones.
-        const string TalesPrefix = "tm_";
-
         /// <summary>The language of the tales; the first time, the device's language when the game has it.</summary>
         public static Lang Language
         {
             get
             {
-                int saved = PlayerPrefs.GetInt(TalesPrefix + "lang", -1);
+                int saved = PlayerPrefs.GetInt(Prefix + "lang", -1);
                 if (saved >= 0 && saved <= (int)Lang.En) return (Lang)saved;
                 switch (Application.systemLanguage)
                 {
@@ -82,7 +94,7 @@ namespace HollowNight
             }
             set
             {
-                PlayerPrefs.SetInt(TalesPrefix + "lang", (int)value);
+                PlayerPrefs.SetInt(Prefix + "lang", (int)value);
                 PlayerPrefs.Save();
             }
         }
@@ -106,7 +118,7 @@ namespace HollowNight
                 PlayerPrefs.DeleteKey(Prefix + "stars_" + i);
                 PlayerPrefs.DeleteKey(Prefix + "best_" + i);
             }
-            foreach (string id in Story.AllIds) PlayerPrefs.DeleteKey(Prefix + "story_" + id);
+            foreach (string id in TalesStory.Ids) PlayerPrefs.DeleteKey(Prefix + "story_" + id);
             SoundOn = sound;
         }
     }

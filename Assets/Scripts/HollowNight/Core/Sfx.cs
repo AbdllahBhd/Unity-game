@@ -7,7 +7,7 @@ namespace HollowNight
     public enum Sound
     {
         Click, Launch, Bounce, Land, Candy, Key, Dash, Flap, Smash, Break, Hurt, Portal, Cannon,
-        Star, Win, BossHit, Type, Web, Mushroom, Unlock
+        Star, Win, BossHit, Type, Web, Mushroom, Unlock, Clink, Crack, Crush
     }
 
     /// <summary>
@@ -199,6 +199,23 @@ namespace HollowNight
                         low += (Noise() - low) * 0.4f;
                         float crackle = random.NextDouble() < 0.02 ? 1f : 0f;
                         return (low * 0.8f + crackle * 0.5f + Sweep(t, 0.3f, 300f, 120f) * 0.2f) * Decay(t, 12f);
+                    });
+                // Clay: a pot waking (clink), a pot broken (crack), a jar shattering or falling on Teryel (crush).
+                case Sound.Clink:
+                    return Make("clink", 0.25f, (t, n) => Bell(t, 1480f, 26f) * 0.7f + Bell(t - 0.05f, 1975f, 30f) * 0.4f);
+                case Sound.Crack:
+                    return Make("crack", 0.32f, (t, n) =>
+                    {
+                        low += (Noise() - low) * 0.55f;
+                        float tick = random.NextDouble() < 0.035 * (1f - n) ? 1f : 0f;
+                        return (low * 0.9f * Decay(t, 22f) + tick * 0.6f + Sweep(t, 0.32f, 520f, 210f) * 0.25f * Decay(t, 14f));
+                    });
+                case Sound.Crush:
+                    return Make("crush", 0.6f, (t, n) =>
+                    {
+                        low += (Noise() - low) * 0.18f;
+                        float tick = random.NextDouble() < 0.05 * (1f - n) ? 1f : 0f;
+                        return (low * 1.6f + tick * 0.45f) * Decay(t, 7f) + Sweep(t, 0.6f, 110f, 40f) * 0.7f * Decay(t, 9f);
                     });
                 case Sound.Hurt:
                     return Make("hurt", 0.4f, (t, n) =>

@@ -126,6 +126,12 @@ namespace HollowNight
             return label;
         }
 
+        /// <summary>A line of the text table in the tales' language (Progress.Language).</summary>
+        public static string T(string id)
+        {
+            return TalesText.Get(id, Progress.Language);
+        }
+
         /// <summary>A label's text in the tales' language (Progress.Language).</summary>
         public static void Say(Text label, string text, bool title = false)
         {
@@ -195,8 +201,9 @@ namespace HollowNight
             image.sprite = Art.Get(sprite);
             image.type = Image.Type.Sliced;
             Button button = MakeButton(rect, image, onClick);
-            Text label = Label(text, rect, Center, new Vector2(0f, 6f), size, fontSize, Color.white);
-            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            Text label = Label("", rect, Center, new Vector2(0f, 6f), size, fontSize, Color.white);
+            Say(label, text);
+            if (Progress.Language != Lang.Ar) label.horizontalOverflow = HorizontalWrapMode.Overflow;
             return button;
         }
 

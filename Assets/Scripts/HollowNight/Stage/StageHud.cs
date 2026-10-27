@@ -1,18 +1,18 @@
 using System.Collections;
+using HollowNight.Logic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace HollowNight
 {
-    /// <summary>In-game interface: score bar, hero swap, hints, pause and result panels.</summary>
+    /// <summary>In-game interface: stage title and stars, hints, pause and result panels. Every text is a TalesText id.</summary>
     public class StageHud : MonoBehaviour
     {
         StageController stage;
         Transform root;
 
-        Text launchLabel;
         Text goalLabel;
-        Image[] pumpkinIcons;
+        Image[] starIcons;
         Image[] bossIcons;
         Text abilityLabel;
         RectTransform hintPanel;
@@ -23,7 +23,7 @@ namespace HollowNight
         Coroutine hintRoutine;
         int shownSmashed = -1;
 
-        public void Build(StageController controller, int hunterCount, bool boss)
+        public void Build(StageController controller, bool boss)
         {
             stage = controller;
             Canvas canvas = UIKit.MakeCanvas("HudCanvas", 20);
@@ -32,20 +32,16 @@ namespace HollowNight
 
             Image bar = UIKit.Picture("panel_dark", root, UIKit.Top, new Vector2(0f, -110f), new Vector2(900f, 250f), true);
             bar.color = new Color(1f, 1f, 1f, 0.88f);
-            Text title = UIKit.Label(level.id + ".  " + level.name, bar.transform, UIKit.Center, new Vector2(0f, 62f),
-                new Vector2(860f, 70f), 46, UIKit.Gold);
-            title.horizontalOverflow = HorizontalWrapMode.Overflow;
-            launchLabel = UIKit.Label("", bar.transform, UIKit.Center, new Vector2(-230f, -40f), new Vector2(380f, 80f), 40,
-                UIKit.Cream);
-            launchLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+            Text title = UIKit.Label("", bar.transform, UIKit.Center, new Vector2(0f, 62f), new Vector2(860f, 70f), 46,
+                UIKit.Gold);
+            UIKit.Say(title, UIKit.T("ui.stage") + " " + level.id + "  -  " + level.name);
 
-            // One pumpkin icon per hunter; it lights up when that many are smashed.
-            pumpkinIcons = new Image[hunterCount];
-            for (int i = 0; i < hunterCount; i++)
+            // One star per hunter broken, up to three.
+            starIcons = new Image[Rules.MaxStars];
+            for (int i = 0; i < starIcons.Length; i++)
             {
-                pumpkinIcons[i] = UIKit.Picture("hunter_0", bar.transform, UIKit.Center,
-                    new Vector2(10f + i * 78f, -40f), new Vector2(72f, 72f));
-                pumpkinIcons[i].color = new Color(0f, 0f, 0f, 0.55f);
+                starIcons[i] = UIKit.Picture("star_empty", bar.transform, UIKit.Center,
+                    new Vector2(-90f + i * 90f, -40f), new Vector2(84f, 84f));
             }
 
             UIKit.IconButton("ico_pause", root, UIKit.TopLeft, new Vector2(95f, -100f), 140f, stage.TogglePause);
@@ -63,10 +59,9 @@ namespace HollowNight
                 }
             }
 
-            // Ability reminder.
-            abilityLabel = UIKit.Label("", root, UIKit.BottomRight, new Vector2(-280f, 70f), new Vector2(520f, 70f), 38,
+            // Dash reminder: a wide box that wraps, since UIKit.Say decides the overflow per language.
+            abilityLabel = UIKit.Label("", root, UIKit.BottomRight, new Vector2(-470f, 80f), new Vector2(900f, 110f), 34,
                 UIKit.Cream, false, TextAnchor.MiddleRight);
-            abilityLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
 
             Image hint = UIKit.Picture("panel_dark", root, UIKit.Bottom, new Vector2(0f, 330f), new Vector2(980f, 230f), true);
             hintPanel = hint.rectTransform;
@@ -75,28 +70,31 @@ namespace HollowNight
             hintGroup.interactable = false;
             hintLabel = UIKit.Label("", hintPanel, UIKit.Center, Vector2.zero, new Vector2(880f, 180f), 40, UIKit.Cream);
             hintPanel.gameObject.SetActive(false);
-            if (!string.IsNullOrEmpty(level.hint)) ShowHint(level.hint, 0f);
+            if (!string.IsNullOrEmpty(level.hint)) ShowHint(UIKit.T(level.hint), 0f);
 
             BuildPause();
         }
 
         // ------------------------------------------------------------------ score bar
-        public void SetScore(int launches, int par, int smashed, int hunterCount)
+        public void SetStars(int stars)
         {
-            launchLabel.text = "LAUNCHES  " + launches + " / " + par;
-            launchLabel.color = launches <= par ? UIKit.Cream : new Color(1f, 0.55f, 0.45f);
-            for (int i = 0; i < pumpkinIcons.Length; i++)
+            for (int i = 0; i < starIcons.Length; i++)
             {
-                bool got = i < smashed;
-                pumpkinIcons[i].color = got ? Color.white : new Color(0f, 0f, 0f, 0.55f);
-                if (got && i >= shownSmashed && shownSmashed >= 0) StartCoroutine(Tween.Pop(pumpkinIcons[i].transform, 0.4f));
+                bool got = i < stars;
+                starIcons[i].sprite = Art.Get(got ? "star_full" : "star_empty");
+                if (got && i >= shownSmashed && shownSmashed >= 0)
+                {
+                    StartCoroutine(Tween.Pop(starIcons[i].transform, 0.4f));
+                    Sfx.Play(Sound.Star, 0.7f, 1f + i * 0.12f);
+                }
             }
-            shownSmashed = smashed;
+            shownSmashed = stars;
         }
 
-        public void SetGoal(string text)
+        /// <summary>The line under the score bar, from a text id; null or "" clears it.</summary>
+        public void SetGoal(string id)
         {
-            goalLabel.text = text;
+            UIKit.Say(goalLabel, string.IsNullOrEmpty(id) ? "" : UIKit.T(id));
         }
 
         public void SetBoss(int health, int max)
@@ -112,7 +110,7 @@ namespace HollowNight
 
         public void SetHero(HeroDef def)
         {
-            abilityLabel.text = "TAP IN AIR:  " + def.ability.ToUpper();
+            UIKit.Say(abilityLabel, def.Hint);
         }
 
         // ------------------------------------------------------------------ hints
@@ -152,15 +150,15 @@ namespace HollowNight
             pausePanel = UIKit.Stretch("Pause", root);
             UIKit.Fill(pausePanel, new Color(0.02f, 0.01f, 0.06f, 0.75f), true);
             Image panel = UIKit.Picture("panel", pausePanel, UIKit.Center, Vector2.zero, new Vector2(820f, 900f), true);
-            Text title = UIKit.Label("PAUSED", panel.transform, UIKit.Top, new Vector2(0f, -130f), new Vector2(700f, 160f), 130,
+            Text title = UIKit.Label("", panel.transform, UIKit.Top, new Vector2(0f, -130f), new Vector2(700f, 160f), 110,
                 UIKit.Gold, true);
-            title.horizontalOverflow = HorizontalWrapMode.Overflow;
-            UIKit.TextButton("btn_green", "RESUME", panel.transform, UIKit.Center, new Vector2(0f, 130f),
-                new Vector2(520f, 150f), stage.TogglePause, 64);
-            UIKit.TextButton("btn_orange", "RESTART", panel.transform, UIKit.Center, new Vector2(0f, -40f),
-                new Vector2(520f, 150f), stage.Restart, 64);
-            UIKit.TextButton("btn_purple", "MAP", panel.transform, UIKit.Center, new Vector2(0f, -210f),
-                new Vector2(520f, 150f), stage.ToMap, 64);
+            UIKit.Say(title, UIKit.T("ui.paused"), true);
+            UIKit.TextButton("btn_green", UIKit.T("ui.resume"), panel.transform, UIKit.Center, new Vector2(0f, 130f),
+                new Vector2(520f, 150f), stage.TogglePause, 56);
+            UIKit.TextButton("btn_orange", UIKit.T("ui.restart"), panel.transform, UIKit.Center, new Vector2(0f, -40f),
+                new Vector2(520f, 150f), stage.Restart, 56);
+            UIKit.TextButton("btn_purple", UIKit.T("ui.map"), panel.transform, UIKit.Center, new Vector2(0f, -210f),
+                new Vector2(520f, 150f), stage.ToMap, 56);
             Button sound = UIKit.IconButton(Progress.SoundOn ? "ico_sound_on" : "ico_sound_off", panel.transform, UIKit.Bottom,
                 new Vector2(0f, 110f), 130f, ToggleSound);
             pauseSound = sound.GetComponent<Image>();
@@ -180,7 +178,7 @@ namespace HollowNight
         }
 
         // ------------------------------------------------------------------ result
-        public void ShowResult(LevelData level, int stars, int launches, int smashed, int hunterCount)
+        public void ShowResult(int stars)
         {
             hintPanel.gameObject.SetActive(false);
 
@@ -188,10 +186,9 @@ namespace HollowNight
             Image shade = UIKit.Fill(overlay, new Color(0.02f, 0.01f, 0.06f, 0f), true);
             Image panel = UIKit.Picture("panel", overlay, UIKit.Center, new Vector2(0f, 40f), new Vector2(900f, 1100f), true);
 
-            bool last = level.id >= Progress.LevelCount;
-            Text title = UIKit.Label(last ? "THE FLAME IS FREE!" : "STAGE CLEAR!", panel.transform, UIKit.Top,
-                new Vector2(0f, -140f), new Vector2(860f, 170f), last ? 100 : 124, UIKit.Gold, true);
-            title.horizontalOverflow = HorizontalWrapMode.Overflow;
+            Text title = UIKit.Label("", panel.transform, UIKit.Top, new Vector2(0f, -150f), new Vector2(860f, 200f), 90,
+                UIKit.Gold, true);
+            UIKit.Say(title, UIKit.T("ui.doorOpens"), true);
 
             Image hero = UIKit.Picture(stage.Hero.Def.sprite + "_happy", panel.transform, UIKit.Center, new Vector2(0f, 330f),
                 new Vector2(250f, 250f));
@@ -211,22 +208,12 @@ namespace HollowNight
                 }
             }
 
-            string[] rows =
-            {
-                "Stage cleared",
-                "Pumpkins smashed   " + smashed + " / " + hunterCount,
-                "Launches   " + launches + "   (par " + level.par + ")"
-            };
-            bool[] earned = { true, smashed >= hunterCount, launches <= level.par };
-            for (int i = 0; i < rows.Length; i++)
-            {
-                Text row = UIKit.Label(rows[i], panel.transform, UIKit.Center, new Vector2(40f, -90f - i * 80f),
-                    new Vector2(700f, 70f), 42, earned[i] ? UIKit.Cream : new Color(1f, 1f, 1f, 0.45f), false,
-                    TextAnchor.MiddleLeft);
-                row.horizontalOverflow = HorizontalWrapMode.Overflow;
-                UIKit.Picture(earned[i] ? "star_full" : "star_empty", row.transform, UIKit.Center, new Vector2(-400f, 4f),
-                    new Vector2(64f, 64f));
-            }
+            // The prototype's verdict: all three broken, some, or none.
+            string verdict = stars >= Rules.MaxStars ? UIKit.T("ui.allThree")
+                : stars > 0 ? TalesText.Format(UIKit.T("ui.someBroken"), "n", stars.ToString()) : UIKit.T("ui.noneBroken");
+            Text row = UIKit.Label("", panel.transform, UIKit.Center, new Vector2(0f, -170f), new Vector2(760f, 220f), 46,
+                UIKit.Cream);
+            UIKit.Say(row, verdict);
 
             Button home = UIKit.IconButton("ico_home", panel.transform, UIKit.Bottom, new Vector2(-260f, 150f), 190f, stage.ToMap);
             Button retry = UIKit.IconButton("ico_restart", panel.transform, UIKit.Bottom, new Vector2(0f, 150f), 190f, stage.Restart);

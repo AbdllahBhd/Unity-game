@@ -1072,6 +1072,14 @@ globalThis.HNText = {
   "who": "",
   "mood": ""
  },
+ "hero.name": {
+  "en": "Mqidec",
+  "tq": "Mqidec",
+  "fr": "Mqidec",
+  "ar": "مقيدش",
+  "who": "",
+  "mood": ""
+ },
  "t4.intro.1": {
   "en": "On the morning of Yennayer the women baked the bread of the new year in the village oven. By evening the bread was gone, and so was Teryel.",
   "tq": "Ṣbeḥ n Yennayer, tilawin ssewwent aɣrum n useggas amaynut deg ufurnu n taddart. Tameddit, aɣrum ulac-it, Teryel daɣen ulac-itt.",

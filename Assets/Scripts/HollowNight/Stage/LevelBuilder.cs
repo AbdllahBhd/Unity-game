@@ -7,7 +7,8 @@ namespace HollowNight
     /// <summary>Turns a <see cref="LevelData"/> description into GameObjects.</summary>
     public class LevelBuilder
     {
-        static readonly string[] PlatformSprites = { "plat_grave", "plat_wood", "plat_tower" };
+        // One per night: Night 1's ledges are the kitchen's wooden shelves.
+        static readonly string[] PlatformSprites = { "plat_wood" };
 
         readonly LevelData level;
         readonly Transform root;
@@ -158,12 +159,11 @@ namespace HollowNight
             SpriteRenderer glow = Art.Make("glow", go.transform, Vector3.zero, 2.6f, Layer.Enemy - 1, "Glow");
             glow.color = new Color(1f, 0.7f, 0.35f, 0.45f);
             glow.gameObject.AddComponent<Pulse>().amount = 0.2f;
-            SpriteRenderer renderer = Art.Make("hunter_0", go.transform, Vector3.zero, height, Layer.Enemy, "Sprite");
-            renderer.color = new Color(0.95f, 0.7f, 0.5f);
+            SpriteRenderer renderer = Art.Make("pot_0", go.transform, Vector3.zero, height, Layer.Enemy, "Sprite");
             if (range > 0f)
             {
                 FrameLoop loop = renderer.gameObject.AddComponent<FrameLoop>();
-                loop.frames = new[] { Art.Get("hunter_0"), Art.Get("hunter_1") };
+                loop.frames = new[] { Art.Get("pot_0"), Art.Get("pot_1") };
                 loop.fps = 4f;
                 Bob bob = renderer.gameObject.AddComponent<Bob>();
                 bob.amplitude = new Vector2(0.05f, 0.12f);
@@ -180,8 +180,8 @@ namespace HollowNight
         {
             float size = Jar.Radius * 2f * (trap ? 1.15f : 1f);
             GameObject go = Holder(trap ? "TrapJar" : "Jar", e.pos);
-            SpriteRenderer renderer = Art.Make("pumpkin_0", go.transform, Vector3.zero, size, Layer.Enemy, "Sprite");
-            renderer.color = trap ? new Color(0.75f, 0.5f, 0.35f) : new Color(0.85f, 0.6f, 0.4f);
+            SpriteRenderer renderer = Art.Make("jar", go.transform, Vector3.zero, size, Layer.Enemy, "Sprite");
+            if (trap) renderer.color = new Color(0.85f, 0.75f, 0.65f);
             CircleCollider2D circle = Circle(go, Jar.Radius, false);
             PhysicsMaterial2D slick = new PhysicsMaterial2D("Jar") { friction = 0f, bounciness = 0f };
             circle.sharedMaterial = slick;
@@ -203,7 +203,7 @@ namespace HollowNight
             GameObject go = Holder("Teryel", e.pos);
             SpriteRenderer glow = Art.Make("glow", go.transform, Vector3.zero, r * 4f, Layer.Enemy - 1, "Glow");
             glow.color = new Color(0.6f, 0.3f, 0.8f, 0.35f);
-            SpriteRenderer renderer = Art.Make("morgra_idle", go.transform, Vector3.zero, r * 2.2f, Layer.Enemy, "Sprite");
+            SpriteRenderer renderer = Art.Make("teryel", go.transform, Vector3.zero, r * 2.2f, Layer.Enemy, "Sprite");
             Circle(go, r, true);
             Kinematic(go).useFullKinematicContacts = true;
             go.AddComponent<Teryel>().Setup(e.pos, r, e.b, e.g, renderer);
@@ -318,7 +318,7 @@ namespace HollowNight
         {
             const float height = 1.4f;
             GameObject go = Holder("Cauldron", e.pos + Vector2.up * (height * 0.5f));
-            SpriteRenderer renderer = Art.Make("cauldron", go.transform, Vector3.zero, height, Layer.Item + 1, "Sprite");
+            SpriteRenderer renderer = Art.Make("hearth", go.transform, Vector3.zero, height, Layer.Item + 1, "Sprite");
             SpriteRenderer glow = Art.Make("glow", go.transform, new Vector3(0f, 0.5f, 0f), 2.4f, Layer.Item - 1, "Glow");
             glow.color = new Color(0.5f, 1f, 0.4f, 0.4f);
             glow.gameObject.AddComponent<Pulse>().amount = 0.12f;

@@ -1,9 +1,10 @@
+using HollowNight.Logic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace HollowNight
 {
-    /// <summary>Level select: a winding path of ten stages across three chapters.</summary>
+    /// <summary>The tales: a winding path of the stages, one banner per night.</summary>
     public class WorldMapScreen : MonoBehaviour
     {
         const float Step = 300f;
@@ -16,32 +17,23 @@ namespace HollowNight
             Canvas canvas = UIKit.MakeCanvas("MapCanvas", 10);
             Transform root = canvas.transform;
 
-            int current = CurrentLevel();
-            UIKit.Backdrop(Story.ChapterBackdrops[Story.ChapterOf(current)], root);
+            int current = Progress.CurrentLevel;
+            UIKit.Backdrop(Story.StageBackdrop(current), root);
             UIKit.Fill(root, new Color(0.03f, 0.01f, 0.08f, 0.35f), false);
 
             BuildPath(root, current);
             BuildHeader(root);
         }
 
-        static int CurrentLevel()
-        {
-            for (int i = 1; i <= Progress.LevelCount; i++)
-            {
-                if (!Progress.IsDone(i)) return i;
-            }
-            return Progress.LevelCount;
-        }
-
         void BuildHeader(Transform root)
         {
             Image bar = UIKit.Picture("panel_dark", root, UIKit.Top, new Vector2(0f, -150f), new Vector2(1100f, 340f), true);
-            Text title = UIKit.Label("THE ROAD TO THE TOWER", bar.transform, UIKit.Center, new Vector2(0f, 60f),
-                new Vector2(900f, 120f), 84, UIKit.Gold, true);
-            title.horizontalOverflow = HorizontalWrapMode.Overflow;
+            Text title = UIKit.Label("", bar.transform, UIKit.Center, new Vector2(0f, 60f), new Vector2(900f, 140f), 72,
+                UIKit.Gold, true);
+            UIKit.Say(title, UIKit.T("ui.tales"), true);
 
-            Text stars = UIKit.Label(Progress.TotalStars + " / " + (Progress.LevelCount * 3), bar.transform, UIKit.Center,
-                new Vector2(330f, -60f), new Vector2(300f, 80f), 50, UIKit.Cream);
+            Text stars = UIKit.Label(Progress.TotalStars + " / " + (Progress.LevelCount * Rules.MaxStars), bar.transform,
+                UIKit.Center, new Vector2(330f, -60f), new Vector2(300f, 80f), 50, UIKit.Cream);
             UIKit.Picture("star_full", stars.transform, UIKit.Center, new Vector2(-160f, 6f), new Vector2(80f, 80f));
 
             UIKit.Picture("izan_idle", bar.transform, UIKit.Center, new Vector2(-300f, -60f), new Vector2(110f, 110f));
@@ -92,23 +84,23 @@ namespace HollowNight
                 }
             }
 
-            // Chapter banners.
-            int[] chapterStarts = { 1, 5, 8 };
-            for (int c = 0; c < chapterStarts.Length; c++)
+            // One banner under the first stage of each night: "Night 1 - Taxxamt n Teryel".
+            for (int night = 1; night <= TalesStory.Nights; night++)
             {
-                int level = chapterStarts[c];
+                int level = (night - 1) * TalesStory.StagesPerNight + 1;
+                if (level > points.Length) break;
                 Vector2 p = new Vector2(0f, points[level - 1].y - 165f);
                 Image banner = UIKit.Picture("btn_purple", content, UIKit.Bottom, p, new Vector2(940f, 100f), true);
                 banner.color = new Color(1f, 1f, 1f, 0.92f);
-                Text label = UIKit.Label(Story.ChapterNames[c], banner.transform, UIKit.Center, new Vector2(0f, 6f),
+                Text label = UIKit.Label("", banner.transform, UIKit.Center, new Vector2(0f, 6f),
                     new Vector2(920f, 90f), 40, Color.white);
-                label.horizontalOverflow = HorizontalWrapMode.Overflow;
+                UIKit.Say(label, UIKit.T("ui.night") + " " + night + "  -  " + UIKit.T("tale." + night));
             }
 
             for (int i = 0; i < points.Length; i++) BuildNode(content, points[i], i + 1, current);
 
-            // Morgra waits at the end of the road.
-            Image witch = UIKit.Picture("morgra_idle", content, UIKit.Bottom,
+            // Teryel sleeps at the end of the night.
+            Image witch = UIKit.Picture("teryel", content, UIKit.Bottom,
                 points[points.Length - 1] + new Vector2(-40f, 330f), new Vector2(330f, 330f));
             Hopper hover = witch.gameObject.AddComponent<Hopper>();
             hover.height = 30f;
@@ -142,10 +134,13 @@ namespace HollowNight
             }
 
             bool labelRight = position.x < 0f;
-            Text name = UIKit.Label(data.name, content, UIKit.Bottom,
+            Text name = UIKit.Label("", content, UIKit.Bottom,
                 position + new Vector2(labelRight ? 330f : -330f, 20f), new Vector2(420f, 80f), 44,
                 unlocked ? UIKit.Cream : new Color(1f, 1f, 1f, 0.4f), false,
                 labelRight ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight);
+            UIKit.Say(name, data.name);
+            // Say right-aligns Arabic; here the name must hug its node on either side.
+            name.alignment = labelRight ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight;
             name.horizontalOverflow = HorizontalWrapMode.Overflow;
 
             if (done)
